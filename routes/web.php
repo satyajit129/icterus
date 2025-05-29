@@ -15,9 +15,10 @@ Route::prefix('admin')->group(function () {
 
     Route::middleware([AdminProtectedRoute::class])->group(function () {
         Route::get('/dashboard',[AdminController::class, 'adminDashboard'])->name('adminDashboard');
+        Route::get('/logout',[AuthController::class,'adminLogout'])->name('adminLogout');
         Route::get('/settings',[AdminController::class,'adminSettings'])->name('adminSettings');
         Route::post('/settings-update',[AdminController::class,'adminSettingsUpdate'])->name('adminSettingsUpdate');
     });
-    
+
 });
 

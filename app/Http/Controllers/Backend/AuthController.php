@@ -17,7 +17,6 @@ class AuthController extends Controller
     }
     public function adminLoginRequest(Request $request): \Illuminate\Http\RedirectResponse
     {
-        // dd($request->all());
         try {
             $request->validate([
                 'email' => 'required|email',
@@ -41,5 +40,13 @@ class AuthController extends Controller
             Log::error('Admin login failed: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Something went wrong. Please try again later.');
         }
+    }
+    public function adminLogout(): \Illuminate\Http\RedirectResponse
+    {
+        $user = Auth::user();
+        if ($user) {
+            Auth::logout();
+        }
+        return redirect()->route('adminLogin')->with('success', 'Logout successful!');
     }
 }
