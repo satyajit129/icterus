@@ -21,20 +21,25 @@
                 </li>
 
                 <li class="slide">
-                    <a class="side-menu__item has-link {{ Request::route('adminDashboard') ?? 'active' }}" data-bs-toggle="slide" href="{{ route('adminDashboard') }}">
+                    <a class="side-menu__item has-link {{ Route::is('adminDashboard') ? 'active' : '' }}" data-bs-toggle="slide" href="{{ route('adminDashboard') }}">
                         <i class="side-menu__icon fe fe-home"></i>
                         <span class="side-menu__label">Dashboard</span>
                     </a>
                 </li>
 
                 <li class="slide">
-                    <a class="side-menu__item has-link" data-bs-toggle="slide" href="settings.html">
+                    <a class="side-menu__item has-link {{ Route::is('adminSettings') ? 'active' : '' }}" data-bs-toggle="slide" href="{{ route('adminSettings') }}">
                         <i class="side-menu__icon fe fe-settings"></i>
                         <span class="side-menu__label">Settings</span>
                     </a>
                 </li>
+                <li class="slide">
+                    <a class="side-menu__item has-link {{ Route::is('adminDesignation') ? 'active' : '' }}" data-bs-toggle="slide" href="{{ route('adminDesignation') }}">
+                        <i class="side-menu__icon fe fe-settings"></i>
+                        <span class="side-menu__label">Designation</span>
+                    </a>
+                </li>
             </ul>
-
             <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191"
                     width="24" height="24" viewBox="0 0 24 24">
                     <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z" />

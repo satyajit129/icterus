@@ -3,6 +3,7 @@
 
 <head>
     @include('backend.global.css_support')
+    @yield('custom_css')
 </head>
 
 <body class="app sidebar-mini ltr light-mode">
@@ -25,16 +26,9 @@
                     <!-- CONTAINER -->
                     <div class="main-container container-fluid">
                         <!-- PAGE-HEADER -->
-                        <div class="page-header">
-                            <h1 class="page-title">Dashboard 01</h1>
-                            <div>
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Dashboard 01</li>
-                                </ol>
-                            </div>
-                        </div>
+                        
                         <!-- PAGE-HEADER END -->
+                        @yield('content')
                     </div>
                     <!-- CONTAINER END -->
                 </div>
@@ -46,6 +40,7 @@
         <!-- FOOTER END -->
     </div>
     @include('backend.global.js_support')
+    @yield('custom_js')
 
 </body>
 

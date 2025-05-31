@@ -42,4 +42,12 @@ class AuthController extends Controller
             return redirect()->back()->with('error', 'Something went wrong. Please try again later.');
         }
     }
+    public function adminLogout(): \Illuminate\Http\RedirectResponse
+    {
+        $user = Auth::user();
+        if ($user) {
+            Auth::logout();
+        }
+        return redirect()->route('adminLogin')->with('success', 'Logged out successfully.');
+    }
 }

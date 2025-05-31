@@ -22,7 +22,12 @@ class SettingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'website_name' => 'required|string',
+            'website_email' => 'required|email',
+            'copy_right_text' => 'required|string',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'favicon' => 'nullable|image|mimes:ico,png|max:1024',
         ];
     }
+
 }
