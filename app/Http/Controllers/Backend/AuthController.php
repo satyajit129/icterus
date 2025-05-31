@@ -17,7 +17,6 @@ class AuthController extends Controller
     }
     public function adminLoginRequest(Request $request): \Illuminate\Http\RedirectResponse
     {
-        // dd($request->all());
         try {
             $request->validate([
                 'email' => 'required|email',
