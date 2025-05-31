@@ -19,8 +19,6 @@ Route::prefix('admin')->group(function () {
         Route::get('/settings',[AdminController::class,'adminSettings'])->name('adminSettings');
         Route::post('/settings-update',[AdminController::class,'adminSettingsUpdate'])->name('adminSettingsUpdate');
         Route::get('/logout', [AuthController::class, 'adminLogout'])->name('adminLogout');
-
-
         Route::get('designation', [AdminController::class, 'adminDesignation'])->name('adminDesignation');
     });
 
