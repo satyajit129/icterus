@@ -19,7 +19,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/settings',[AdminController::class,'adminSettings'])->name('adminSettings');
         Route::post('/settings-update',[AdminController::class,'adminSettingsUpdate'])->name('adminSettingsUpdate');
         Route::get('/logout', [AuthController::class, 'adminLogout'])->name('adminLogout');
-        
+
         Route::prefix('designation')->group(function () {
             Route::get('/', [AdminController::class, 'adminDesignation'])->name('adminDesignation');
             Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminDesignationCreateOrEdit'])->name('adminDesignationCreateOrEdit');
@@ -38,11 +38,17 @@ Route::prefix('admin')->group(function () {
             Route::get('/create-or-edit/{id?}',[AdminController::class,'adminEmployeeCreateOrEdit'])->name('adminEmployeeCreateOrEdit');
             Route::post('/save/{id?}',[AdminController::class,'adminEmployeeSave'])->name('adminEmployeeSave');
             Route::get('/delete/{id}',[AdminController::class,'adminEmployeeDelete'])->name('adminEmployeeDelete');
+            Route::get('/data',[AdminController::class,'adminEmployeeData'])->name('adminEmployeeData');
         });
 
         Route::prefix('expense')->group(function(){
             Route::prefix('salary-expense')->group(function(){
                 Route::get('/',[AdminController::class,'adminSalaryExpense'])->name('adminSalaryExpense');
+                Route::get('/create-or-edit/{id?}',[AdminController::class,'adminSalaryExpenseCreateOrEdit'])->name('adminSalaryExpenseCreateOrEdit');
+                Route::post('/save/{id?}',[AdminController::class,'adminSalaryExpenseSave'])->name('adminSalaryExpenseSave');
+                Route::get('/delete/{id}',[AdminController::class,'adminSalaryExpenseDelete'])->name('adminSalaryExpenseDelete');
+
+
             });
         });
     });

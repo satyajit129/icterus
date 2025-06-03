@@ -3,29 +3,26 @@
 
 namespace App\Services;
 
-use App\Models\Department;
-use App\Models\Designation;
 use App\Models\Employee;
+use App\Models\SalaryExpense;
 use Exception;
 use Illuminate\Validation\ValidationException;
 
-class EmployeeService
+class SalaryExpenseService
 {
-    public function renderEmployeeList(): \Illuminate\View\View
+    public function renderSalaryExpenseList(): \Illuminate\View\View
     {
-        $employees = Employee::with(['designation', 'department'])->where('status', 1)->get();
-
-        return view('backend.pages.employees', compact('employees'));
+        $salary_expenses = SalaryExpense::with('employee')->get();
+        return view('backend.pages.salary_expense_list', compact('salary_expenses'));
     }
-    public function renderEmployeeCreateOrEditPage($id = null): \Illuminate\View\View
+    public function renderSalaryExpenseCreateOrEditPage($id = null): \Illuminate\View\View
     {
-        $employee = null;
+        $salary_expense = null;
+        $employees = Employee::where('status', 1)->get();
         if ($id) {
-            $employee = Employee::findOrFail($id);
+            $salary_expense = SalaryExpense::findOrFail($id);
         }
-        $designations = Designation::all();
-        $departments = Department::all();
-        return view('backend.pages.employee_create_or_edit', compact('employee', 'designations', 'departments'));
+        return view('backend.pages.salary_expense_create_or_edit', compact('employees','salary_expense'));
     }
     public function handleEmployeeSave($request, $id): \Illuminate\Http\RedirectResponse
     {
@@ -92,28 +89,6 @@ class EmployeeService
             return redirect()->route('adminEmployeeList')->with('success', 'Employee deleted successfully!');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
-        }
-    }
-    public function getEmployeeData($request){
-        $employee = $request->input('employee_id');
-        if ($employee) {
-            $employee = Employee::with(['designation', 'department'])->find($employee);
-            if ($employee) {
-                return response()->json([
-                    'status' => 'success',
-                    'data' => $employee,
-                ]);
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Employee not found',
-                ], 404);
-            }
-        } else {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Employee ID is required',
-            ], 400);
         }
     }
 }

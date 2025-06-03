@@ -68,28 +68,31 @@
                         <span class="side-menu__label">Employees</span>
                     </a>
                 </li>
-                <li class="slide">
-                    <a class="side-menu__item" data-bs-toggle="slide" href="javascript:void(0)">
+                @php
+                    $expense_route = ['adminSalaryExpense','adminSalaryExpenseCreateOrEdit'];
+                    $is_expense_active = Route::is($expense_route);
+                @endphp
+
+                <li class="slide {{ $is_expense_active ? 'is-expanded' : '' }}">
+                    <a class="side-menu__item {{ $is_expense_active ? 'active' : '' }}" data-bs-toggle="slide" href="javascript:void(0)">
                         <i class="side-menu__icon fe fe-dollar-sign"></i>
                         <span class="side-menu__label">Expense</span>
                         <i class="angle fe fe-chevron-right"></i>
                     </a>
+
                     <ul class="slide-menu">
                         <li>
-                            <a href="" class="slide-item">
+                            <a href="{{ route('adminSalaryExpense') }}" class="slide-item {{ $is_expense_active ? 'active' : '' }}">
                                 <i class="fe fe-credit-card me-2"></i> Salary
                             </a>
                         </li>
                         <li>
-                            <a href="" class="slide-item">
+                            <a href="#" class="slide-item">
                                 <i class="fe fe-award me-2"></i> Incentive
                             </a>
                         </li>
                     </ul>
                 </li>
-
-
-
             </ul>
 
             <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24"
