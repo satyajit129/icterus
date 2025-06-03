@@ -1,17 +1,18 @@
 @extends('backend.layouts.master')
 
-@section('title', 'Settings')
+@section('title', 'Department')
 
 @section('custom_css')
 @endsection
+
+
 @section('content')
-    
     <div class="page-header">
-        <h1 class="page-title">Designation</h1>
+        <h1 class="page-title">Department</h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Designation</li>
+                <li class="breadcrumb-item active" aria-current="page">Department</li>
             </ol>
         </div>
     </div>
@@ -19,10 +20,10 @@
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h3 class="card-title">Designation Data</h3>
-                    <a href="{{ route('adminDesignationCreateOrEdit') }}">
+                    <h3 class="card-title">Department Data</h3>
+                    <a href="{{ route('adminDepartmentCreateOrEdit') }}">
                         <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
-                            Designation</button>
+                            Department</button>
                     </a>
                 </div>
                 <div class="card-body">
@@ -33,21 +34,21 @@
                                     <thead>
                                         <tr>
                                             <th class="wd-15p border-bottom-0">#</th>
-                                            <th class="wd-15p border-bottom-0">Designation</th>
+                                            <th class="wd-15p border-bottom-0">Department</th>
                                             <th class="wd-15p border-bottom-0">Edit</th>
                                             <th class="wd-15p border-bottom-0">Delete</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($designations as $key => $designation)
+                                        @forelse($departments as $key => $department)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $designation->designation }}</td>
-                                                <td><a href="{{ route('adminDesignationCreateOrEdit', $designation->id) }}"
+                                                <td>{{ $department->department }}</td>
+                                                <td><a href="{{ route('adminDepartmentCreateOrEdit', $department->id) }}"
                                                         class="btn btn-sm btn-warning">Edit</a></td>
                                                 <td>
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminDesignationDelete', ['id' => $designation->id]) }}"
+                                                        data-url="{{ route('adminDepartmentDelete', ['id' => $department->id]) }}"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                         Delete
                                                     </a>
@@ -57,7 +58,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="4" class="text-center">No Designations Found</td>
+                                                <td colspan="4" class="text-center">No Department Found</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -78,7 +79,7 @@
                     <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to delete this designation?</p>
+                    <p>Are you sure you want to delete this Department?</p>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
@@ -87,10 +88,10 @@
             </div>
         </div>
     </div>
-
 @endsection
+
 @section('custom_js')
-    <script>
+<script>
         $(document).ready(function () {
             $('.delete-btn').on('click', function () {
                 var deleteUrl = $(this).data('url');
@@ -98,5 +99,4 @@
             });
         });
     </script>
-
 @endsection

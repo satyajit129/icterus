@@ -20,28 +20,80 @@
                     <h3>Main</h3>
                 </li>
 
+                <!-- Dashboard -->
                 <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminDashboard') ? 'active' : '' }}" data-bs-toggle="slide" href="{{ route('adminDashboard') }}">
+                    <a class="side-menu__item has-link {{ Route::is('adminDashboard') ? 'active' : '' }}"
+                        href="{{ route('adminDashboard') }}">
                         <i class="side-menu__icon fe fe-home"></i>
                         <span class="side-menu__label">Dashboard</span>
                     </a>
                 </li>
 
+                <!-- Settings -->
                 <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminSettings') ? 'active' : '' }}" data-bs-toggle="slide" href="{{ route('adminSettings') }}">
-                        <i class="side-menu__icon fe fe-settings"></i>
+                    <a class="side-menu__item has-link {{ Route::is('adminSettings') ? 'active' : '' }}"
+                        href="{{ route('adminSettings') }}">
+                        <i class="side-menu__icon fe fe-sliders"></i>
                         <span class="side-menu__label">Settings</span>
                     </a>
                 </li>
+
+                <li class="sub-category">
+                    <h3>Administration</h3>
+                </li>
+
+                <!-- Department -->
                 <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminDesignation') ? 'active' : '' }}" data-bs-toggle="slide" href="{{ route('adminDesignation') }}">
-                        <i class="side-menu__icon fe fe-settings"></i>
+                    <a class="side-menu__item has-link {{ Route::is('adminDepartment', 'adminDepartmentCreateOrEdit') ? 'active' : '' }}"
+                        href="{{ route('adminDepartment') }}">
+                        <i class="side-menu__icon fe fe-grid"></i>
+                        <span class="side-menu__label">Department</span>
+                    </a>
+                </li>
+
+                <!-- Designation -->
+                <li class="slide">
+                    <a class="side-menu__item has-link {{ Route::is('adminDesignation', 'adminDesignationCreateOrEdit') ? 'active' : '' }}"
+                        href="{{ route('adminDesignation') }}">
+                        <i class="side-menu__icon fe fe-briefcase"></i>
                         <span class="side-menu__label">Designation</span>
                     </a>
                 </li>
+
+                <!-- Employees -->
+                <li class="slide">
+                    <a class="side-menu__item has-link {{ Route::is('adminEmployeeList', 'adminEmployeeCreateOrEdit') ? 'active' : '' }}"
+                        href="{{ route('adminEmployeeList') }}">
+                        <i class="side-menu__icon fe fe-users"></i>
+                        <span class="side-menu__label">Employees</span>
+                    </a>
+                </li>
+                <li class="slide">
+                    <a class="side-menu__item" data-bs-toggle="slide" href="javascript:void(0)">
+                        <i class="side-menu__icon fe fe-dollar-sign"></i>
+                        <span class="side-menu__label">Expense</span>
+                        <i class="angle fe fe-chevron-right"></i>
+                    </a>
+                    <ul class="slide-menu">
+                        <li>
+                            <a href="" class="slide-item">
+                                <i class="fe fe-credit-card me-2"></i> Salary
+                            </a>
+                        </li>
+                        <li>
+                            <a href="" class="slide-item">
+                                <i class="fe fe-award me-2"></i> Incentive
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+
             </ul>
-            <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191"
-                    width="24" height="24" viewBox="0 0 24 24">
+
+            <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24"
+                    height="24" viewBox="0 0 24 24">
                     <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z" />
                 </svg></div>
         </div>

@@ -55,8 +55,8 @@
                             <div class="row mb-4">
                                 <label class="col-md-3 form-label">Logo
                                     @if(isset($settings->logo) && $settings->logo)
-                                    <a class="modal-effect btn btn-primary-light btn-sm" data-bs-effect="effect-scale"
-                                        data-bs-toggle="modal" href="#logoModal">Preview</a>
+                                    <a  data-bs-effect="effect-scale"
+                                        data-bs-toggle="modal" href="#logoModal"> <i class="fa fa-eye text-primary ms-2"></i></a>
                                     @endif
                                 </label>
                                 <div class="col-md-9">
@@ -69,8 +69,7 @@
                                 <label class="col-md-3 form-label">
                                     Favicon
                                     @if(isset($settings->favicon) && $settings->favicon)
-                                    <a class="modal-effect btn btn-primary-light btn-sm" data-bs-effect="effect-scale"
-                                        data-bs-toggle="modal" href="#faviconModal">Preview</a>
+                                    <a data-bs-toggle="modal" href="#faviconModal"> <i class="fa fa-eye text-primary ms-2"></i></a>
                                     @endif
                                 </label>
                                 <div class="col-md-9">
@@ -82,7 +81,7 @@
                                 <label class="col-md-3 form-label"></label>
                                 <div class="col-md-9">
                                     <button type="submit" class="btn btn-dark float-end">
-                                        <i class="fe fe-upload me-2"></i>Upload
+                                        <i class="fe fe-upload me-2"></i>Submit
                                     </button>
                                 </div>
                             </div>
@@ -105,7 +104,7 @@
                 <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <img src="{{ asset('uploads/' . $settings->logo) }}" alt="Logo" class="img-fluid rounded"
+                <img src="{{ asset('uploads/' . $settings->logo) }}" alt="Logo" class="img-fluid"
                     style="max-width: 100%; height: auto;">
             </div>
             <div class="modal-footer">
@@ -117,8 +116,7 @@
 @endif
 <!-- Favicon Modal -->
 @if(isset($settings->favicon) && $settings->favicon)
-<div class="modal effect-scale" id="faviconModal" tabindex="-1" role="dialog" aria-labelledby="faviconModalLabel"
-    aria-hidden="true">
+<div class="modal effect-scale" id="faviconModal" tabindex="-1" role="dialog" aria-labelledby="faviconModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered text-center" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
@@ -126,8 +124,7 @@
                 <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <img src="{{ asset('uploads/' . $settings->favicon) }}" alt="Favicon" class="img-fluid rounded"
-                    style="max-width: 100px; height: auto;">
+                <img src="{{ asset('uploads/' . $settings->favicon) }}" alt="Favicon" class="img-fluid" style="max-width: 100px;">
             </div>
             <div class="modal-footer">
                 <button class="btn btn-light" data-bs-dismiss="modal">Close</button>
@@ -136,6 +133,7 @@
     </div>
 </div>
 @endif
+
 @endsection
 @section('custom_js')
 @endsection

@@ -19,8 +19,32 @@ Route::prefix('admin')->group(function () {
         Route::get('/settings',[AdminController::class,'adminSettings'])->name('adminSettings');
         Route::post('/settings-update',[AdminController::class,'adminSettingsUpdate'])->name('adminSettingsUpdate');
         Route::get('/logout', [AuthController::class, 'adminLogout'])->name('adminLogout');
-        Route::get('designation', [AdminController::class, 'adminDesignation'])->name('adminDesignation');
+        
+        Route::prefix('designation')->group(function () {
+            Route::get('/', [AdminController::class, 'adminDesignation'])->name('adminDesignation');
+            Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminDesignationCreateOrEdit'])->name('adminDesignationCreateOrEdit');
+            Route::post('/save/{id?}',[AdminController::class,'adminDesignationSave'])->name('adminDesignationSave');
+            Route::get('/delete/{id}',[AdminController::class,'adminDesignationDelete'])->name('adminDesignationDelete');
+        });
+        Route::prefix('department')->group(function(){
+            Route::get('/', [AdminController::class, 'adminDepartment'])->name('adminDepartment');
+            Route::get('/create-or-edit/{id?}',[AdminController::class,'adminDepartmentCreateOrEdit'])->name('adminDepartmentCreateOrEdit');
+            Route::post('/save/{id?}',[AdminController::class,'adminDepartmentSave'])->name('adminDepartmentSave');
+            Route::get('/delete/{id}',[AdminController::class,'adminDepartmentDelete'])->name('adminDepartmentDelete');
+        });
+
+        Route::prefix('employee')->group(function(){
+            Route::get('/',[AdminController::class,'adminEmployeeList'])->name('adminEmployeeList');
+            Route::get('/create-or-edit/{id?}',[AdminController::class,'adminEmployeeCreateOrEdit'])->name('adminEmployeeCreateOrEdit');
+            Route::post('/save/{id?}',[AdminController::class,'adminEmployeeSave'])->name('adminEmployeeSave');
+            Route::get('/delete/{id}',[AdminController::class,'adminEmployeeDelete'])->name('adminEmployeeDelete');
+        });
+
+        Route::prefix('expense')->group(function(){
+            Route::prefix('salary-expense')->group(function(){
+                Route::get('/',[AdminController::class,'adminSalaryExpense'])->name('adminSalaryExpense');
+            });
+        });
     });
 
 });
-
