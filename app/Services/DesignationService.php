@@ -4,6 +4,7 @@ use App\Models\Designation;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class DesignationService
 {
@@ -13,15 +14,40 @@ class DesignationService
         return view('backend.pages.designation', compact('designations'));
     }
 
-    public function handleDesignationUpdate(Request $request): \Illuminate\Http\RedirectResponse
+    public function renderDesignationCreateOrEditPage($id = null): \Illuminate\View\View
+    {
+        $designation = null;
+        if ($id) {
+            $designation = Designation::findOrFail($id);
+        }
+        return view('backend.pages.designation_create_or_edit', compact('designation'));
+    }
+    public function handleDesignationSave($request, $id = null)
     {
         try {
-            $designation = Designation::findOrFail($request->input('id'));
-            $designation->update($request->only('name', 'description'));
-            return redirect()->route('adminDesignation')->with('success', 'Designation updated successfully.');
+            $request->validate([
+                'designation' => 'required'
+            ]);
+            $designation = $id ? Designation::findOrFail($id) : new Designation();
+            $designation->designation = $request->designation;
+            $designation->save();
+            return redirect()->route('adminDesignation')->with('success', $id ? 'Data Updated Successfully!' : 'Data Created Successfully!');
+        } catch (ValidationException $e) {
+            return redirect()->back()->with('error', 'Validation failed: ' . $e->getMessage());
         } catch (Exception $e) {
-            Log::error('Error updating designation: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'An error occurred while updating the designation.');
+            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
+    public function handleDesignationDelete($id)
+    {
+        try {
+            $designation = Designation::findOrFail($id);
+            $designation->delete();
+
+            return redirect()->route('adminDesignation')->with('success', 'Designation deleted successfully!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
+        }
+    }
+
 }

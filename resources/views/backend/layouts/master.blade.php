@@ -26,7 +26,7 @@
                     <!-- CONTAINER -->
                     <div class="main-container container-fluid">
                         <!-- PAGE-HEADER -->
-                        
+
                         <!-- PAGE-HEADER END -->
                         @yield('content')
                     </div>

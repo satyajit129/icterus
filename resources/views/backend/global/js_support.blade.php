@@ -3,8 +3,13 @@
 <script src="{{ asset('js/popper.min.js') }}"></script>
 <script src="{{ asset('js/bootstrap.min.js') }}"></script>
 <script src="{{ asset('js/toastr.min.js') }}"></script>
+
+<!-- ✅ Add Perfect Scrollbar BEFORE sidemenu.js -->
+<script src="{{ asset('js/perfect-scrollbar.min.js') }}"></script>
+
 <script src="{{ asset('js/sidemenu.js') }}"></script>
 <script src="{{ asset('js/sticky.js') }}"></script>
+
 <script>
     $(document).ready(function () {
         @if(session('success'))

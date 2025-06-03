@@ -58,7 +58,7 @@
                                     <a class="dropdown-item" href="lockscreen.html">
                                         <i class="dropdown-icon fe fe-lock"></i> Lockscreen
                                     </a>
-                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#faviconModal">
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#signOut">
                                         <i class="dropdown-icon fe fe-alert-circle"></i> Sign out
                                     </a>
 
@@ -71,11 +71,11 @@
         </div>
     </div>
 </div>
-<div class="modal effect-scale" id="faviconModal" tabindex="-1" role="dialog" aria-labelledby="faviconModalLabel" aria-hidden="true">
+<div class="modal effect-scale" id="signOut" tabindex="-1" role="dialog" aria-labelledby="signOutLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered text-center" role="document">
         <div class="modal-content modal-content-demo">
             <div class="modal-header">
-                <h6 class="modal-title" id="faviconModalLabel">Logout Alert</h6>
+                <h6 class="modal-title" id="signOutLabel">Logout Alert</h6>
                 <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
