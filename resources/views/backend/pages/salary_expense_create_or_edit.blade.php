@@ -246,8 +246,6 @@
     <script src="{{ asset('js/select2.js') }}"></script>
     <script>
         $(document).ready(function () {
-
-            // Fetch employee details on selection
             $('#employee_id').on('change', function () {
                 var employeeId = $(this).val();
                 // alert(employeeId);
