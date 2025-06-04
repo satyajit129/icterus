@@ -1,6 +1,6 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($employee->id) ? 'Salary Expense Update' : 'Salary Expense ')
+@section('title', isset($salary_expense->id) ? 'Salary Expense Update' : 'Salary Expense ')
 @section('custom_css')
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endsection
