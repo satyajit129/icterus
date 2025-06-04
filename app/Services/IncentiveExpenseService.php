@@ -4,25 +4,26 @@
 namespace App\Services;
 
 use App\Models\Employee;
+use App\Models\IncentiveExpense;
 use App\Models\SalaryExpense;
 use Exception;
 use Illuminate\Validation\ValidationException;
 
-class SalaryExpenseService
+class IncentiveExpenseService
 {
-    public function renderSalaryExpenseList(): \Illuminate\View\View
+    public function renderIncentiveExpense(): \Illuminate\View\View
     {
-        $salary_expenses = SalaryExpense::with('employee.designation','employee.department')->get();
-        return view('backend.pages.salary_expense_list', compact('salary_expenses'));
+        $incentive_expenses = IncentiveExpense::all();
+        return view('backend.pages.incentive_expense', compact('incentive_expenses'));
     }
-    public function renderSalaryExpenseCreateOrEditPage($id = null): \Illuminate\View\View
+    public function renderIncentiveExpenseCreateOrEditPage($id = null): \Illuminate\View\View
     {
-        $salary_expense = null;
+        $incentive_expense = null;
         $employees = Employee::where('status', 1)->get();
         if ($id) {
-            $salary_expense = SalaryExpense::findOrFail($id);
+            $incentive_expense = IncentiveExpense::findOrFail($id);
         }
-        return view('backend.pages.salary_expense_create_or_edit', compact('employees','salary_expense'));
+        return view('backend.pages.incentive_expense_create_or_edit', compact('employees','incentive_expense'));
     }
     public function handleSalaryExpenseSave($request, $id): \Illuminate\Http\RedirectResponse
     {

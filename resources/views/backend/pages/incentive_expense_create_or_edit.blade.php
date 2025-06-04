@@ -1,6 +1,6 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($employee->id) ? 'Salary Expense Update' : 'Salary Expense ')
+@section('title', isset($employee->id) ? 'Incentive Expense Update' : 'Incentive Expense ')
 @section('custom_css')
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endsection
@@ -8,23 +8,23 @@
 @section('content')
     <div class="page-header">
         <h1 class="page-title">
-            @if (isset($salary_expense->id))
-                Salary Expense Update
+            @if (isset($employee->id))
+                Incentive Expense Update
             @else
-                Salary Expense
+                Incentive Expense
             @endif
         </h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    <a href="{{ route('adminSalaryExpense') }}">Salary Expense Data</a>
+                    <a href="{{ route('adminIncentiveExpense') }}">Incentive Expense Data</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    @if (isset($salary_expense->id))
-                        Salary Expense Update
+                    @if (isset($employee->id))
+                        Incentive Expense Update
                     @else
-                        Salary Expense
+                        Incentive Expense
                     @endif
                 </li>
             </ol>
@@ -35,10 +35,10 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
-                        @if (isset($salary_expense->id))
-                            Salary Expense Update
+                        @if (isset($employee->id))
+                            Incentive Expense Update
                         @else
-                            Salary Expense
+                            Incentive Expense
                         @endif
                     </h3>
                 </div>

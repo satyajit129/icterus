@@ -69,8 +69,14 @@
                     </a>
                 </li>
                 @php
-                    $expense_route = ['adminSalaryExpense','adminSalaryExpenseCreateOrEdit'];
-                    $is_expense_active = Route::is($expense_route);
+                    $salary_routes = ['adminSalaryExpense', 'adminSalaryExpenseCreateOrEdit'];
+                    $incentive_routes = ['adminIncentiveExpense', 'adminIncentiveExpenseCreateOrEdit'];
+
+                    $is_salary_active = Route::is($salary_routes);
+                    $is_incentive_active = Route::is($incentive_routes);
+
+                    // Parent menu is expanded if any child is active
+                    $is_expense_active = $is_salary_active || $is_incentive_active;
                 @endphp
 
                 <li class="slide {{ $is_expense_active ? 'is-expanded' : '' }}">
@@ -82,17 +88,18 @@
 
                     <ul class="slide-menu">
                         <li>
-                            <a href="{{ route('adminSalaryExpense') }}" class="slide-item {{ $is_expense_active ? 'active' : '' }}">
+                            <a href="{{ route('adminSalaryExpense') }}" class="slide-item {{ $is_salary_active ? 'active' : '' }}">
                                 <i class="fe fe-credit-card me-2"></i> Salary
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="slide-item">
+                            <a href="{{ route('adminIncentiveExpense') }}" class="slide-item {{ $is_incentive_active ? 'active' : '' }}">
                                 <i class="fe fe-award me-2"></i> Incentive
                             </a>
                         </li>
                     </ul>
                 </li>
+
             </ul>
 
             <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24"

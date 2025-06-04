@@ -47,8 +47,10 @@ Route::prefix('admin')->group(function () {
                 Route::get('/create-or-edit/{id?}',[AdminController::class,'adminSalaryExpenseCreateOrEdit'])->name('adminSalaryExpenseCreateOrEdit');
                 Route::post('/save/{id?}',[AdminController::class,'adminSalaryExpenseSave'])->name('adminSalaryExpenseSave');
                 Route::get('/delete/{id}',[AdminController::class,'adminSalaryExpenseDelete'])->name('adminSalaryExpenseDelete');
-
-
+            });
+            Route::prefix('incentive-expense')->group(function(){
+                Route::get('/',[AdminController::class,'adminIncentiveExpense'])->name('adminIncentiveExpense');
+                Route::get('/create-or-edit/{id?}',[AdminController::class,'adminIncentiveExpenseCreateOrEdit'])->name('adminIncentiveExpenseCreateOrEdit');
             });
         });
     });

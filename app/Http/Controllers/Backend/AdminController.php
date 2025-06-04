@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SettingRequest;
+use App\Models\SalaryExpense;
 use App\Services\DepartmentService;
 use App\Services\DesignationService;
 use App\Services\EmployeeService;
+use App\Services\IncentiveExpenseService;
 use App\Services\SalaryExpenseService;
 use App\Services\SettingService;
 use Exception;
@@ -20,15 +22,17 @@ class AdminController extends Controller
     protected DesignationService $designationService;
     protected DepartmentService $departmentService;
     protected EmployeeService $employeeService;
-    protected $salaryExpenseService;
+    protected SalaryExpenseService $salaryExpenseService;
+    protected IncentiveExpenseService $incentiveExpenseService;
 
-    public function __construct(SettingService $settingService, DesignationService $designationService, DepartmentService $departmentService, EmployeeService $employeeService, SalaryExpenseService $salaryExpenseService)
+    public function __construct(SettingService $settingService, DesignationService $designationService, DepartmentService $departmentService, EmployeeService $employeeService, SalaryExpenseService $salaryExpenseService, IncentiveExpenseService $incentiveExpenseService)
     {
         $this->settingService = $settingService;
         $this->designationService = $designationService;
         $this->departmentService = $departmentService;
         $this->employeeService = $employeeService;
         $this->salaryExpenseService = $salaryExpenseService;
+        $this->incentiveExpenseService = $incentiveExpenseService;
     }
 
     public function adminDashboard(): \Illuminate\View\View
@@ -41,20 +45,7 @@ class AdminController extends Controller
     }
     public function adminSettingsUpdate(Request $request): \Illuminate\Http\RedirectResponse
     {
-        try {
-            $request->validate([
-                'website_name' => 'required|string',
-                'website_email' => 'required|email',
-                'copy_right_text' => 'required|string',
-                'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'favicon' => 'nullable|image|mimes:ico,jpg,jpeg,png|max:1024',
-            ]);
-            return $this->settingService->handleSettingsUpdate($request);
-        } catch (ValidationException $e) {
-            return redirect()->back()->with('error', 'Validation failed: ' . $e->getMessage());
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
-        }
+        return $this->settingService->handleSettingsUpdate($request);
     }
     public function adminDesignation(): \Illuminate\View\View
     {
@@ -115,6 +106,22 @@ class AdminController extends Controller
     public function adminSalaryExpenseCreateOrEdit($id = null): \Illuminate\View\View
     {
         return $this->salaryExpenseService->renderSalaryExpenseCreateOrEditPage($id);
+    }
+    public function adminSalaryExpenseSave(Request $request, $id=null): \Illuminate\Http\RedirectResponse
+    {
+        return $this->salaryExpenseService->handleSalaryExpenseSave($request, $id);
+    }
+    public function adminSalaryExpenseDelete($id):\Illuminate\Http\RedirectResponse
+    {
+        return $this->salaryExpenseService->handleSalaryExpenseDelete($id);
+    }
+    public function adminIncentiveExpense(): \Illuminate\View\View
+    {
+        return $this->incentiveExpenseService->renderIncentiveExpense();
+    }
+    public function adminIncentiveExpenseCreateOrEdit($id = null):\Illuminate\View\View
+    {
+        return $this->incentiveExpenseService->renderIncentiveExpenseCreateOrEditPage($id);
     }
 
 }
