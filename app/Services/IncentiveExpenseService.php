@@ -13,7 +13,7 @@ class IncentiveExpenseService
 {
     public function renderIncentiveExpense(): \Illuminate\View\View
     {
-        $incentive_expenses = IncentiveExpense::all();
+        $incentive_expenses = IncentiveExpense::with('employee.designation','employee.department')->get();
         return view('backend.pages.incentive_expense', compact('incentive_expenses'));
     }
     public function renderIncentiveExpenseCreateOrEditPage($id = null): \Illuminate\View\View
@@ -25,8 +25,9 @@ class IncentiveExpenseService
         }
         return view('backend.pages.incentive_expense_create_or_edit', compact('employees','incentive_expense'));
     }
-    public function handleSalaryExpenseSave($request, $id): \Illuminate\Http\RedirectResponse
+    public function handleIncentiveExpenseSave($request, $id): \Illuminate\Http\RedirectResponse
     {
+        // dd($request->all());
         try {
             $request->validate([
                 'employee_id'        => 'required|exists:employees,id',
@@ -35,27 +36,22 @@ class IncentiveExpenseService
                 'department'         => 'required',
                 'phone_number'       => 'required',
                 'account_no'         => 'required',
-                'gross_salary'       => 'required|numeric|min:0',
-                'payable_year'       => 'required|digits:4|integer',
-                'payable_month'      => 'required|integer|min:1|max:12',
-                'total_working_day'  => 'required|integer|min:0|max:31',
-                'total_days_in_month'=> 'required|integer|min:28|max:31',
-                'festival_bonus'     => 'nullable|numeric|min:0',
-                'payable_amount'     => 'required',
+                'payable_month'      => 'required|date_format:Y-m',
+                'sales_count'        => 'required|numeric',
+                'sales_amount'       => 'required|numeric',
+                'incentive_amount'   => 'required|numeric',
+                'payable_amount'     => 'required|numeric',
             ]);
 
-            $salary_expense = $id ? SalaryExpense::findOrFail($id) : new SalaryExpense();
-            $salary_expense->employee_id = $request->employee_id;
-            $salary_expense->payable_month = $request->payable_month;
-            $salary_expense->payable_year = $request->payable_year;
-            $salary_expense->total_working_day = $request->total_working_day;
-            $salary_expense->total_days_in_month = $request->total_days_in_month;
-            $salary_expense->actual_payable_amount = ($request->payable_amount) - ($request->festival_bonus);
-            $salary_expense->festival_bonus = $request->festival_bonus;
-            $salary_expense->payable_amount = $request->payable_amount;
-            $salary_expense->save();
-
-            return redirect()->route('adminSalaryExpense')->with('success', 'Salary Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
+            $incentive_expense = $id ? IncentiveExpense::findOrFail($id) : new IncentiveExpense();
+            $incentive_expense->employee_id = $request->employee_id;
+           $incentive_expense->payable_month = $request->payable_month . '-01';
+            $incentive_expense->sales_count = $request->sales_count;
+            $incentive_expense->sales_amount = $request->sales_amount;
+            $incentive_expense->incentive_amount = $request->incentive_amount;
+            $incentive_expense->payable_amount = $request->payable_amount;
+            $incentive_expense->save();
+            return redirect()->route('adminIncentiveExpense')->with('success', 'Incentive Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
 
         } catch (ValidationException $th) {
             return redirect()
@@ -70,11 +66,11 @@ class IncentiveExpenseService
                 ->with('error', 'Failed: ' . $e->getMessage());
         }
     }
-    public function handleSalaryExpenseDelete($id){
+    public function handleIncentiveExpenseDelete($id){
         try {
-            $employee = SalaryExpense::findOrFail($id);
+            $employee = IncentiveExpense::findOrFail($id);
             $employee->delete();
-            return redirect()->route('adminSalaryExpense')->with('success', 'Salary Expense deleted successfully!');
+            return redirect()->route('adminIncentiveExpense')->with('success', 'Incentive Expense deleted successfully!');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }

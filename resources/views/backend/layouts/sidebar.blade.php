@@ -71,12 +71,14 @@
                 @php
                     $salary_routes = ['adminSalaryExpense', 'adminSalaryExpenseCreateOrEdit'];
                     $incentive_routes = ['adminIncentiveExpense', 'adminIncentiveExpenseCreateOrEdit'];
+                    $office_expense_routes = ['adminOfficeExpense', 'adminOfficeExpenseCreateOrEdit'];
 
                     $is_salary_active = Route::is($salary_routes);
                     $is_incentive_active = Route::is($incentive_routes);
+                    $is_office_expense_active = Route::is($office_expense_routes);
 
                     // Parent menu is expanded if any child is active
-                    $is_expense_active = $is_salary_active || $is_incentive_active;
+                    $is_expense_active = $is_salary_active || $is_incentive_active || $is_office_expense_active;
                 @endphp
 
                 <li class="slide {{ $is_expense_active ? 'is-expanded' : '' }}">
@@ -97,8 +99,14 @@
                                 <i class="fe fe-award me-2"></i> Incentive
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('adminOfficeExpense') }}" class="slide-item {{ $is_office_expense_active ? 'active' : '' }}">
+                                <i class="fe fe-briefcase me-2"></i> Office Expense
+                            </a>
+                        </li>
                     </ul>
                 </li>
+
 
             </ul>
 

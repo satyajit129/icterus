@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SettingRequest;
 use App\Models\SalaryExpense;
+use App\Services\DashboardService;
 use App\Services\DepartmentService;
 use App\Services\DesignationService;
 use App\Services\EmployeeService;
 use App\Services\IncentiveExpenseService;
+use App\Services\OfficeExpenseService;
 use App\Services\SalaryExpenseService;
 use App\Services\SettingService;
 use Exception;
@@ -24,8 +26,12 @@ class AdminController extends Controller
     protected EmployeeService $employeeService;
     protected SalaryExpenseService $salaryExpenseService;
     protected IncentiveExpenseService $incentiveExpenseService;
+    protected OfficeExpenseService $officeExpenseService;
 
-    public function __construct(SettingService $settingService, DesignationService $designationService, DepartmentService $departmentService, EmployeeService $employeeService, SalaryExpenseService $salaryExpenseService, IncentiveExpenseService $incentiveExpenseService)
+    protected DashboardService $dashboardService;
+
+    public function __construct(SettingService $settingService, DesignationService $designationService, DepartmentService $departmentService, EmployeeService $employeeService, SalaryExpenseService $salaryExpenseService, IncentiveExpenseService $incentiveExpenseService, OfficeExpenseService $officeExpenseService,
+    DashboardService $dashboardService)
     {
         $this->settingService = $settingService;
         $this->designationService = $designationService;
@@ -33,11 +39,13 @@ class AdminController extends Controller
         $this->employeeService = $employeeService;
         $this->salaryExpenseService = $salaryExpenseService;
         $this->incentiveExpenseService = $incentiveExpenseService;
+        $this->officeExpenseService = $officeExpenseService;
+        $this->dashboardService = $dashboardService;
     }
 
     public function adminDashboard(): \Illuminate\View\View
     {
-        return view('backend.pages.admin_dashboard');
+        return $this->dashboardService->renderDashboard();
     }
     public function adminSettings(): \Illuminate\View\View
     {
@@ -123,5 +131,28 @@ class AdminController extends Controller
     {
         return $this->incentiveExpenseService->renderIncentiveExpenseCreateOrEditPage($id);
     }
-
+    public function adminIncentiveExpenseSave(Request $request , $id=null): \Illuminate\Http\RedirectResponse
+    {
+        return $this->incentiveExpenseService->handleIncentiveExpenseSave( $request,$id);
+    }
+    public function adminIncentiveExpenseDelete($id):\Illuminate\Http\RedirectResponse
+    {
+        return $this->incentiveExpenseService->handleIncentiveExpenseDelete($id);
+    }
+    public function adminOfficeExpense(): \Illuminate\View\View
+    {
+        return $this->officeExpenseService->renderOfficeExpense();
+    }
+    public function adminOfficeExpenseCreateOrEdit($id = null):\Illuminate\View\View
+    {
+        return $this->officeExpenseService->renderOfficeExpenseCreateOrEditPage($id);
+    }
+    public function adminOfficeExpenseSave(Request $request , $id=null): \Illuminate\Http\RedirectResponse
+    {
+        return $this->officeExpenseService->handleOfficeExpenseSave( $request,$id);
+    }
+    public function adminOfficeExpenseDelete($id):\Illuminate\Http\RedirectResponse
+    {
+        return $this->officeExpenseService->handleOfficeExpenseDelete($id);
+    }
 }
