@@ -247,10 +247,7 @@
 
 @section('custom_js')
     <!-- jQuery UI Datepicker -->
-
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-
-
     <script>
         $(function () {
             $(".fc-datepicker").datepicker({

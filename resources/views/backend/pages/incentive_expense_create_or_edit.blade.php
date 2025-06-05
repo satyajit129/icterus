@@ -1,6 +1,6 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($salary_expense->id) ? 'Salary Expense Update' : 'Salary Expense ')
+@section('title', isset($incentive_expense->id) ? 'Incentive Expense Update' : 'Incentive Expense ')
 @section('custom_css')
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endsection
@@ -8,23 +8,23 @@
 @section('content')
     <div class="page-header">
         <h1 class="page-title">
-            @if (isset($salary_expense->id))
-                Salary Expense Update
+            @if (isset($incentive_expense->id))
+                Incentive Expense Update
             @else
-                Salary Expense
+                Incentive Expense
             @endif
         </h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    <a href="{{ route('adminSalaryExpense') }}">Salary Expense Data</a>
+                    <a href="{{ route('adminIncentiveExpense') }}">Incentive Expense Data</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    @if (isset($salary_expense->id))
-                        Salary Expense Update
+                    @if (isset($incentive_expense->id))
+                        Incentive Expense Update
                     @else
-                        Salary Expense
+                        Incentive Expense
                     @endif
                 </li>
             </ol>
@@ -35,16 +35,16 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
-                        @if (isset($salary_expense->id))
-                            Salary Expense Update
+                        @if (isset($incentive_expense->id))
+                            Incentive Expense Update
                         @else
-                            Salary Expense
+                            Incentive Expense
                         @endif
                     </h3>
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('adminSalaryExpenseSave', $salary_expense->id ?? '') }}" method="POST"
+                    <form action="{{ route('adminIncentiveExpenseSave', $incentive_expense->id ?? '') }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
 
@@ -68,7 +68,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <input type="hidden" name="selected_employee_id" id="selected_employee_id" value="{{ $salary_expense->employee_id ?? '' }}">
+                                <input type="hidden" name="selected_employee_id" id="selected_employee_id" value="{{ $incentive_expense->employee_id ?? '' }}">
                             </div>
                             <!-- Name -->
                             <div class="col-md-6">
@@ -139,116 +139,72 @@
                                 </div>
                             </div>
 
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="row mb-2">
-                                        <label class="col-md-3 form-label">Gross Salary</label>
-                                        <div class="col-md-9">
-                                            <input type="text" name="gross_salary" id="gross_salary" class="form-control"
-                                                readonly required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <!-- Payable Year -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <div class="row mb-2">
-                                        <label class="col-md-3 form-label">Payable Year</label>
-                                        <div class="col-md-9">
-                                            <select id="payable_year" name="payable_year" class="form-control" required>
-                                                <option value="">Select Year</option>
-                                                @php
-                                                    $currentYear = date('Y');
-                                                @endphp
-                                                @for ($year = $currentYear - 5; $year <= $currentYear + 5; $year++)
-                                                    <option value="{{ $year }}"
-                                                        {{ (isset($salary_expense) ? ($salary_expense->payable_year == $year) : ($year == $currentYear)) ? 'selected' : '' }}>
-                                                        {{ $year }}
-                                                    </option>
-                                                @endfor
-                                            </select>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-
                             <!-- Payable Month -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="row mb-2">
                                         <label class="col-md-3 form-label">Payable Month</label>
                                         <div class="col-md-9">
-                                            <select id="payable_month" name="payable_month"
-                                                class="form-control select2-show-search form-select" required>
-                                                <option value="">Select Month</option>
-                                                @foreach ([
-                                                    'January' => 1,
-                                                    'February' => 2,
-                                                    'March' => 3,
-                                                    'April' => 4,
-                                                    'May' => 5,
-                                                    'June' => 6,
-                                                    'July' => 7,
-                                                    'August' => 8,
-                                                    'September' => 9,
-                                                    'October' => 10,
-                                                    'November' => 11,
-                                                    'December' => 12,
-                                                ] as $name => $num)
-                                                    <option value="{{ $num }}" {{ $salary_expense->payable_month == $num ? 'selected' : '' }}>{{ $name }}</option>
-                                                @endforeach
-                                            </select>
+                                            <input type="month" class="form-control" name="payable_month" required
+                                                value="{{ isset($incentive_expense->payable_month) ? \Carbon\Carbon::parse($incentive_expense->payable_month)->format('Y-m') : '' }}">
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Total Working Days -->
+                            <!-- Sell Count -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="row mb-2">
-                                        <label class="col-md-3 form-label">Working Days</label>
+                                        <label class="col-md-3 form-label">Sales Count</label>
                                         <div class="col-md-9">
-                                            <select id="total_working_day" name="total_working_day"
-                                                class="form-control select2-show-search form-select" required>
-                                                <option value="">Select Days</option>
-                                            </select>
+                                            <input type="text" id="sales_count" name="sales_count"
+                                                class="form-control" placeholder="e.g. 105" required
+                                                value="{{ isset($incentive_expense->sales_count) ? ceil($incentive_expense->sales_count) : '' }}">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Hidden Input for Total Days in Month -->
-                            <input type="hidden" id="total_days_in_month" name="total_days_in_month" value="">
-                            <input type="hidden" id="selected_working_days" name="selected_working_days" value="{{ $salary_expense->total_working_day ?? '' }}">
 
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="row mb-2">
-                                        <label class="col-md-3 form-label">Festival Bonus</label>
+                                        <label class="col-md-3 form-label">Sales Amount</label>
                                         <div class="col-md-9">
-                                            <input type="number" id="festival_bonus" name="festival_bonus"
-                                            class="form-control" placeholder="e.g. 5000"
-                                            value="{{ isset($salary_expense->festival_bonus) ? ceil($salary_expense->festival_bonus) : '' }}">
+                                            <input type="text" id="sales_amount" name="sales_amount"
+                                                class="form-control" placeholder="e.g. 1000000" required
+                                                value="{{ isset($incentive_expense->sales_amount) ? ceil($incentive_expense->sales_amount) : '' }}">
 
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Payable Amount -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="row mb-2">
+                                        <label class="col-md-3 form-label">Incentive Amount</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="incentive_amount" name="incentive_amount"
+                                                class="form-control" placeholder="e.g. 10000" required
+                                                value="{{ isset($incentive_expense->incentive_amount) ? ceil($incentive_expense->incentive_amount) : '' }}">
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="row mb-2">
                                         <label class="col-md-3 form-label">Payable Amount</label>
                                         <div class="col-md-9">
                                             <input type="text" id="payable_amount" name="payable_amount"
-                                                class="form-control" placeholder="e.g. 25000" required readonly>
+                                                class="form-control" placeholder="e.g. 1054536" required
+                                                value="{{ isset($incentive_expense->payable_amount) ? ceil($incentive_expense->payable_amount) : '' }}">
+
                                         </div>
                                     </div>
                                 </div>
@@ -279,69 +235,6 @@
     <script src="{{ asset('js/select2.js') }}"></script>
     <script>
         $(document).ready(function() {
-            function isLeapYear(year) {
-                return ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0));
-            }
-
-            function updateDays() {
-                const month = parseInt($('#payable_month').val());
-                const year = parseInt($('#payable_year').val());
-
-                if (!month || !year) {
-                    $('#total_working_day').empty().append('<option value="">Select Days</option>');
-                    $('#total_days_in_month').val('');
-                    return;
-                }
-
-                let daysInMonth = 31;
-                switch (month) {
-                    case 2:
-                        daysInMonth = isLeapYear(year) ? 29 : 28;
-                        break;
-                    case 4:
-                    case 6:
-                    case 9:
-                    case 11:
-                        daysInMonth = 30;
-                        break;
-                }
-
-                $('#total_days_in_month').val(daysInMonth);
-                const selectedWorkingDays = $('#selected_working_days').val();
-                const $workingDaysSelect = $('#total_working_day');
-                $workingDaysSelect.empty().append('<option value="">Select Days</option>');
-
-                for (let i = 0; i <= daysInMonth; i++) {
-                    const selected = (selectedWorkingDays !== "" && selectedWorkingDays !== null && parseInt(selectedWorkingDays) === i)
-                        ? 'selected'
-                        : '';
-                    $workingDaysSelect.append(`<option value="${i}" ${selected}>${i}</option>`);
-                }
-
-            }
-
-            function calculatePayableAmount(grossSalary, totalWorkingDay, festivalBonus, totalDaysInMonth) {
-                grossSalary = parseFloat(grossSalary) || 0;
-                totalWorkingDay = parseInt(totalWorkingDay) || 0;
-                festivalBonus = parseFloat(festivalBonus) || 0;
-                totalDaysInMonth = parseInt(totalDaysInMonth) || 0;
-
-                if (grossSalary <= 0 || totalDaysInMonth <= 0) return 0;
-                const dailySalary = grossSalary / totalDaysInMonth;
-                const payableAmount = (dailySalary * totalWorkingDay) + festivalBonus;
-                return payableAmount.toFixed(2);
-            }
-
-            function updatePayableAmount() {
-                const grossSalary = $('#gross_salary').val();
-                const totalWorkingDay = $('#total_working_day').val();
-                const festivalBonus = $('#festival_bonus').val();
-                const totalDaysInMonth = $('#total_days_in_month').val();
-                const payable = calculatePayableAmount(grossSalary, totalWorkingDay, festivalBonus,
-                    totalDaysInMonth);
-                $('#payable_amount').val(payable);
-            }
-
             function loadEmployeeData(employeeId) {
                 if (!employeeId) {
                     $('#name, #designation, #department, #phone_number, #gross_salary, #account_no').val('');
@@ -367,24 +260,10 @@
                     }
                 });
             }
-
-            // Event bindings
-            $('#payable_month, #payable_year').on('change', function() {
-                $('#total_working_day').val('');
-                updateDays();
-                updatePayableAmount();
-            });
-
-            $('#total_working_day, #festival_bonus').on('change keyup', updatePayableAmount);
-
             $('#employee_id').on('change', function() {
                 const employeeId = $(this).val();
                 loadEmployeeData(employeeId);
             });
-
-            // Initial triggers
-            updateDays();
-            updatePayableAmount();
 
             const selectedEmployeeId = $('#selected_employee_id').val();
             if (selectedEmployeeId) {

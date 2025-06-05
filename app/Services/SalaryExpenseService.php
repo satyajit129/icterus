@@ -12,7 +12,7 @@ class SalaryExpenseService
 {
     public function renderSalaryExpenseList(): \Illuminate\View\View
     {
-        $salary_expenses = SalaryExpense::with('employee')->get();
+        $salary_expenses = SalaryExpense::with('employee.designation','employee.department')->get();
         return view('backend.pages.salary_expense_list', compact('salary_expenses'));
     }
     public function renderSalaryExpenseCreateOrEditPage($id = null): \Illuminate\View\View
@@ -24,48 +24,37 @@ class SalaryExpenseService
         }
         return view('backend.pages.salary_expense_create_or_edit', compact('employees','salary_expense'));
     }
-    public function handleEmployeeSave($request, $id): \Illuminate\Http\RedirectResponse
+    public function handleSalaryExpenseSave($request, $id): \Illuminate\Http\RedirectResponse
     {
         try {
             $request->validate([
-                'id_number' => 'required|string|max:50|unique:employees,id_number,' . $id,
-                'name' => 'required|string|max:100',
-                'designation_id' => 'required|exists:designations,id',
-                'department_id' => 'required|exists:departments,id',
-                'phone_number' => 'nullable|string|max:20',
-                'account_no' => 'nullable|string|max:50',
-                'gross_salary' => 'nullable|numeric|min:0',
-                'blood_group' => 'nullable|in:A+,A-,B+,B-,O+,O-,AB+,AB-',
-                'address' => 'nullable|string|max:255',
-                'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-                'joining_date' => 'nullable|date_format:d/m/Y',
+                'employee_id'        => 'required|exists:employees,id',
+                'name'               => 'required',
+                'designation'        => 'required',
+                'department'         => 'required',
+                'phone_number'       => 'required',
+                'account_no'         => 'required',
+                'gross_salary'       => 'required|numeric|min:0',
+                'payable_year'       => 'required|digits:4|integer',
+                'payable_month'      => 'required|integer|min:1|max:12',
+                'total_working_day'  => 'required|integer|min:0|max:31',
+                'total_days_in_month'=> 'required|integer|min:28|max:31',
+                'festival_bonus'     => 'nullable|numeric|min:0',
+                'payable_amount'     => 'required',
             ]);
-            $employee = $id ? Employee::findOrFail($id) : new Employee();
-            $employee->id_number = $request->id_number;
-            $employee->name = $request->name;
-            $employee->designation_id = $request->designation_id;
-            $employee->department_id = $request->department_id;
-            $employee->phone_number = $request->phone_number;
-            $employee->account_no = $request->account_no;
-            $employee->gross_salary = $request->gross_salary;
-            $employee->blood_group = $request->blood_group;
-            $employee->address = $request->address;
 
-            if ($request->filled('joining_date')) {
-                $employee->joining_date = \Carbon\Carbon::createFromFormat('d/m/Y', $request->joining_date)->format('Y-m-d');
+            $salary_expense = $id ? SalaryExpense::findOrFail($id) : new SalaryExpense();
+            $salary_expense->employee_id = $request->employee_id;
+            $salary_expense->payable_month = $request->payable_month;
+            $salary_expense->payable_year = $request->payable_year;
+            $salary_expense->total_working_day = $request->total_working_day;
+            $salary_expense->total_days_in_month = $request->total_days_in_month;
+            $salary_expense->actual_payable_amount = ($request->payable_amount) - ($request->festival_bonus);
+            $salary_expense->festival_bonus = $request->festival_bonus;
+            $salary_expense->payable_amount = $request->payable_amount;
+            $salary_expense->save();
 
-            }
-
-            if ($request->hasFile('picture')) {
-                $picture = $request->picture->getClientOriginalExtension();
-                $picture = 'picture_' . time() . '.' . $picture;
-                $request->picture->move(public_path('uploads'), $picture);
-                $employee->picture = $picture;
-            }
-
-            $employee->save();
-
-            return redirect()->route('adminEmployeeList')->with('success', 'Employee ' . ($id ? 'updated' : 'created') . ' successfully.');
+            return redirect()->route('adminSalaryExpense')->with('success', 'Salary Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
 
         } catch (ValidationException $th) {
             return redirect()
@@ -77,16 +66,14 @@ class SalaryExpenseService
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Validation failed: ' . $e->getMessage());
+                ->with('error', 'Failed: ' . $e->getMessage());
         }
     }
-    public function handleEmployeeDelete($id){
+    public function handleSalaryExpenseDelete($id){
         try {
-            $employee = Employee::findOrFail($id);
-            $employee->status = 0;
-            $employee->save();
-
-            return redirect()->route('adminEmployeeList')->with('success', 'Employee deleted successfully!');
+            $employee = SalaryExpense::findOrFail($id);
+            $employee->delete();
+            return redirect()->route('adminSalaryExpense')->with('success', 'Salary Expense deleted successfully!');
         } catch (Exception $e) {
             return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }

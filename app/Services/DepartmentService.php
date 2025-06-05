@@ -10,7 +10,8 @@ use Illuminate\Validation\ValidationException;
 
 class DepartmentService
 {
-    public function renderDepartmentPage():\Illuminate\View\View{
+    public function renderDepartmentPage():\Illuminate\View\View
+    {
         $departments = Department::all();
         return view('backend.pages.department',compact('departments'));
     }
