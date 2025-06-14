@@ -52,12 +52,14 @@
                                                 <td>{{ number_format($office_expense->amount, 2) }}</td>
                                                 <td>
                                                    <a href="{{ route('adminOfficeExpenseCreateOrEdit', $office_expense->id) }}"
-                                                        class="btn btn-sm btn-primary">Edit</a>
+                                                        class="btn btn-sm btn-primary"><i class="fe fe-edit"></i></a>
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
                                                         data-url="{{ route('adminOfficeExpenseDelete', ['id' => $office_expense->id]) }}"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        Delete
+                                                        <i class="fe fe-trash"></i>
                                                     </a>
+                                                    <a href="{{ route('adminOfficeExpenseView', $office_expense->id) }}"
+                                                        class="btn btn-sm btn-info"><i class="fe fe-eye"></i></a>
                                                 </td>
                                             </tr>
                                         @empty

@@ -3,7 +3,6 @@
 @section('title', 'Employee Info')
 
 @section('custom_css')
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <style>
         @media print {
             body * {
@@ -54,7 +53,7 @@
                              class="rounded-circle shadow"
                              style="width: 120px; height: 120px; object-fit: cover;">
                         <h4 class="mt-3">{{ $employee->name ?? 'N/A' }}</h4>
-                        <p class="text-muted">ID: {{ $employee->id_number ?? 'N/A' }}</p>
+                        <p class="text-muted">Employee ID: {{ $employee->id_number ?? 'N/A' }}</p>
                     </div>
 
                     <!-- Employee Info Table -->
@@ -101,7 +100,7 @@
                         </table>
                     </div>
 
-                    
+
                 </div>
             </div>
         </div>

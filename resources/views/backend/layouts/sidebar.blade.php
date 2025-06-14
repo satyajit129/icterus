@@ -62,16 +62,16 @@
 
                 <!-- Employees -->
                 <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminEmployeeList', 'adminEmployeeCreateOrEdit') ? 'active' : '' }}"
+                    <a class="side-menu__item has-link {{ Route::is('adminEmployeeList', 'adminEmployeeCreateOrEdit','adminEmployeeView') ? 'active' : '' }}"
                         href="{{ route('adminEmployeeList') }}">
                         <i class="side-menu__icon fe fe-users"></i>
                         <span class="side-menu__label">Employees</span>
                     </a>
                 </li>
                 @php
-                    $salary_routes = ['adminSalaryExpense', 'adminSalaryExpenseCreateOrEdit'];
-                    $incentive_routes = ['adminIncentiveExpense', 'adminIncentiveExpenseCreateOrEdit'];
-                    $office_expense_routes = ['adminOfficeExpense', 'adminOfficeExpenseCreateOrEdit'];
+                    $salary_routes = ['adminSalaryExpense', 'adminSalaryExpenseCreateOrEdit','adminSalaryExpenseView'];
+                    $incentive_routes = ['adminIncentiveExpense', 'adminIncentiveExpenseCreateOrEdit','adminIncentiveExpenseView'];
+                    $office_expense_routes = ['adminOfficeExpense', 'adminOfficeExpenseCreateOrEdit','adminOfficeExpenseView'];
 
                     $is_salary_active = Route::is($salary_routes);
                     $is_incentive_active = Route::is($incentive_routes);

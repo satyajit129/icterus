@@ -69,4 +69,9 @@ class OfficeExpenseService
             return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }
     }
+    public function renderOfficeExpenseView($id): \Illuminate\View\View
+    {
+        $office_expense = OfficeExpense::findOrFail($id);
+        return view('backend.pages.office_expense_view', compact('office_expense'));
+    }
 }

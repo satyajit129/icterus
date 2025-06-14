@@ -78,4 +78,9 @@ class SalaryExpenseService
             return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }
     }
+    public function renderSalaryExpenseView($id): \Illuminate\View\View
+    {
+        $salary_expense = SalaryExpense::with('employee', 'employee.designation', 'employee.department')->findOrFail($id);
+        return view('backend.pages.salary_expense_view', compact('salary_expense'));
+    }
 }
