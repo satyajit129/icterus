@@ -200,7 +200,7 @@
                                                     'November' => 11,
                                                     'December' => 12,
                                                 ] as $name => $num)
-                                                    <option value="{{ $num }}" {{ $salary_expense->payable_month == $num ? 'selected' : '' }}>{{ $name }}</option>
+                                                    <option value="{{ $num }}">{{ $name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
