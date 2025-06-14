@@ -43,10 +43,10 @@
                                             <th class="wd-15p border-bottom-0">Name</th>
                                             <th class="wd-15p border-bottom-0">Designation</th>
                                             <th class="wd-15p border-bottom-0">Department</th>
-                                            <th class="wd-15p border-bottom-0">Phone</th>
+                                            {{-- <th class="wd-15p border-bottom-0">Phone</th>
                                             <th class="wd-15p border-bottom-0">AC No</th>
-                                            <th class="wd-15p border-bottom-0">G. Salery</th>
-                                            <th class="wd-15p border-bottom-0">B. Group</th>
+                                            <th class="wd-15p border-bottom-0">G. Salery</th> --}}
+                                            {{-- <th class="wd-15p border-bottom-0">B. Group</th> --}}
                                             <th class="wd-15p border-bottom-0">Address</th>
                                             <th class="wd-15p border-bottom-0">J. Date</th>
                                             <th class="wd-15p border-bottom-0">Action</th>
@@ -68,21 +68,28 @@
                                                 <td>{{ $employee->name }}</td>
                                                 <td>{{ $employee->designation->designation ?? '-' }}</td>
                                                 <td>{{ $employee->department->department ?? '-' }}</td>
-                                                <td>{{ $employee->phone_number }}</td>
-                                                <td>{{ $employee->account_no }}</td>
-                                                <td>{{ $employee->gross_salary }}</td>
-                                                <td>{{ $employee->blood_group }}</td>
+                                                {{-- <td>{{ $employee->phone_number }}</td> --}}
+                                                {{-- <td>{{ $employee->account_no }}</td> --}}
+                                                {{-- <td>{{ $employee->gross_salary }}</td> --}}
+                                                {{-- <td>{{ $employee->blood_group }}</td> --}}
                                                 <td>{{ $employee->address }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($employee->joining_date)->format('d/m/Y') }}</td>
                                                 <td>
                                                     <a href="{{ route('adminEmployeeCreateOrEdit', $employee->id) }}"
-                                                        class="btn btn-sm btn-primary">Edit</a>
+                                                        class="btn btn-sm btn-primary" title="Edit">
+                                                        <i class="fe fe-edit"></i>
+                                                    </a>
+
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
                                                         data-url="{{ route('adminEmployeeDelete', ['id' => $employee->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        Delete
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                        <i class="fe fe-trash-2"></i>
+                                                    </a>
+                                                    <a href="{{ route('adminEmployeeView', $employee->id) }}" class="btn btn-sm btn-info" title="View">
+                                                        <i class="fe fe-eye"></i>
                                                     </a>
                                                 </td>
+
                                             </tr>
                                         @empty
                                             <tr>
