@@ -1,11 +1,11 @@
 @extends('backend.layouts.master')
 
-@section('title', 'Settings')
+@section('title', 'Designation')
 
 @section('custom_css')
 @endsection
 @section('content')
-    
+
     <div class="page-header">
         <h1 class="page-title">Designation</h1>
         <div>

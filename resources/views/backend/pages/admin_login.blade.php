@@ -10,7 +10,7 @@
     <meta name="description" content="Sash – Bootstrap 5  Admin & Dashboard Template">
     <meta name="author" content="Spruko Technologies Private Limited">
     <meta name="keywords" content="admin,admin dashboard,admin panel,admin template,bootstrap,clean,dashboard,flat,jquery,modern,responsive,premium admin templates,responsive admin,ui,ui kit.">
-    <title>Sash – Bootstrap 5 Admin & Dashboard Template</title>
+    <title>Admin Login</title>
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/icons.css') }}">
