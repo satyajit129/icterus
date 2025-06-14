@@ -39,6 +39,7 @@ Route::prefix('admin')->group(function () {
             Route::post('/save/{id?}',[AdminController::class,'adminEmployeeSave'])->name('adminEmployeeSave');
             Route::get('/delete/{id}',[AdminController::class,'adminEmployeeDelete'])->name('adminEmployeeDelete');
             Route::get('/data',[AdminController::class,'adminEmployeeData'])->name('adminEmployeeData');
+            Route::get('/view/{id}',[AdminController::class,'adminEmployeeView'])->name('adminEmployeeView');
         });
 
         Route::prefix('expense')->group(function(){

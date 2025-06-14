@@ -6,6 +6,10 @@ namespace App\Services;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\Employee;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Exception;
 use Illuminate\Validation\ValidationException;
 
@@ -83,7 +87,8 @@ class EmployeeService
                 ->with('error', 'Validation failed: ' . $e->getMessage());
         }
     }
-    public function handleEmployeeDelete($id){
+    public function handleEmployeeDelete($id): RedirectResponse
+    {
         try {
             $employee = Employee::findOrFail($id);
             $employee->status = 0;
@@ -94,10 +99,14 @@ class EmployeeService
             return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }
     }
-    public function getEmployeeData($request){
+
+    public function getEmployeeData(Request $request): JsonResponse
+    {
         $employee = $request->input('employee_id');
+
         if ($employee) {
             $employee = Employee::with(['designation', 'department'])->find($employee);
+
             if ($employee) {
                 return response()->json([
                     'status' => 'success',
@@ -115,5 +124,11 @@ class EmployeeService
                 'message' => 'Employee ID is required',
             ], 400);
         }
+    }
+
+    public function seeEmployeeData($id): View
+    {
+        $employee = Employee::with(['designation', 'department'])->findOrFail($id);
+        return view('backend.pages.employee_view', compact('employee'));
     }
 }

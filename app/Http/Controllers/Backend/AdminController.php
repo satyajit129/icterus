@@ -107,6 +107,10 @@ class AdminController extends Controller
     {
         return $this->employeeService->getEmployeeData($request);
     }
+    public function adminEmployeeView($id):\Illuminate\View\View
+    {
+        return $this->employeeService->seeEmployeeData($id);
+    }
     public function adminSalaryExpense(): \Illuminate\View\View
     {
         return $this->salaryExpenseService->renderSalaryExpenseList();
