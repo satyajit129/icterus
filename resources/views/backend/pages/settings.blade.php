@@ -55,9 +55,11 @@
                             <div class="row mb-4">
                                 <label class="col-md-3 form-label">Logo
                                     @if(isset($settings->logo) && $settings->logo)
-                                    <a  data-bs-effect="effect-scale"
-                                        data-bs-toggle="modal" href="#logoModal"> <i class="fa fa-eye text-primary ms-2"></i></a>
+                                        <a data-bs-effect="effect-scale" data-bs-toggle="modal" href="#logoModal" title="View Logo">
+                                            <span class="badge bg-primary">View</span>
+                                        </a>
                                     @endif
+
                                 </label>
                                 <div class="col-md-9">
                                     <input class="form-control" type="file" name="logo">
@@ -69,7 +71,9 @@
                                 <label class="col-md-3 form-label">
                                     Favicon
                                     @if(isset($settings->favicon) && $settings->favicon)
-                                    <a data-bs-toggle="modal" href="#faviconModal"> <i class="fa fa-eye text-primary ms-2"></i></a>
+                                        <a data-bs-toggle="modal" href="#faviconModal" title="View Favicon">
+                                            <span class="badge bg-primary" style="cursor: pointer;">View</span>
+                                        </a>
                                     @endif
                                 </label>
                                 <div class="col-md-9">

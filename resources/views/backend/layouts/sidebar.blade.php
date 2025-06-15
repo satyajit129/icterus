@@ -41,6 +41,41 @@
                 <li class="sub-category">
                     <h3>Administration</h3>
                 </li>
+                <!-- Company -->
+                <li class="slide">
+                    <a class="side-menu__item has-link {{ Route::is('adminCompanyList', 'adminCompanyCreateOrEdit', 'adminCompanyView') ? 'active' : '' }}"
+                        href="{{ route('adminCompanyList') }}">
+                        <i class="side-menu__icon fe fe-layers"></i> 
+                        <span class="side-menu__label">Company</span>
+                    </a>
+                </li>
+                @php
+                    $company_deals_routes = ['adminCompanyDealsList','adminCompanyDealsView','adminCompanyDealsCreateOrEdit'];
+
+                    $is_company_deals_active = Route::is($company_deals_routes);
+
+                    $is_earning_active = $is_company_deals_active;
+                @endphp
+                <li class="slide {{ $is_earning_active ? 'is-expanded' : '' }}">
+                    <a class="side-menu__item {{ $is_earning_active ? 'active' : '' }}" data-bs-toggle="slide" href="javascript:void(0)">
+                        <i class="side-menu__icon fe fe-trending-up"></i>
+                        <span class="side-menu__label">Earning Purpose</span>
+                        <i class="angle fe fe-chevron-right"></i>
+                    </a>
+
+                    <ul class="slide-menu">
+                        <li>
+                            <a href="{{ route('adminCompanyDealsList') }}" class="slide-item {{ $is_company_deals_active ? 'active' : '' }}">
+                                <i class="fe fe-briefcase me-2"></i> Company Deals
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('adminCompanyDealsList') }}" class="slide-item {{ $is_company_deals_active ? 'active' : '' }}">
+                                <i class="fe fe-briefcase me-2"></i> Company Deals
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
                 <!-- Department -->
                 <li class="slide">
@@ -77,7 +112,6 @@
                     $is_incentive_active = Route::is($incentive_routes);
                     $is_office_expense_active = Route::is($office_expense_routes);
 
-                    // Parent menu is expanded if any child is active
                     $is_expense_active = $is_salary_active || $is_incentive_active || $is_office_expense_active;
                 @endphp
 
@@ -106,8 +140,6 @@
                         </li>
                     </ul>
                 </li>
-
-
             </ul>
 
             <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24"

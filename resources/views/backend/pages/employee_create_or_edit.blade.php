@@ -175,11 +175,11 @@
                                     <label class="col-md-4 form-label">
                                         Picture
                                         @if(isset($employee->picture) && $employee->picture)
-                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#pictureModal"
-                                                title="View Picture">
-                                                <i class="fa fa-eye text-primary ms-2"></i>
+                                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#pictureModal" title="View Picture">
+                                                <span class="badge bg-primary">View</span>
                                             </a>
                                         @endif
+
                                     </label>
                                     <div class="col-md-8">
                                         <input type="file" class="form-control" name="picture">
