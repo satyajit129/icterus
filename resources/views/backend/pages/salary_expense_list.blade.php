@@ -34,10 +34,10 @@
                                             <th class="wd-15p border-bottom-0">#</th>
                                             <th class="wd-15p border-bottom-0">ID Number</th>
                                             <th class="wd-15p border-bottom-0">Name</th>
-                                            <th class="wd-15p border-bottom-0">Designation</th>
+                                            {{-- <th class="wd-15p border-bottom-0">Designation</th>
                                             <th class="wd-15p border-bottom-0">Department</th>
                                             <th class="wd-15p border-bottom-0">Phone No</th>
-                                            <th class="wd-15p border-bottom-0">A/C No</th>
+                                            <th class="wd-15p border-bottom-0">A/C No</th> --}}
                                             <th class="wd-15p border-bottom-0">P. Month</th>
                                             <th class="wd-15p border-bottom-0">Working Days</th>
                                             <th class="wd-15p border-bottom-0">G. Salary</th>
@@ -53,10 +53,10 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $salary_expense->employee->id_number }}</td>
                                                 <td>{{ $salary_expense->employee->name }}</td>
-                                                <td>{{ $salary_expense->employee->designation->designation }}</td>
+                                                {{-- <td>{{ $salary_expense->employee->designation->designation }}</td>
                                                 <td>{{ $salary_expense->employee->department->department }}</td>
                                                 <td>{{ $salary_expense->employee->phone_number }}</td>
-                                                <td>{{ $salary_expense->employee->account_no }}</td>
+                                                <td>{{ $salary_expense->employee->account_no }}</td> --}}
                                                 <td>{{ App\UtilityFunction::getMonthName($salary_expense->payable_month) }}</td>
                                                 <td>{{ $salary_expense->total_working_day }}</td>
                                                 <td>{{ $salary_expense->employee->gross_salary }}</td>
@@ -64,11 +64,14 @@
                                                 <td>{{ $salary_expense->payable_amount  }}</td>
                                                 <td>
                                                     <a href="{{ route('adminSalaryExpenseCreateOrEdit', $salary_expense->id) }}"
-                                                        class="btn btn-sm btn-primary">Edit</a>
+                                                        class="btn btn-sm btn-primary"><i class="fe fe-edit"></i></a>
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
                                                         data-url="{{ route('adminSalaryExpenseDelete', ['id' => $salary_expense->id]) }}"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        Delete
+                                                        <i class="fe fe-trash-2"></i>
+                                                    </a>
+                                                    <a href="{{ route('adminSalaryExpenseView', $salary_expense->id) }}" class="btn btn-sm btn-info">
+                                                        <i class="fe fe-eye"></i>
                                                     </a>
                                                 </td>
                                             </tr>

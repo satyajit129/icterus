@@ -127,6 +127,10 @@ class AdminController extends Controller
     {
         return $this->salaryExpenseService->handleSalaryExpenseDelete($id);
     }
+    public function adminSalaryExpenseView($id): \Illuminate\View\View
+    {
+        return $this->salaryExpenseService->renderSalaryExpenseView($id);
+    }
     public function adminIncentiveExpense(): \Illuminate\View\View
     {
         return $this->incentiveExpenseService->renderIncentiveExpense();
@@ -143,6 +147,10 @@ class AdminController extends Controller
     {
         return $this->incentiveExpenseService->handleIncentiveExpenseDelete($id);
     }
+    public function adminIncentiveExpenseView($id): \Illuminate\View\View
+    {
+        return $this->incentiveExpenseService->renderIncentiveExpenseView($id);
+    }
     public function adminOfficeExpense(): \Illuminate\View\View
     {
         return $this->officeExpenseService->renderOfficeExpense();
@@ -158,5 +166,9 @@ class AdminController extends Controller
     public function adminOfficeExpenseDelete($id):\Illuminate\Http\RedirectResponse
     {
         return $this->officeExpenseService->handleOfficeExpenseDelete($id);
+    }
+    public function adminOfficeExpenseView($id): \Illuminate\View\View
+    {
+        return $this->officeExpenseService->renderOfficeExpenseView($id);
     }
 }

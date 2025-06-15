@@ -75,4 +75,9 @@ class IncentiveExpenseService
             return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }
     }
+    public function renderIncentiveExpenseView($id): \Illuminate\View\View
+    {
+        $incentive_expense = IncentiveExpense::with('employee', 'employee.designation', 'employee.department')->findOrFail($id);
+        return view('backend.pages.incentive_expense_view', compact('incentive_expense'));
+    }
 }

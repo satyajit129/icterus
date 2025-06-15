@@ -34,10 +34,10 @@
                                             <th class="wd-15p border-bottom-0">#</th>
                                             <th class="wd-15p border-bottom-0">ID Number</th>
                                             <th class="wd-15p border-bottom-0">Name</th>
-                                            <th class="wd-15p border-bottom-0">Designation</th>
+                                            {{-- <th class="wd-15p border-bottom-0">Designation</th>
                                             <th class="wd-15p border-bottom-0">Department</th>
                                             <th class="wd-15p border-bottom-0">Phone No</th>
-                                            <th class="wd-15p border-bottom-0">A/C No</th>
+                                            <th class="wd-15p border-bottom-0">A/C No</th> --}}
                                             <th class="wd-15p border-bottom-0">Month</th>
                                             <th class="wd-15p border-bottom-0">Sales Count</th>
                                             <th class="wd-15p border-bottom-0">Sales Amount</th>
@@ -53,10 +53,10 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $incentive_expense->employee->id_number }}</td>
                                                 <td>{{ $incentive_expense->employee->name }}</td>
-                                                <td>{{ $incentive_expense->employee->designation->designation }}</td>
+                                                {{-- <td>{{ $incentive_expense->employee->designation->designation }}</td>
                                                 <td>{{ $incentive_expense->employee->department->department }}</td>
                                                 <td>{{ $incentive_expense->employee->phone_number }}</td>
-                                                <td>{{ $incentive_expense->employee->account_no }}</td>
+                                                <td>{{ $incentive_expense->employee->account_no }}</td> --}}
                                                <td>{{ \Carbon\Carbon::parse($incentive_expense->payable_month)->format('M - Y') }}</td>
                                                 <td>{{ $incentive_expense->sales_count }}</td>
                                                 <td>{{ ceil($incentive_expense->sales_amount) }}</td>
@@ -64,12 +64,14 @@
                                                 <td>{{ ceil($incentive_expense->payable_amount) }}</td>
                                                 <td>
                                                     <a href="{{ route('adminIncentiveExpenseCreateOrEdit', $incentive_expense->id) }}"
-                                                        class="btn btn-sm btn-primary">Edit</a>
+                                                        class="btn btn-sm btn-primary"><i class="fe fe-edit"></i></a>
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
                                                         data-url="{{ route('adminIncentiveExpenseDelete', ['id' => $incentive_expense->id]) }}"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        Delete
+                                                        <i class="fe fe-trash"></i>
                                                     </a>
+                                                    <a href="{{ route('adminIncentiveExpenseView', $incentive_expense->id) }}"
+                                                        class="btn btn-sm btn-info"><i class="fe fe-eye"></i></a>
                                                 </td>
                                             </tr>
                                         @empty
