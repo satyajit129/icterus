@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SettingRequest;
 use App\Models\SalaryExpense;
+use App\Services\CompanyService;
 use App\Services\DashboardService;
 use App\Services\DepartmentService;
 use App\Services\DesignationService;
@@ -27,11 +28,11 @@ class AdminController extends Controller
     protected SalaryExpenseService $salaryExpenseService;
     protected IncentiveExpenseService $incentiveExpenseService;
     protected OfficeExpenseService $officeExpenseService;
-
     protected DashboardService $dashboardService;
+    protected CompanyService $companyService;
 
     public function __construct(SettingService $settingService, DesignationService $designationService, DepartmentService $departmentService, EmployeeService $employeeService, SalaryExpenseService $salaryExpenseService, IncentiveExpenseService $incentiveExpenseService, OfficeExpenseService $officeExpenseService,
-    DashboardService $dashboardService)
+    DashboardService $dashboardService, CompanyService $companyService)
     {
         $this->settingService = $settingService;
         $this->designationService = $designationService;
@@ -41,6 +42,7 @@ class AdminController extends Controller
         $this->incentiveExpenseService = $incentiveExpenseService;
         $this->officeExpenseService = $officeExpenseService;
         $this->dashboardService = $dashboardService;
+        $this->companyService = $companyService;
     }
 
     public function adminDashboard(): \Illuminate\View\View
@@ -171,4 +173,45 @@ class AdminController extends Controller
     {
         return $this->officeExpenseService->renderOfficeExpenseView($id);
     }
+    public function adminCompanyList(): \Illuminate\View\View
+    {
+        return $this->companyService->renderCompanyList();
+    }
+    public function adminCompanyCreateOrEdit($id = null):\Illuminate\View\View
+    {
+        return $this->companyService->renderCompanyCreateOrEditPage($id);
+    }
+    public function adminCompanySave(Request $request , $id=null): \Illuminate\Http\RedirectResponse
+    {
+        return $this->companyService->handleCompanySave($request, $id);
+    }
+    public function adminCompanyDelete($id):\Illuminate\Http\RedirectResponse
+    {
+        return $this->companyService->handleCompanyDelete($id);
+    }
+    public function adminCompanyView($id):\Illuminate\View\View
+    {
+        return $this->companyService->renderCompanyView($id);
+    }
+    public function adminCompanyDealsList():\Illuminate\View\View
+    {
+        return $this->companyService->renderCompanyDealsList();
+    }
+    public function adminCompanyDealsCreateOrEdit($id=null) :\Illuminate\View\View
+    {
+        return $this->companyService->renderCompanyDealsCreateOrEdit($id);
+    }
+    public function adminCompanyDealsSave(Request $request , $id=null): \Illuminate\Http\RedirectResponse
+    {
+        return $this->companyService->handleCompanyDealsSave($request, $id);
+    }
+    public function adminCompanyDealsDelete($id):\Illuminate\Http\RedirectResponse
+    {
+        return $this->companyService->handleCompanyDealsDelete($id);
+    }
+    public function adminCompanyDealsView($id):\Illuminate\View\View
+    {
+        return $this->companyService->renderCompanyDealsView($id);
+    }
+    
 }

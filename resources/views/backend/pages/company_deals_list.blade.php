@@ -1,6 +1,6 @@
 @extends('backend.layouts.master')
 
-@section('title', 'Employee')
+@section('title', 'Company Deals')
 
 @section('custom_css')
     <style>
@@ -12,11 +12,11 @@
 @section('content')
 
     <div class="page-header">
-        <h1 class="page-title">Employee</h1>
+        <h1 class="page-title">Company Deals</h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Employee</li>
+                <li class="breadcrumb-item active" aria-current="page">Company Deals</li>
             </ol>
         </div>
     </div>
@@ -24,10 +24,10 @@
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h3 class="card-title">Employees Data</h3>
-                    <a href="{{ route('adminEmployeeCreateOrEdit') }}">
+                    <h3 class="card-title">Company Deals Data</h3>
+                    <a href="{{ route('adminCompanyDealsCreateOrEdit') }}">
                         <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
-                            Employee</button>
+                            Company Deals</button>
                     </a>
                 </div>
                 <div class="card-body">
@@ -38,64 +38,45 @@
                                     <thead>
                                         <tr>
                                             <th class="wd-15p border-bottom-0">#</th>
-                                            <th class="wd-15p border-bottom-0">Picture</th>
-                                            <th class="wd-15p border-bottom-0">ID</th>
-                                            <th class="wd-15p border-bottom-0">Name</th>
-                                            <th class="wd-15p border-bottom-0">Designation</th>
-                                            <th class="wd-15p border-bottom-0">Department</th>
-                                            {{-- <th class="wd-15p border-bottom-0">Phone</th>
-                                            <th class="wd-15p border-bottom-0">AC No</th>
-                                            <th class="wd-15p border-bottom-0">G. Salery</th> --}}
-                                            {{-- <th class="wd-15p border-bottom-0">B. Group</th> --}}
-                                            <th class="wd-15p border-bottom-0">Address</th>
-                                            <th class="wd-15p border-bottom-0">J. Date</th>
+                                            <th class="wd-15p border-bottom-0">Date</th>
+                                            <th class="wd-15p border-bottom-0">Company Name</th>
+                                            <th class="wd-15p border-bottom-0">Deals</th>
+                                            <th class="wd-15p border-bottom-0">Contract Duration</th>
+                                            <th class="wd-15p border-bottom-0">Deals Amount</th>
+                                            <th class="wd-15p border-bottom-0">Payment Frequency</th>
                                             <th class="wd-15p border-bottom-0">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($employees as $index => $employee)
+                                        @forelse ($company_deals as $index => $company_deal)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($company_deal->date)->format('d F Y')}}</td>
+                                                <td>{{ $company_deal->companies->name }}</td>
+                                                <td>{{ $company_deal->deals }}</td>
+                                                <td>{{ $company_deal->contract_duration }}</td>
+                                                <td>{{ $company_deal->deals_amount }}</td>
+                                                <td>{{ $company_deal->payment_frequency }}</td>
                                                 <td>
-                                                    @if ($employee->picture)
-                                                        <img src="{{ asset('uploads/' . $employee->picture) }}"
-                                                            alt="Picture" width="50" height="50">
-                                                    @else
-                                                        <span class="text-muted">No Image</span>
-                                                    @endif
-                                                </td>
-                                                <td>{{ $employee->id_number }}</td>
-                                                <td>{{ $employee->name }}</td>
-                                                <td>{{ $employee->designation->designation ?? '-' }}</td>
-                                                <td>{{ $employee->department->department ?? '-' }}</td>
-                                                {{-- <td>{{ $employee->phone_number }}</td> --}}
-                                                {{-- <td>{{ $employee->account_no }}</td> --}}
-                                                {{-- <td>{{ $employee->gross_salary }}</td> --}}
-                                                {{-- <td>{{ $employee->blood_group }}</td> --}}
-                                                <td>{{ $employee->address }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($employee->joining_date)->format('d/m/Y') }}
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('adminEmployeeCreateOrEdit', $employee->id) }}"
+                                                    <a href="{{ route('adminCompanyDealsCreateOrEdit', $company_deal->id) }}"
                                                         class="btn btn-sm btn-primary" title="Edit">
                                                         <i class="fe fe-edit"></i>
                                                     </a>
 
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminEmployeeDelete', ['id' => $employee->id]) }}"
+                                                        data-url="{{ route('adminCompanyDealsDelete', ['id' => $company_deal->id]) }}"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
                                                         <i class="fe fe-trash-2"></i>
                                                     </a>
-                                                    <a href="{{ route('adminEmployeeView', $employee->id) }}"
+                                                    <a href="{{ route('adminCompanyDealsView', $company_deal->id) }}"
                                                         class="btn btn-sm btn-info" title="View">
                                                         <i class="fe fe-eye"></i>
                                                     </a>
                                                 </td>
-
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="13" class="text-center text-muted">No employees found</td>
+                                                <td colspan="13" class="text-center text-muted">No Deals found</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -116,7 +97,7 @@
                     <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to delete this Employee?</p>
+                    <p>Are you sure you want to delete this Deals?</p>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>

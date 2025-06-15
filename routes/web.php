@@ -65,6 +65,29 @@ Route::prefix('admin')->group(function () {
                 Route::get('/view/{id}',[AdminController::class,'adminOfficeExpenseView'])->name('adminOfficeExpenseView');
             });
         });
+        Route::prefix('company')->group(function(){
+            Route::get('/',[AdminController::class,'adminCompanyList'])->name('adminCompanyList');
+            Route::get('/create-or-edit/{id?}',[AdminController::class,'adminCompanyCreateOrEdit'])->name('adminCompanyCreateOrEdit');
+            Route::post('/save/{id?}',[AdminController::class,'adminCompanySave'])->name('adminCompanySave');
+            Route::get('/delete/{id}',[AdminController::class,'adminCompanyDelete'])->name('adminCompanyDelete');
+            Route::get('/view/{id}',[AdminController::class,'adminCompanyView'])->name('adminCompanyView');
+
+            Route::prefix('/deals')->group(function(){
+                Route::get('/',[AdminController::class,'adminCompanyDealsList'])->name('adminCompanyDealsList');
+                Route::get('/create-or-edit/{id?}',[AdminController::class,'adminCompanyDealsCreateOrEdit'])->name('adminCompanyDealsCreateOrEdit');
+                Route::post('/save/{id?}',[AdminController::class,'adminCompanyDealsSave'])->name('adminCompanyDealsSave');
+                Route::get('/delete/{id}',[AdminController::class,'adminCompanyDealsDelete'])->name('adminCompanyDealsDelete');
+                Route::get('/view/{id}',[AdminController::class,'adminCompanyDealsView'])->name('adminCompanyDealsView');
+            });
+            Route::prefix('earning')->group(function () {
+                Route::get('/', [AdminController::class, 'adminEarningList'])->name('adminEarningList');
+                Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminEarningCreateOrEdit'])->name('adminEarningCreateOrEdit');
+                Route::post('/save/{id?}', [AdminController::class, 'adminEarningSave'])->name('adminEarningSave');
+                Route::get('/delete/{id}', [AdminController::class, 'adminEarningDelete'])->name('adminEarningDelete');
+                Route::get('/view/{id}', [AdminController::class, 'adminEarningView'])->name('adminEarningView');
+            });
+        });
+
     });
 
 });

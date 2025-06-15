@@ -60,7 +60,8 @@ class OfficeExpenseService
                 ->with('error', 'Failed: ' . $e->getMessage());
         }
     }
-    public function handleOfficeExpenseDelete($id){
+    public function handleOfficeExpenseDelete($id):\Illuminate\Http\RedirectResponse
+    {
         try {
             $employee = OfficeExpense::findOrFail($id);
             $employee->delete();
