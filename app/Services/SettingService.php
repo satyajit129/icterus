@@ -1,24 +1,26 @@
 <?php
+
 namespace App\Services;
 
 use App\Http\Requests\SettingRequest;
 use App\Models\Setting;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class SettingService
 {
-    public function renderSettingsPage(): \Illuminate\View\View
+    public function renderSettingsPage(): View
     {
         $settings = Setting::first();
-        // dd($settings);
         return view('backend.pages.settings', compact('settings'));
     }
 
-    public function handleSettingsUpdate($request): \Illuminate\Http\RedirectResponse
+    public function handleSettingsUpdate($request): RedirectResponse
     {
         try {
             $request->validate([
@@ -28,33 +30,39 @@ class SettingService
                 'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
                 'favicon' => 'nullable|image|mimes:ico,jpg,jpeg,png|max:1024',
             ]);
-            $settings = Setting::first();
-            if (!$settings) {
-                $settings = new Setting();
-            }
+
+            $settings = Setting::first() ?? new Setting();
+
             if ($request->hasFile('logo')) {
-                $logoExtension = $request->logo->getClientOriginalExtension();
-                $logoName = 'logo_' . time() . '.' . $logoExtension;
+                $logoName = 'logo_' . time() . '.' . $request->logo->getClientOriginalExtension();
                 $request->logo->move(public_path('uploads'), $logoName);
-                $data['logo'] = $logoName;
+                $settings->logo = $logoName;
             }
+
             if ($request->hasFile('favicon')) {
-                $faviconExtension = $request->favicon->getClientOriginalExtension();
-                $faviconName = 'favicon_' . time() . '.' . $faviconExtension;
+                $faviconName = 'favicon_' . time() . '.' . $request->favicon->getClientOriginalExtension();
                 $request->favicon->move(public_path('uploads'), $faviconName);
-                $data['favicon'] = $faviconName;
+                $settings->favicon = $faviconName;
             }
-            $settings->website_name = $data['website_name'];
-            $settings->website_email = $data['website_email'];
-            $settings->copy_right_text = $data['copy_right_text'] ?? $settings->copy_right_text;
-            $settings->logo = $data['logo'] ?? $settings->logo;
-            $settings->favicon = $data['favicon'] ?? $settings->favicon;
+
+            $settings->website_name = $request->website_name;
+            $settings->website_email = $request->website_email;
+            $settings->copy_right_text = $request->copy_right_text;
+
             $settings->save();
+
             return redirect()->back()->with('success', 'Settings updated successfully.');
-        } catch (ValidationException $e) {
-            return redirect()->back()->with('error', 'Validation failed: ' . $e->getMessage());
+        } catch (ValidationException $th) {
+            return redirect()
+                ->back()
+                ->withErrors($th->validator)
+                ->withInput()
+                ->with('error', 'Failed: ' . $th->getMessage());
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Failed: ' . $e->getMessage());
         }
     }
 

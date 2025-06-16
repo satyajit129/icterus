@@ -19,7 +19,7 @@
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h3 class="card-title">Designation Data</h3>
+                    <h3 class="card-title">Designation</h3>
                     <a href="{{ route('adminDesignationCreateOrEdit') }}">
                         <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
                             Designation</button>
@@ -34,8 +34,7 @@
                                         <tr>
                                             <th class="wd-15p border-bottom-0">#</th>
                                             <th class="wd-15p border-bottom-0">Designation</th>
-                                            <th class="wd-15p border-bottom-0">Edit</th>
-                                            <th class="wd-15p border-bottom-0">Delete</th>
+                                            <th class="wd-15p border-bottom-0">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -44,12 +43,12 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $designation->designation }}</td>
                                                 <td><a href="{{ route('adminDesignationCreateOrEdit', $designation->id) }}"
-                                                        class="btn btn-sm btn-warning">Edit</a></td>
-                                                <td>
+                                                        class="btn btn-sm btn-primary" title="Edit"><i class="fe fe-edit"></i></a>
+
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
                                                         data-url="{{ route('adminDesignationDelete', ['id' => $designation->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        Delete
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                        <i class="fe fe-trash-2"></i>
                                                     </a>
 
                                                 </td>

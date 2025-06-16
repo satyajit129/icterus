@@ -21,7 +21,7 @@
                         <div class="card-body">
                             <div class="d-flex">
                                 <div class="mt-2">
-                                    <h6 class="">Total Employee</h6>
+                                    <i class="fe fe-users me-1"></i> Total Employee
                                     <h2 class="mb-0 number-font">{{ $total_employees }}</h2>
                                 </div>
                                 <div class="ms-auto">
@@ -38,7 +38,7 @@
                         <div class="card-body">
                             <div class="d-flex">
                                 <div class="mt-2">
-                                    <h6 class="">Total Earn</h6>
+                                    <i class="fe fe-dollar-sign me-1"></i> Total Earn
                                     <h2 class="mb-0 number-font">$67,9871</h2>
                                 </div>
                                 <div class="ms-auto">
@@ -55,8 +55,8 @@
                         <div class="card-body">
                             <div class="d-flex">
                                 <div class="mt-2">
-                                    <h6 class="">Total Cost</h6>
-                                    <h2 class="mb-0 number-font">$76,965</h2>
+                                    <i class="fe fe-dollar-sign me-1"></i> Total Cost
+                                    <h2 class="mb-0 number-font">{{ $total_cost }}</h2>
                                 </div>
                                 <div class="ms-auto">
                                     <div class="chart-wrapper mt-1">
@@ -72,7 +72,7 @@
                         <div class="card-body">
                             <div class="d-flex">
                                 <div class="mt-2">
-                                    <h6 class="">Net Profit</h6>
+                                     <i class="fe fe-trending-up me-1 "></i> Net Profit
                                     <h2 class="mb-0 number-font">$59,765</h2>
                                 </div>
                                 <div class="ms-auto">

@@ -1,18 +1,22 @@
 @extends('backend.layouts.master')
 
-@section('title', 'Department')
+@section('title', 'Admin Permission')
 
 @section('custom_css')
+    <style>
+        .table td {
+            vertical-align: middle !important;
+        }
+    </style>
 @endsection
-
-
 @section('content')
+
     <div class="page-header">
-        <h1 class="page-title">Department</h1>
+        <h1 class="page-title">Admin Permission</h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Department</li>
+                <li class="breadcrumb-item active" aria-current="page">Admin Permission</li>
             </ol>
         </div>
     </div>
@@ -20,10 +24,10 @@
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h3 class="card-title">Department</h3>
-                    <a href="{{ route('adminDepartmentCreateOrEdit') }}">
+                    <h3 class="card-title">Admin Permission</h3>
+                    <a href="{{ route('adminPermissionCreateOrEdit') }}">
                         <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
-                            Department</button>
+                            Admin Permission</button>
                     </a>
                 </div>
                 <div class="card-body">
@@ -33,36 +37,38 @@
                                 <table class="table table-bordered text-nowrap border-bottom">
                                     <thead>
                                         <tr>
-                                            <th class="wd-15p border-bottom-0">#</th>
-                                            <th class="wd-15p border-bottom-0">Department</th>
-                                            <th class="wd-15p border-bottom-0">Action</th>
+                                            <th>#</th>
+                                            <th>Permission</th>
+                                            <th>Bangla Text</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($departments as $key => $department)
+                                        @forelse ($permissions as $permission)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $department->department }}</td>
-                                                <td>
-                                                    <a href="{{ route('adminDepartmentCreateOrEdit', $department->id) }}"
-                                                        class="btn btn-sm btn-primary" title="Edit"><i class="fe fe-edit"></i></a>
+                                                <td>{{ $permission->name }}</td>
+                                                <td>{{ $permission->bangla_code }}</td>
 
+                                                <td>
+                                                    <a href="{{ route('adminPermissionCreateOrEdit', $permission->id) }}" class="btn btn-sm btn-primary" title="Edit">
+                                                        <i class="fe fe-edit"></i>
+                                                    </a>
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminDepartmentDelete', ['id' => $department->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal"  title="Delete">
+                                                        data-url="{{ route('adminPermissionDelete', ['id' => $permission->id]) }}"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
                                                         <i class="fe fe-trash-2"></i>
                                                     </a>
-
                                                 </td>
-
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="4" class="text-center">No Department Found</td>
+                                                <td colspan="5" class="text-center text-muted">No Data found</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
                                 </table>
+                                {{ $permissions->links() }}
                             </div>
                         </div>
                     </div>
@@ -79,7 +85,7 @@
                     <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to delete this Department?</p>
+                    <p>Are you sure you want to delete this Employee?</p>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
@@ -88,12 +94,12 @@
             </div>
         </div>
     </div>
-@endsection
 
+@endsection
 @section('custom_js')
-<script>
-        $(document).ready(function () {
-            $('.delete-btn').on('click', function () {
+    <script>
+        $(document).ready(function() {
+            $('.delete-btn').on('click', function() {
                 var deleteUrl = $(this).data('url');
                 $('#confirmDeleteBtn').attr('href', deleteUrl);
             });

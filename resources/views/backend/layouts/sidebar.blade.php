@@ -8,19 +8,39 @@
                 <img src="../assets/images/brand/icon-dark.png" class="header-brand-img light-logo" alt="logo">
                 <img src="../assets/images/brand/logo-dark.png" class="header-brand-img light-logo1" alt="logo">
             </a>
-            <!-- LOGO -->
         </div>
         <div class="main-sidemenu">
-            <div class="slide-left disabled" id="slide-left"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191"
-                    width="24" height="24" viewBox="0 0 24 24">
+            <div class="slide-left disabled" id="slide-left">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24">
                     <path d="M13.293 6.293 7.586 12l5.707 5.707 1.414-1.414L10.414 12l4.293-4.293z" />
-                </svg></div>
+                </svg>
+            </div>
+
+            @php
+                // Route arrays
+                $company_deals_routes = ['adminCompanyDealsList','adminCompanyDealsView','adminCompanyDealsCreateOrEdit'];
+                $earning_routes = ['adminEarningList', 'adminEarningCreateOrEdit','adminEarningView'];
+                $salary_routes = ['adminSalaryExpense', 'adminSalaryExpenseCreateOrEdit','adminSalaryExpenseView'];
+                $incentive_routes = ['adminIncentiveExpense', 'adminIncentiveExpenseCreateOrEdit','adminIncentiveExpenseView'];
+                $office_expense_routes = ['adminOfficeExpense', 'adminOfficeExpenseCreateOrEdit','adminOfficeExpenseView'];
+
+                // Active route conditions
+                $is_company_deals_active = Route::is($company_deals_routes);
+                $is_earning_route_active = Route::is($earning_routes);
+                $is_earning_active = $is_company_deals_active || $is_earning_route_active;
+
+                $is_salary_active = Route::is($salary_routes);
+                $is_incentive_active = Route::is($incentive_routes);
+                $is_office_expense_active = Route::is($office_expense_routes);
+                $is_expense_active = $is_salary_active || $is_incentive_active || $is_office_expense_active;
+            @endphp
+
             <ul class="side-menu">
+
+                <!-- MAIN -->
                 <li class="sub-category">
                     <h3>Main</h3>
                 </li>
-
-                <!-- Dashboard -->
                 <li class="slide">
                     <a class="side-menu__item has-link {{ Route::is('adminDashboard') ? 'active' : '' }}"
                         href="{{ route('adminDashboard') }}">
@@ -28,8 +48,6 @@
                         <span class="side-menu__label">Dashboard</span>
                     </a>
                 </li>
-
-                <!-- Settings -->
                 <li class="slide">
                     <a class="side-menu__item has-link {{ Route::is('adminSettings') ? 'active' : '' }}"
                         href="{{ route('adminSettings') }}">
@@ -38,10 +56,10 @@
                     </a>
                 </li>
 
+                <!-- ADMINISTRATION -->
                 <li class="sub-category">
                     <h3>Administration</h3>
                 </li>
-                <!-- Company -->
                 <li class="slide">
                     <a class="side-menu__item has-link {{ Route::is('adminCompanyList', 'adminCompanyCreateOrEdit', 'adminCompanyView') ? 'active' : '' }}"
                         href="{{ route('adminCompanyList') }}">
@@ -49,20 +67,17 @@
                         <span class="side-menu__label">Company</span>
                     </a>
                 </li>
-                @php
-                    $company_deals_routes = ['adminCompanyDealsList','adminCompanyDealsView','adminCompanyDealsCreateOrEdit'];
 
-                    $is_company_deals_active = Route::is($company_deals_routes);
-
-                    $is_earning_active = $is_company_deals_active;
-                @endphp
+                <!-- EARNING PURPOSE -->
+                <li class="sub-category">
+                    <h3>Earning Purpose</h3>
+                </li>
                 <li class="slide {{ $is_earning_active ? 'is-expanded' : '' }}">
                     <a class="side-menu__item {{ $is_earning_active ? 'active' : '' }}" data-bs-toggle="slide" href="javascript:void(0)">
                         <i class="side-menu__icon fe fe-trending-up"></i>
                         <span class="side-menu__label">Earning Purpose</span>
                         <i class="angle fe fe-chevron-right"></i>
                     </a>
-
                     <ul class="slide-menu">
                         <li>
                             <a href="{{ route('adminCompanyDealsList') }}" class="slide-item {{ $is_company_deals_active ? 'active' : '' }}">
@@ -70,14 +85,17 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('adminCompanyDealsList') }}" class="slide-item {{ $is_company_deals_active ? 'active' : '' }}">
-                                <i class="fe fe-briefcase me-2"></i> Company Deals
+                            <a href="{{ route('adminEarningList') }}" class="slide-item {{ $is_earning_route_active ? 'active' : '' }}">
+                                <i class="fe fe-briefcase me-2"></i> Earning
                             </a>
                         </li>
                     </ul>
                 </li>
 
-                <!-- Department -->
+                <!-- HUMAN RESOURCES -->
+                <li class="sub-category">
+                    <h3>Human Resources</h3>
+                </li>
                 <li class="slide">
                     <a class="side-menu__item has-link {{ Route::is('adminDepartment', 'adminDepartmentCreateOrEdit') ? 'active' : '' }}"
                         href="{{ route('adminDepartment') }}">
@@ -85,8 +103,6 @@
                         <span class="side-menu__label">Department</span>
                     </a>
                 </li>
-
-                <!-- Designation -->
                 <li class="slide">
                     <a class="side-menu__item has-link {{ Route::is('adminDesignation', 'adminDesignationCreateOrEdit') ? 'active' : '' }}"
                         href="{{ route('adminDesignation') }}">
@@ -94,8 +110,6 @@
                         <span class="side-menu__label">Designation</span>
                     </a>
                 </li>
-
-                <!-- Employees -->
                 <li class="slide">
                     <a class="side-menu__item has-link {{ Route::is('adminEmployeeList', 'adminEmployeeCreateOrEdit','adminEmployeeView') ? 'active' : '' }}"
                         href="{{ route('adminEmployeeList') }}">
@@ -103,25 +117,17 @@
                         <span class="side-menu__label">Employees</span>
                     </a>
                 </li>
-                @php
-                    $salary_routes = ['adminSalaryExpense', 'adminSalaryExpenseCreateOrEdit','adminSalaryExpenseView'];
-                    $incentive_routes = ['adminIncentiveExpense', 'adminIncentiveExpenseCreateOrEdit','adminIncentiveExpenseView'];
-                    $office_expense_routes = ['adminOfficeExpense', 'adminOfficeExpenseCreateOrEdit','adminOfficeExpenseView'];
 
-                    $is_salary_active = Route::is($salary_routes);
-                    $is_incentive_active = Route::is($incentive_routes);
-                    $is_office_expense_active = Route::is($office_expense_routes);
-
-                    $is_expense_active = $is_salary_active || $is_incentive_active || $is_office_expense_active;
-                @endphp
-
+                <!-- EXPENSE MANAGEMENT -->
+                <li class="sub-category">
+                    <h3>Expense Management</h3>
+                </li>
                 <li class="slide {{ $is_expense_active ? 'is-expanded' : '' }}">
                     <a class="side-menu__item {{ $is_expense_active ? 'active' : '' }}" data-bs-toggle="slide" href="javascript:void(0)">
                         <i class="side-menu__icon fe fe-dollar-sign"></i>
                         <span class="side-menu__label">Expense</span>
                         <i class="angle fe fe-chevron-right"></i>
                     </a>
-
                     <ul class="slide-menu">
                         <li>
                             <a href="{{ route('adminSalaryExpense') }}" class="slide-item {{ $is_salary_active ? 'active' : '' }}">
@@ -140,12 +146,40 @@
                         </li>
                     </ul>
                 </li>
+
+                 <!-- Admin Management -->
+                <li class="sub-category">
+                    <h3>Admin Management</h3>
+                </li>
+                <li class="slide">
+                    <a class="side-menu__item has-link {{ Route::is('adminUserList', 'adminUserCreateOrEdit') ? 'active' : '' }}"
+                        href="{{ route('adminUserList') }}">
+                        <i class="side-menu__icon fe fe-user-check"></i>
+                        <span class="side-menu__label">Admin Users</span>
+                    </a>
+                </li>
+                <li class="slide">
+                    <a class="side-menu__item has-link {{ Route::is('adminRole','adminRoleCreateOrEdit') ? 'active' : '' }}"
+                        href="{{ route('adminRole') }}">
+                        <i class="side-menu__icon fe fe-shield"></i>
+                        <span class="side-menu__label">Roles</span>
+                    </a>
+                </li>
+                <li class="slide">
+                    <a class="side-menu__item has-link {{ Route::is('adminPermission','adminPermissionCreateOrEdit') ? 'active' : '' }}"
+                        href="{{ route('adminPermission') }}">
+                        <i class="side-menu__icon fe fe-lock"></i>
+                        <span class="side-menu__label">Permissions</span>
+                    </a>
+                </li>
+
             </ul>
 
-            <div class="slide-right" id="slide-right"><svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24"
-                    height="24" viewBox="0 0 24 24">
+            <div class="slide-right" id="slide-right">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24">
                     <path d="M10.707 17.707 16.414 12l-5.707-5.707-1.414 1.414L13.586 12l-4.293 4.293z" />
-                </svg></div>
+                </svg>
+            </div>
         </div>
     </div>
 </div>

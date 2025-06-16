@@ -12,7 +12,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    <a href="{{ route('adminEmployeeList') }}">Employee Data</a>
+                    <a href="{{ route('adminEmployeeList') }}">Employee</a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">@if(isset($employee->id)) Employee Update
                 @else Employee Create @endif </li>

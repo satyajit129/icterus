@@ -11,7 +11,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
-                    <a href="{{ route('adminDesignation') }}">Designation Data</a>
+                    <a href="{{ route('adminDesignation') }}">Designation </a>
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">@if(isset($designation->id)) Designation Update
                 @else Designation Create @endif </li>
