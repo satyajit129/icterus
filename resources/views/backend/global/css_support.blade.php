@@ -6,10 +6,10 @@
     <meta name="author" content="Spruko Technologies Private Limited">
     <meta name="keywords"
         content="admin,admin dashboard,admin panel,admin template,bootstrap,clean,dashboard,flat,jquery,modern,responsive,premium admin templates,responsive admin,ui,ui kit.">
-    <link rel="shortcut icon" type="image/x-icon" href="../assets/images/brand/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="{{ asset('uploads/'.  $settings->favicon) }}">
 
     <!-- TITLE -->
-    <title>@yield('title')</title>
+    <title>{{ $settings->website_name }} | @yield('title')</title>
 
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">

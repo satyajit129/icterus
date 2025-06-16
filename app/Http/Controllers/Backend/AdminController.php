@@ -213,5 +213,26 @@ class AdminController extends Controller
     {
         return $this->companyService->renderCompanyDealsView($id);
     }
+    public function adminEarningList():\Illuminate\View\View
+    {
+        return $this->companyService->renderEarningList();
+    }
+    public function adminEarningCreateOrEdit($id= null):\Illuminate\View\View
+    {
+        return $this->companyService->renderEarningCreateOrEdit($id);
+    }
+    public function adminEarningSave(Request $request, $id = null):\Illuminate\Http\RedirectResponse
+    {
+        return $this->companyService->handleEarningSave($request, $id);
+    }
+    public function adminEarningDelete($id):\Illuminate\Http\RedirectResponse
+    {
+        return $this->companyService->handleEarningDelete($id);
+    }
+    public function adminEarningView($id):\Illuminate\View\View
+    {
+        return $this->companyService->renderEarningView($id);
+    }
+
     
 }

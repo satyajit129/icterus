@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Company;
 use App\Models\CompanyDeal;
+use App\Models\Earning;
+use App\Models\Employee;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
@@ -38,9 +40,7 @@ class CompanyService
                 'address' => 'nullable',
                 'categories' => 'nullable',
             ]);
-
             $company = $id ? Company::findOrFail($id) : new Company();
-
             $company->name = $request->name;
             $company->ceo_name = $request->ceo_name;
             $company->ceo_phone = $request->ceo_phone;
@@ -140,6 +140,87 @@ class CompanyService
     public function renderCompanyDealsView($id): View
     {
         $company_deal = CompanyDeal::with('companies')->findOrFail($id);
-        return view('backend.pages.company_deals_view',compact('company_deal'));
+        return view('backend.pages.company_deals_view', compact('company_deal'));
     }
+    public function renderEarningList(): View
+    {
+        $earnings = Earning::with('employee', 'companies')->get();
+        return view('backend.pages.earnings', compact('earnings'));
+    }
+    public function renderEarningCreateOrEdit($id = null): View
+    {
+        $earning = null;
+        if ($id) {
+            $earning = Earning::with('employee', 'companies')->findOrFail($id);
+        }
+        $employees = Employee::select('id', 'name')->where('status', 1)->get();
+        $companies = Company::select('id', 'name')->get();
+        return view('backend.pages.earning_create_or_edit', compact('earning', 'employees', 'companies'));
+    }
+    public function handleEarningSave($request, $id = null): RedirectResponse
+    {
+        try {
+            $request->validate([
+                'company_id' => 'required|exists:companies,id',
+                'employee_id' => 'required|exists:employees,id',
+                'date' => 'nullable|date_format:d/m/Y',
+                'payment_method' => 'nullable|string|max:255',
+                'phone_number' => 'nullable|string|max:255',
+                'paid_amount' => 'nullable|numeric',
+                'trnx_id' => 'nullable|string|max:255',
+                'sales_status' => 'nullable|string|max:255',
+                'customer_number' => 'nullable|string|max:255',
+                'deals_amount' => 'nullable|numeric',
+                'due_amount' => 'nullable|numeric',
+                'product_name' => 'nullable|string|max:255',
+                'details' => 'nullable|string',
+            ]);
+
+            $earning = $id ? Earning::findOrFail($id) : new Earning();
+
+            $earning->company_id = $request->company_id;
+            $earning->employee_id = $request->employee_id;
+            $earning->date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
+            $earning->payment_method = $request->payment_method;
+            $earning->phone_number = $request->phone_number;
+            $earning->paid_amount = $request->paid_amount;
+            $earning->trnx_id = $request->trnx_id;
+            $earning->sales_status = $request->sales_status;
+            $earning->customer_number = $request->customer_number;
+            $earning->deals_amount = $request->deals_amount;
+            $earning->due_amount = $request->due_amount;
+            $earning->product_name = $request->product_name;
+            $earning->details = $request->details;
+            $earning->save();
+            return redirect()->route('adminEarningList')->with('success', $id ? 'Earning updated successfully!' : 'Earning created successfully!');
+
+        } catch (ValidationException $th) {
+            return redirect()
+                ->back()
+                ->withErrors($th->validator)
+                ->withInput()
+                ->with('error', 'Validation failed: ' . $th->getMessage());
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Validation failed: ' . $e->getMessage());
+        }
+    }
+    public function handleEarningDelete($id): RedirectResponse
+    {
+        try {
+            $earning = Earning::findOrFail($id);
+            $earning->delete();
+            return redirect()->route('adminEarningList')->with('success', 'Data deleted successfully!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
+        }
+    }
+    public function renderEarningView($id): View
+    {
+        $earning = Earning::with('employee', 'companies')->findOrFail($id);
+        return view('backend.pages.earning_view', compact('earning'));
+    }
+
 }
