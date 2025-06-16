@@ -222,6 +222,11 @@ class AdminController extends Controller
     {
         return $this->companyService->renderCompanyDealsView($id);
     }
+    public function companyDealsPaymentData(Request $request): View
+    {
+       
+        return $this->companyService->renderCompanyDealsPaymentData($request);
+    }
     public function adminEarningList(): View
     {
         return $this->companyService->renderEarningList();

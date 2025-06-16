@@ -142,6 +142,11 @@ class CompanyService
         $company_deal = CompanyDeal::with('companies')->findOrFail($id);
         return view('backend.pages.company_deals_view', compact('company_deal'));
     }
+    public function renderCompanyDealsPaymentData($request): View
+    {
+        $deals_id = $request->deals_id;
+        return view('backend.pages.company_deals_payment', compact('deals_id'));
+    }
     public function renderEarningList(): View
     {
         $earnings = Earning::with('employee', 'companies')->get();

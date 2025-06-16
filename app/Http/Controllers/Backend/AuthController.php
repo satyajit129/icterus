@@ -48,5 +48,9 @@ class AuthController extends Controller
     {
         return $this->authService->handleAdminUserSave($request, $id);
     }
+    public function adminUserDelete($id): RedirectResponse
+    {
+        return $this->authService->handleAdminUserDelete($id);
+    }
 
 }

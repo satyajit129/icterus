@@ -146,4 +146,17 @@ class AuthService
                 ->with('error', 'Validation failed: ' . $e->getMessage());
         }
     }
+    public function handleAdminUserDelete($id): RedirectResponse
+    {
+        try {
+            $user = User::findOrFail($id);
+            if ($user->role != UserRole::ADMIN) {
+                return redirect()->back()->with('error', 'You can only delete admin users.');
+            }
+            $user->delete();
+            return redirect()->route('adminUserList')->with('success', 'Admin deleted successfully.');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Failed to delete admin: ' . $e->getMessage());
+        }
+    }
 }

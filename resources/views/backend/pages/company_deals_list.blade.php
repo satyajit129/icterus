@@ -44,6 +44,7 @@
                                             <th class="wd-15p border-bottom-0">Contract Duration</th>
                                             <th class="wd-15p border-bottom-0">Deals Amount</th>
                                             <th class="wd-15p border-bottom-0">Payment Frequency</th>
+                                            <th class="wd-15p border-bottom-0">Receive Payment</th>
                                             <th class="wd-15p border-bottom-0">Action</th>
                                         </tr>
                                     </thead>
@@ -51,12 +52,21 @@
                                         @forelse ($company_deals as $index => $company_deal)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($company_deal->date)->format('d F Y')}}</td>
+                                                <td>{{ \Carbon\Carbon::parse($company_deal->date)->format('d F Y') }}</td>
                                                 <td>{{ $company_deal->companies->name }}</td>
                                                 <td>{{ $company_deal->deals }}</td>
                                                 <td>{{ $company_deal->contract_duration }}</td>
                                                 <td>{{ $company_deal->deals_amount }}</td>
                                                 <td>{{ $company_deal->payment_frequency }}</td>
+
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-success payment-btn"
+                                                        data-id="{{ $company_deal->id }}" title="Make Payment">
+                                                        <i class="fe fe-credit-card"></i>
+                                                    </a>
+
+                                                </td>
+
                                                 <td>
                                                     <a href="{{ route('adminCompanyDealsCreateOrEdit', $company_deal->id) }}"
                                                         class="btn btn-sm btn-primary" title="Edit">
@@ -106,6 +116,19 @@
             </div>
         </div>
     </div>
+    <div class="modal effect-scale" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content modal-content-demo">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="paymentModalLabel">Delete Confirmation</h6>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 @section('custom_js')
@@ -117,4 +140,33 @@
             });
         });
     </script>
+    <script>
+        $(document).ready(function() {
+            $('.payment-btn').on('click', function() {
+                var dealId = $(this).data('id');
+
+                $.ajax({
+                    type: "GET",
+                    url: "{{ route('companyDealsPaymentData') }}",
+                    data: {
+                        deals_id: dealId
+                    },
+                    success: function(response) {
+                        // Inject HTML
+                        $('#paymentModal .modal-body').html(response);
+
+                        // Optional: change title
+                        $('#paymentModalLabel').text('Make Payment');
+
+                        // ✅ Simple show!
+                        $('#paymentModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+
 @endsection
