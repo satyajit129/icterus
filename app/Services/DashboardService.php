@@ -6,14 +6,16 @@ use App\Models\Employee;
 use App\Models\IncentiveExpense;
 use App\Models\OfficeExpense;
 use App\Models\SalaryExpense;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class DashboardService
 {
-    public function renderDashboard():\Illuminate\View\View
+    public function renderDashboard(): View
     {
         $total_employees = Employee::where('status', 1)->count();
         $total_cost = $this->getTotalCost();
-        return view('backend.pages.admin_dashboard',compact('total_employees','total_cost'));
+        return view('backend.pages.admin_dashboard', compact('total_employees', 'total_cost'));
     }
     private function getTotalCost(): float
     {

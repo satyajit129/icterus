@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 
@@ -7,15 +7,17 @@ namespace App\Services;
 use App\Models\Department;
 use Exception;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class DepartmentService
 {
-    public function renderDepartmentPage():\Illuminate\View\View
+    public function renderDepartmentPage(): View
     {
         $departments = Department::all();
-        return view('backend.pages.department',compact('departments'));
+        return view('backend.pages.department', compact('departments'));
     }
-    public function renderDepartmentCreateOrEditPage($id = null): \Illuminate\View\View
+    public function renderDepartmentCreateOrEditPage($id = null): View
     {
         $department = null;
         if ($id) {
@@ -23,7 +25,7 @@ class DepartmentService
         }
         return view('backend.pages.department_create_or_edit', compact('department'));
     }
-    public function handleDepartmentSave($request, $id): \Illuminate\Http\RedirectResponse
+    public function handleDepartmentSave($request, $id): RedirectResponse
     {
         try {
             $request->validate([
@@ -32,7 +34,7 @@ class DepartmentService
             $department = $id ? Department::findOrFail($id) : new Department();
             $department->department = $request->department;
             $department->save();
-             return redirect()->route('adminDepartment')->with('success', $id ? 'Data Updated Successfully!' : 'Data Created Successfully!');
+            return redirect()->route('adminDepartment')->with('success', $id ? 'Data Updated Successfully!' : 'Data Created Successfully!');
         } catch (ValidationException $e) {
             return redirect()->back()->with('error', 'Validation failed: ' . $e->getMessage());
         } catch (Exception $e) {
@@ -40,7 +42,8 @@ class DepartmentService
         }
 
     }
-    public function handleDepartmentDelete($id){
+    public function handleDepartmentDelete($id): RedirectResponse
+    {
         try {
             $designation = Department::findOrFail($id);
             $designation->delete();

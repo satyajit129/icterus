@@ -147,6 +147,32 @@
                     </ul>
                 </li>
 
+                 <!-- Admin Management -->
+                <li class="sub-category">
+                    <h3>Admin Management</h3>
+                </li>
+                <li class="slide">
+                    <a class="side-menu__item has-link {{ Route::is('adminUserList', 'adminUserCreateOrEdit') ? 'active' : '' }}"
+                        href="{{ route('adminUserList') }}">
+                        <i class="side-menu__icon fe fe-user-check"></i>
+                        <span class="side-menu__label">Admin Users</span>
+                    </a>
+                </li>
+                <li class="slide">
+                    <a class="side-menu__item has-link {{ Route::is('adminRole','adminRoleCreateOrEdit') ? 'active' : '' }}"
+                        href="{{ route('adminRole') }}">
+                        <i class="side-menu__icon fe fe-shield"></i>
+                        <span class="side-menu__label">Roles</span>
+                    </a>
+                </li>
+                <li class="slide">
+                    <a class="side-menu__item has-link {{ Route::is('adminPermission','adminPermissionCreateOrEdit') ? 'active' : '' }}"
+                        href="{{ route('adminPermission') }}">
+                        <i class="side-menu__icon fe fe-lock"></i>
+                        <span class="side-menu__label">Permissions</span>
+                    </a>
+                </li>
+
             </ul>
 
             <div class="slide-right" id="slide-right">

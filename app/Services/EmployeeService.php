@@ -15,13 +15,13 @@ use Illuminate\Validation\ValidationException;
 
 class EmployeeService
 {
-    public function renderEmployeeList(): \Illuminate\View\View
+    public function renderEmployeeList(): View
     {
         $employees = Employee::with(['designation', 'department'])->where('status', 1)->get();
 
         return view('backend.pages.employees', compact('employees'));
     }
-    public function renderEmployeeCreateOrEditPage($id = null): \Illuminate\View\View
+    public function renderEmployeeCreateOrEditPage($id = null): View
     {
         $employee = null;
         if ($id) {
@@ -31,7 +31,7 @@ class EmployeeService
         $departments = Department::all();
         return view('backend.pages.employee_create_or_edit', compact('employee', 'designations', 'departments'));
     }
-    public function handleEmployeeSave($request, $id): \Illuminate\Http\RedirectResponse
+    public function handleEmployeeSave($request, $id): RedirectResponse
     {
         try {
             $request->validate([

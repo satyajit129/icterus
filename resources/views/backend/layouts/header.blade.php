@@ -51,9 +51,6 @@
                                     <a class="dropdown-item" href="{{ route('adminProfile') }}">
                                         <i class="dropdown-icon fe fe-user"></i> Profile
                                     </a>
-                                    <a class="dropdown-item" href="lockscreen.html">
-                                        <i class="dropdown-icon fe fe-lock"></i> Lockscreen
-                                    </a>
                                     <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#signOut">
                                         <i class="dropdown-icon fe fe-alert-circle"></i> Sign out
                                     </a>

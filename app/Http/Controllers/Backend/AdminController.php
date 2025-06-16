@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SettingRequest;
-use App\Models\SalaryExpense;
 use App\Services\CompanyService;
 use App\Services\DashboardService;
 use App\Services\DepartmentService;
@@ -12,12 +10,12 @@ use App\Services\DesignationService;
 use App\Services\EmployeeService;
 use App\Services\IncentiveExpenseService;
 use App\Services\OfficeExpenseService;
+use App\Services\RolePermisionService;
 use App\Services\SalaryExpenseService;
 use App\Services\SettingService;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class AdminController extends Controller
 {
@@ -30,10 +28,20 @@ class AdminController extends Controller
     protected OfficeExpenseService $officeExpenseService;
     protected DashboardService $dashboardService;
     protected CompanyService $companyService;
+    protected RolePermisionService $rolePermisionService;
 
-    public function __construct(SettingService $settingService, DesignationService $designationService, DepartmentService $departmentService, EmployeeService $employeeService, SalaryExpenseService $salaryExpenseService, IncentiveExpenseService $incentiveExpenseService, OfficeExpenseService $officeExpenseService,
-    DashboardService $dashboardService, CompanyService $companyService)
-    {
+    public function __construct(
+        SettingService $settingService,
+        DesignationService $designationService,
+        DepartmentService $departmentService,
+        EmployeeService $employeeService,
+        SalaryExpenseService $salaryExpenseService,
+        IncentiveExpenseService $incentiveExpenseService,
+        OfficeExpenseService $officeExpenseService,
+        DashboardService $dashboardService,
+        CompanyService $companyService,
+        RolePermisionService $rolePermisionService,
+    ) {
         $this->settingService = $settingService;
         $this->designationService = $designationService;
         $this->departmentService = $departmentService;
@@ -43,65 +51,66 @@ class AdminController extends Controller
         $this->officeExpenseService = $officeExpenseService;
         $this->dashboardService = $dashboardService;
         $this->companyService = $companyService;
+        $this->rolePermisionService = $rolePermisionService;
     }
 
-    public function adminDashboard(): \Illuminate\View\View
+    public function adminDashboard(): View
     {
         return $this->dashboardService->renderDashboard();
     }
-    public function adminSettings(): \Illuminate\View\View
+    public function adminSettings(): View
     {
         return $this->settingService->renderSettingsPage();
     }
-    public function adminSettingsUpdate(Request $request): \Illuminate\Http\RedirectResponse
+    public function adminSettingsUpdate(Request $request): RedirectResponse
     {
         return $this->settingService->handleSettingsUpdate($request);
     }
-    public function adminDesignation(): \Illuminate\View\View
+    public function adminDesignation(): View
     {
         return $this->designationService->renderDesignationPage();
     }
-    public function adminDesignationCreateOrEdit($id = null): \Illuminate\View\View
+    public function adminDesignationCreateOrEdit($id = null): View
     {
         return $this->designationService->renderDesignationCreateOrEditPage($id);
     }
-    public function adminDesignationSave(Request $request, $id = null): \Illuminate\Http\RedirectResponse
+    public function adminDesignationSave(Request $request, $id = null): RedirectResponse
     {
         return $this->designationService->handleDesignationSave($request, $id);
     }
-    public function adminDesignationDelete($id): \Illuminate\Http\RedirectResponse
+    public function adminDesignationDelete($id): RedirectResponse
     {
         return $this->designationService->handleDesignationDelete($id);
     }
-    public function adminDepartment(): \Illuminate\View\View
+    public function adminDepartment(): View
     {
         return $this->departmentService->renderDepartmentPage();
     }
-    public function adminDepartmentCreateOrEdit($id = null): \Illuminate\View\View
+    public function adminDepartmentCreateOrEdit($id = null): View
     {
         return $this->departmentService->renderDepartmentCreateOrEditPage($id);
     }
-    public function adminDepartmentSave(Request $request, $id = null): \Illuminate\Http\RedirectResponse
+    public function adminDepartmentSave(Request $request, $id = null): RedirectResponse
     {
         return $this->departmentService->handleDepartmentSave($request, $id);
     }
-    public function adminDepartmentDelete($id): \Illuminate\Http\RedirectResponse
+    public function adminDepartmentDelete($id): RedirectResponse
     {
         return $this->departmentService->handleDepartmentDelete($id);
     }
-    public function adminEmployeeList():\Illuminate\View\View
+    public function adminEmployeeList(): View
     {
         return $this->employeeService->renderEmployeeList();
     }
-    public function adminEmployeeCreateOrEdit($id = null):\Illuminate\View\View
+    public function adminEmployeeCreateOrEdit($id = null): View
     {
         return $this->employeeService->renderEmployeeCreateOrEditPage($id);
     }
-    public function adminEmployeeSave(Request $request, $id=null): \Illuminate\Http\RedirectResponse
+    public function adminEmployeeSave(Request $request, $id = null): RedirectResponse
     {
         return $this->employeeService->handleEmployeeSave($request, $id);
     }
-    public function adminEmployeeDelete($id): \Illuminate\Http\RedirectResponse
+    public function adminEmployeeDelete($id): RedirectResponse
     {
         return $this->employeeService->handleEmployeeDelete($id);
     }
@@ -109,130 +118,162 @@ class AdminController extends Controller
     {
         return $this->employeeService->getEmployeeData($request);
     }
-    public function adminEmployeeView($id):\Illuminate\View\View
+    public function adminEmployeeView($id): View
     {
         return $this->employeeService->seeEmployeeData($id);
     }
-    public function adminSalaryExpense(): \Illuminate\View\View
+    public function adminSalaryExpense(): View
     {
         return $this->salaryExpenseService->renderSalaryExpenseList();
     }
-    public function adminSalaryExpenseCreateOrEdit($id = null): \Illuminate\View\View
+    public function adminSalaryExpenseCreateOrEdit($id = null): View
     {
         return $this->salaryExpenseService->renderSalaryExpenseCreateOrEditPage($id);
     }
-    public function adminSalaryExpenseSave(Request $request, $id=null): \Illuminate\Http\RedirectResponse
+    public function adminSalaryExpenseSave(Request $request, $id = null): RedirectResponse
     {
         return $this->salaryExpenseService->handleSalaryExpenseSave($request, $id);
     }
-    public function adminSalaryExpenseDelete($id):\Illuminate\Http\RedirectResponse
+    public function adminSalaryExpenseDelete($id): RedirectResponse
     {
         return $this->salaryExpenseService->handleSalaryExpenseDelete($id);
     }
-    public function adminSalaryExpenseView($id): \Illuminate\View\View
+    public function adminSalaryExpenseView($id): View
     {
         return $this->salaryExpenseService->renderSalaryExpenseView($id);
     }
-    public function adminIncentiveExpense(): \Illuminate\View\View
+    public function adminIncentiveExpense(): View
     {
         return $this->incentiveExpenseService->renderIncentiveExpense();
     }
-    public function adminIncentiveExpenseCreateOrEdit($id = null):\Illuminate\View\View
+    public function adminIncentiveExpenseCreateOrEdit($id = null): View
     {
         return $this->incentiveExpenseService->renderIncentiveExpenseCreateOrEditPage($id);
     }
-    public function adminIncentiveExpenseSave(Request $request , $id=null): \Illuminate\Http\RedirectResponse
+    public function adminIncentiveExpenseSave(Request $request, $id = null): RedirectResponse
     {
-        return $this->incentiveExpenseService->handleIncentiveExpenseSave( $request,$id);
+        return $this->incentiveExpenseService->handleIncentiveExpenseSave($request, $id);
     }
-    public function adminIncentiveExpenseDelete($id):\Illuminate\Http\RedirectResponse
+    public function adminIncentiveExpenseDelete($id): RedirectResponse
     {
         return $this->incentiveExpenseService->handleIncentiveExpenseDelete($id);
     }
-    public function adminIncentiveExpenseView($id): \Illuminate\View\View
+    public function adminIncentiveExpenseView($id): View
     {
         return $this->incentiveExpenseService->renderIncentiveExpenseView($id);
     }
-    public function adminOfficeExpense(): \Illuminate\View\View
+    public function adminOfficeExpense(): View
     {
         return $this->officeExpenseService->renderOfficeExpense();
     }
-    public function adminOfficeExpenseCreateOrEdit($id = null):\Illuminate\View\View
+    public function adminOfficeExpenseCreateOrEdit($id = null): View
     {
         return $this->officeExpenseService->renderOfficeExpenseCreateOrEditPage($id);
     }
-    public function adminOfficeExpenseSave(Request $request , $id=null): \Illuminate\Http\RedirectResponse
+    public function adminOfficeExpenseSave(Request $request, $id = null): RedirectResponse
     {
-        return $this->officeExpenseService->handleOfficeExpenseSave( $request,$id);
+        return $this->officeExpenseService->handleOfficeExpenseSave($request, $id);
     }
-    public function adminOfficeExpenseDelete($id):\Illuminate\Http\RedirectResponse
+    public function adminOfficeExpenseDelete($id): RedirectResponse
     {
         return $this->officeExpenseService->handleOfficeExpenseDelete($id);
     }
-    public function adminOfficeExpenseView($id): \Illuminate\View\View
+    public function adminOfficeExpenseView($id): View
     {
         return $this->officeExpenseService->renderOfficeExpenseView($id);
     }
-    public function adminCompanyList(): \Illuminate\View\View
+    public function adminCompanyList(): View
     {
         return $this->companyService->renderCompanyList();
     }
-    public function adminCompanyCreateOrEdit($id = null):\Illuminate\View\View
+    public function adminCompanyCreateOrEdit($id = null): View
     {
         return $this->companyService->renderCompanyCreateOrEditPage($id);
     }
-    public function adminCompanySave(Request $request , $id=null): \Illuminate\Http\RedirectResponse
+    public function adminCompanySave(Request $request, $id = null): RedirectResponse
     {
         return $this->companyService->handleCompanySave($request, $id);
     }
-    public function adminCompanyDelete($id):\Illuminate\Http\RedirectResponse
+    public function adminCompanyDelete($id): RedirectResponse
     {
         return $this->companyService->handleCompanyDelete($id);
     }
-    public function adminCompanyView($id):\Illuminate\View\View
+    public function adminCompanyView($id): View
     {
         return $this->companyService->renderCompanyView($id);
     }
-    public function adminCompanyDealsList():\Illuminate\View\View
+    public function adminCompanyDealsList(): View
     {
         return $this->companyService->renderCompanyDealsList();
     }
-    public function adminCompanyDealsCreateOrEdit($id=null) :\Illuminate\View\View
+    public function adminCompanyDealsCreateOrEdit($id = null): View
     {
         return $this->companyService->renderCompanyDealsCreateOrEdit($id);
     }
-    public function adminCompanyDealsSave(Request $request , $id=null): \Illuminate\Http\RedirectResponse
+    public function adminCompanyDealsSave(Request $request, $id = null): RedirectResponse
     {
         return $this->companyService->handleCompanyDealsSave($request, $id);
     }
-    public function adminCompanyDealsDelete($id):\Illuminate\Http\RedirectResponse
+    public function adminCompanyDealsDelete($id): RedirectResponse
     {
         return $this->companyService->handleCompanyDealsDelete($id);
     }
-    public function adminCompanyDealsView($id):\Illuminate\View\View
+    public function adminCompanyDealsView($id): View
     {
         return $this->companyService->renderCompanyDealsView($id);
     }
-    public function adminEarningList():\Illuminate\View\View
+    public function adminEarningList(): View
     {
         return $this->companyService->renderEarningList();
     }
-    public function adminEarningCreateOrEdit($id= null):\Illuminate\View\View
+    public function adminEarningCreateOrEdit($id = null): View
     {
         return $this->companyService->renderEarningCreateOrEdit($id);
     }
-    public function adminEarningSave(Request $request, $id = null):\Illuminate\Http\RedirectResponse
+    public function adminEarningSave(Request $request, $id = null): RedirectResponse
     {
         return $this->companyService->handleEarningSave($request, $id);
     }
-    public function adminEarningDelete($id):\Illuminate\Http\RedirectResponse
+    public function adminEarningDelete($id): RedirectResponse
     {
         return $this->companyService->handleEarningDelete($id);
     }
-    public function adminEarningView($id):\Illuminate\View\View
+    public function adminEarningView($id): View
     {
         return $this->companyService->renderEarningView($id);
     }
+    public function adminRole(): View
+    {
+        return $this->rolePermisionService->renderAdminRoleList();
+    }
+    public function adminRoleCreateOrEdit($id= null): View
+    {
+        return $this->rolePermisionService->renderAdminRoleCreateOrEdit($id);
+    }
+    public function adminRoleSave(Request $request, $id=null): RedirectResponse
+    {
+        return $this->rolePermisionService->handleRoleSave($request, $id);
+    }
+    public function adminRoleDelete($id): RedirectResponse
+    {
+        return $this->rolePermisionService->handleRoleDelete($id);
+    }
+    public function adminPermission(): View
+    {
+        return $this->rolePermisionService->renderAdminPermissionList();
+    }
+    public function adminPermissionCreateOrEdit($id = null): View
+    {
+        return $this->rolePermisionService->renderPermissionCreateOrEdit($id);
+    }
+    public function adminPermissionSave(Request $request, $id=null): RedirectResponse
+    {
+        return $this->rolePermisionService->handlePermissionSave($request, $id);
+    }
+    public function adminPermissionDelete($id): RedirectResponse
+    {
+        return $this->rolePermisionService->handlePermissionDelete($id);
+    }
 
-    
+
 }

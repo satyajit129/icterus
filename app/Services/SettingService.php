@@ -5,20 +5,22 @@ namespace App\Services;
 use App\Http\Requests\SettingRequest;
 use App\Models\Setting;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class SettingService
 {
-    public function renderSettingsPage(): \Illuminate\View\View
+    public function renderSettingsPage(): View
     {
         $settings = Setting::first();
         return view('backend.pages.settings', compact('settings'));
     }
 
-    public function handleSettingsUpdate($request): \Illuminate\Http\RedirectResponse
+    public function handleSettingsUpdate($request): RedirectResponse
     {
         try {
             $request->validate([
@@ -50,10 +52,17 @@ class SettingService
             $settings->save();
 
             return redirect()->back()->with('success', 'Settings updated successfully.');
-        } catch (ValidationException $e) {
-            return redirect()->back()->with('error', 'Validation failed: ' . $e->getMessage());
+        } catch (ValidationException $th) {
+            return redirect()
+                ->back()
+                ->withErrors($th->validator)
+                ->withInput()
+                ->with('error', 'Failed: ' . $th->getMessage());
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Failed: ' . $e->getMessage());
         }
     }
 

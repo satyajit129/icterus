@@ -8,16 +8,18 @@ use App\Models\OfficeExpense;
 use App\Models\SalaryExpense;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class OfficeExpenseService
 {
-    public function renderOfficeExpense(): \Illuminate\View\View
+    public function renderOfficeExpense(): View
     {
         $office_expenses = OfficeExpense::all();
         return view('backend.pages.office_expense', compact('office_expenses'));
     }
-    public function renderOfficeExpenseCreateOrEditPage($id = null): \Illuminate\View\View
+    public function renderOfficeExpenseCreateOrEditPage($id = null): View
     {
         $office_expense = null;
         if ($id) {
@@ -25,7 +27,7 @@ class OfficeExpenseService
         }
         return view('backend.pages.office_expense_create_or_edit', compact('office_expense'));
     }
-    public function handleOfficeExpenseSave($request, $id): \Illuminate\Http\RedirectResponse
+    public function handleOfficeExpenseSave($request, $id): RedirectResponse
     {
         try {
             $request->validate([
@@ -60,7 +62,7 @@ class OfficeExpenseService
                 ->with('error', 'Failed: ' . $e->getMessage());
         }
     }
-    public function handleOfficeExpenseDelete($id):\Illuminate\Http\RedirectResponse
+    public function handleOfficeExpenseDelete($id): RedirectResponse
     {
         try {
             $employee = OfficeExpense::findOrFail($id);
@@ -70,7 +72,7 @@ class OfficeExpenseService
             return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }
     }
-    public function renderOfficeExpenseView($id): \Illuminate\View\View
+    public function renderOfficeExpenseView($id): View
     {
         $office_expense = OfficeExpense::findOrFail($id);
         return view('backend.pages.office_expense_view', compact('office_expense'));

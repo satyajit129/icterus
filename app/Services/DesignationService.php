@@ -2,19 +2,21 @@
 namespace App\Services;
 use App\Models\Designation;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class DesignationService
 {
-    public function renderDesignationPage(): \Illuminate\View\View
+    public function renderDesignationPage(): View
     {
         $designations = Designation::all();
         return view('backend.pages.designation', compact('designations'));
     }
 
-    public function renderDesignationCreateOrEditPage($id = null): \Illuminate\View\View
+    public function renderDesignationCreateOrEditPage($id = null): View
     {
         $designation = null;
         if ($id) {
@@ -22,7 +24,7 @@ class DesignationService
         }
         return view('backend.pages.designation_create_or_edit', compact('designation'));
     }
-    public function handleDesignationSave($request, $id = null)
+    public function handleDesignationSave($request, $id = null): RedirectResponse
     {
         try {
             $request->validate([
@@ -38,7 +40,7 @@ class DesignationService
             return redirect()->back()->with('error', 'An error occurred: ' . $e->getMessage());
         }
     }
-    public function handleDesignationDelete($id)
+    public function handleDesignationDelete($id): RedirectResponse
     {
         try {
             $designation = Designation::findOrFail($id);
