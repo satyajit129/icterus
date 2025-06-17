@@ -60,7 +60,7 @@
                                                     </a>
 
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminUserDelete', ['id' => $employee->id]) }}"
+                                                        data-url="{{ route('adminUserDelete', ['id' => $admin_user->id]) }}"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
                                                         <i class="fe fe-trash-2"></i>
                                                     </a>
@@ -71,7 +71,7 @@
                                                 <td colspan="5" class="text-center text-muted">No Data found</td>
                                             </tr>
                                         @endforelse
-                                        
+
                                     </tbody>
                                 </table>
                             </div>
