@@ -222,10 +222,25 @@ class AdminController extends Controller
     {
         return $this->companyService->renderCompanyDealsView($id);
     }
-    public function companyDealsPaymentData(Request $request): View
+    public function adminDealsPayment($id): View
     {
-       
-        return $this->companyService->renderCompanyDealsPaymentData($request);
+        return $this->companyService->renderadminDealsPayment($id);
+    }
+    public function adminDealsPaymentCreateOrEdit(Request $request, $id= null): View
+    {
+        return $this->companyService->renderDealsPaymentCreateOrEdit($request, $id);
+    }
+    public function adminDealsPaymentSave(Request $request, $id = null): RedirectResponse
+    {
+        return $this->companyService->handleDealsPaymentSave($request, $id);
+    }
+    public function adminDealsPaymentDelete($id): RedirectResponse
+    {
+        return $this->companyService->handleDealsPaymentDelete($id);
+    }
+    public function adminDealsPaymentView($id): View
+    {
+        return $this->companyService->renderDealsPaymentView($id);
     }
     public function adminEarningList(): View
     {

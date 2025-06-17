@@ -18,7 +18,7 @@
 
             @php
                 // Route arrays
-                $company_deals_routes = ['adminCompanyDealsList','adminCompanyDealsView','adminCompanyDealsCreateOrEdit'];
+                $company_deals_routes = ['adminCompanyDealsList','adminCompanyDealsView','adminCompanyDealsCreateOrEdit','adminDealsPayment', 'adminDealsPaymentCreateOrEdit'];
                 $earning_routes = ['adminEarningList', 'adminEarningCreateOrEdit','adminEarningView'];
                 $salary_routes = ['adminSalaryExpense', 'adminSalaryExpenseCreateOrEdit','adminSalaryExpenseView'];
                 $incentive_routes = ['adminIncentiveExpense', 'adminIncentiveExpenseCreateOrEdit','adminIncentiveExpenseView'];

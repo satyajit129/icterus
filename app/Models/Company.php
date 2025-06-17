@@ -8,4 +8,9 @@ class Company extends Model
 {
     protected $guarded = [];
     protected $table = "companies";
+
+    public function deals()
+    {
+        return $this->hasMany(CompanyDeal::class);
+    }
 }

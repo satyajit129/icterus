@@ -1,90 +1,127 @@
-<div class="card">
-    <div class="card-body">
-        <form action="" method="POST" enctype="multipart/form-data">
-            @csrf
 
-            <input type="hidden" name="company_deal_id" value="{{ $deals_id }}">
 
-            <div class="row">
-                <div class="col-md-12">
+@extends('backend.layouts.master')
 
-                    {{-- Payment Date --}}
-                    <div class="row mb-4">
-                        <label class="col-md-3 form-label">Payment Date</label>
-                        <div class="col-md-9">
-                            <input type="text"
-                                class="form-control fc-datepicker"
-                                name="payment_date"
-                                placeholder="DD/MM/YYYY"
-                                value="{{ old('payment_date') }}"
-                                required
-                                autocomplete="off">
-                            @error('payment_date')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-                    </div>
+@section('title', 'Company Deals Payment')
 
-                    {{-- Amount --}}
-                    <div class="row mb-4">
-                        <label class="col-md-3 form-label">Amount</label>
-                        <div class="col-md-9">
-                            <input type="number"
-                                class="form-control"
-                                name="amount"
-                                placeholder="Enter amount"
-                                value="{{ old('amount') }}"
-                                required>
-                            @error('amount')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-                    </div>
+@section('custom_css')
+    <style>
+        .table td {
+            vertical-align: middle !important;
+        }
+    </style>
+@endsection
+@section('content')
 
-                    {{-- Payment Method --}}
-                    <div class="row mb-4">
-                        <label class="col-md-3 form-label">Payment Method</label>
-                        <div class="col-md-9">
-                            <input type="text"
-                                class="form-control"
-                                name="payment_method"
-                                placeholder="e.g. Cash, Bank, Cheque"
-                                value="{{ old('payment_method') }}">
-                            @error('payment_method')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-                    </div>
-
-                    {{-- Notes --}}
-                    <div class="row mb-4">
-                        <label class="col-md-3 form-label">Notes</label>
-                        <div class="col-md-9">
-                            <textarea class="form-control"
-                                name="notes"
-                                rows="3"
-                                placeholder="Additional notes">{{ old('notes') }}</textarea>
-                            @error('notes')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-                    </div>
-
-                    {{-- Submit Button --}}
-                    <div class="row mb-4">
-                        <div class="col-md-12 d-flex justify-content-end" style="gap: 10px;">
-                            <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-dark ">
-                                <i class="fe fe-upload me-2"></i>
-                                Save Payment
+    <div class="page-header">
+        <h1 class="page-title">Company Deals Payment</h1>
+        <div>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('adminCompanyDealsList') }}">Company Deals</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Company Deals Payment</li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-xl-12">
+            <div class="card">
+                
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h3 class="card-title">Company Deals Payment</h3>
+                    <a href="{{ route('adminDealsPaymentCreateOrEdit', ['id' => null]) }}?deal_id={{ $id }}">
+                            <button type="button" class="btn btn-primary btn-sm">
+                                <i class="fe fe-plus me-2"></i>Add Deal Payment
                             </button>
+                        </a>
+                </div>
+                <div class="card-body">
+                    <div class="row row-sm">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-nowrap border-bottom">
+                                    <thead>
+                                        <tr>
+                                            <th class="wd-15p border-bottom-0">#</th>
+                                            <th class="wd-15p border-bottom-0">Company </th>
+                                            <th class="wd-15p border-bottom-0">Payment Date</th>
+                                            <th class="wd-15p border-bottom-0">Amount</th>
+                                            <th class="wd-15p border-bottom-0">Payment Method</th>
+                                            <th class="wd-15p border-bottom-0">Notes</th>
+                                            <th class="wd-15p border-bottom-0">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($deal_payments as $index => $deal_payment)
+                                            <tr>
+                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $deal_payment->companyDeal->companies->name }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($deal_payment->payment_date)->format('d F Y') }}</td>
+                                               
+                                                <td>{{ $deal_payment->amount }}</td>
+                                                <td>{{ $deal_payment->payment_method }}</td>
+                                                <td>{{ $deal_payment->notes }}</td>
+
+                                                <td>
+                                                    <a href="{{ route('adminDealsPaymentCreateOrEdit', $deal_payment->id) }}?deal_id={{ $id }}"
+                                                        class="btn btn-sm btn-primary" title="Edit">
+                                                        <i class="fe fe-edit"></i>
+                                                    </a>
+
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                        data-url="{{ route('adminDealsPaymentDelete', ['id' => $deal_payment->id]) }}"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                        <i class="fe fe-trash-2"></i>
+                                                    </a>
+                                                    <a href="{{ route('adminDealsPaymentView', $deal_payment->id) }}"
+                                                        class="btn btn-sm btn-info" title="View">
+                                                        <i class="fe fe-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="13" class="text-center text-muted">No Deals found</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
-
-        </form>
+        </div>
     </div>
-</div>
+    <div class="modal effect-scale" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered text-center" role="document">
+            <div class="modal-content modal-content-demo">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="deleteModalLabel">Delete Confirmation</h6>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this Data?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <a href="#" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('custom_js')
+    <script>
+        $(document).ready(function() {
+            $('.delete-btn').on('click', function() {
+                var deleteUrl = $(this).data('url');
+                $('#confirmDeleteBtn').attr('href', deleteUrl);
+            });
+        });
+    </script>
+
+@endsection
 
