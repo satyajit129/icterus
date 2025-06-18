@@ -294,6 +294,10 @@ class AdminController extends Controller
     {
         return $this->rolePermisionService->handlePermissionDelete($id);
     }
+    public function adminRoleAccess(): View
+    {
+        return $this->rolePermisionService->renderRoleAccess();
+    }
 
 
 }

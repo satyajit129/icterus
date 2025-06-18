@@ -106,4 +106,10 @@ class RolePermisionService
             return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }
     }
+    public function renderRoleAccess(): View
+    {
+        $roles = Role::all();
+        $permissions = Permission::all();
+        return view('backend.pages.role_permissions', compact('roles','permissions'));
+    }
 }

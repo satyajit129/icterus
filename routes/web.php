@@ -117,5 +117,8 @@ Route::prefix('admin')->group(function () {
             Route::post('/save/{id?}', [AdminController::class, 'adminPermissionSave'])->name('adminPermissionSave');
             Route::get('/delete/{id}', [AdminController::class, 'adminPermissionDelete'])->name('adminPermissionDelete');
         });
+        Route::prefix('role-access')->group(function(){
+            Route::get('/',[AdminController::class,'adminRoleAccess'])->name('adminRoleAccess');
+        });
     });
 });

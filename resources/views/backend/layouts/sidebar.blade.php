@@ -56,6 +56,14 @@
                     </a>
                 </li>
 
+                <li class="slide">
+                    <a class="side-menu__item has-link"
+                        href="{{ route('adminRoleAccess') }}">
+                        <i class="side-menu__icon fe fe-shield"></i>
+                        <span class="side-menu__label">Role Access</span>
+                    </a>
+                </li>
+
                 <!-- ADMINISTRATION -->
                 <li class="sub-category">
                     <h3>Administration</h3>
@@ -172,6 +180,8 @@
                         <span class="side-menu__label">Permissions</span>
                     </a>
                 </li>
+                
+
 
             </ul>
 
