@@ -39,7 +39,7 @@
                             <div class="d-flex">
                                 <div class="mt-2">
                                     <i class="fe fe-dollar-sign me-1"></i> Total Earn
-                                    <h2 class="mb-0 number-font">$67,9871</h2>
+                                    <h2 class="mb-0 number-font">{{ $total_earning }}</h2>
                                 </div>
                                 <div class="ms-auto">
                                     <div class="chart-wrapper mt-1">
@@ -50,6 +50,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
                     <div class="card overflow-hidden">
                         <div class="card-body">
@@ -67,13 +68,19 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
                     <div class="card overflow-hidden">
                         <div class="card-body">
                             <div class="d-flex">
                                 <div class="mt-2">
-                                     <i class="fe fe-trending-up me-1 "></i> Net Profit
-                                    <h2 class="mb-0 number-font">$59,765</h2>
+                                    @if ($net_profit_or_loss >= 0)
+                                        <i class="fe fe-trending-up text-success me-1"></i> Net Profit
+                                        <h2 class="mb-0 number-font text-success">${{ number_format($net_profit_or_loss, 2) }}</h2>
+                                    @else
+                                        <i class="fe fe-trending-down text-danger me-1"></i> Net Loss
+                                        <h2 class="mb-0 number-font text-danger">${{ number_format(abs($net_profit_or_loss), 2) }}</h2>
+                                    @endif
                                 </div>
                                 <div class="ms-auto">
                                     <div class="chart-wrapper mt-1">
@@ -84,6 +91,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
