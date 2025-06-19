@@ -1,110 +1,105 @@
 @extends('backend.layouts.master')
 
-@section('title', 'Custom Role Access')
+@section('title', 'Role Access')
 
 @section('custom_css')
-<style>
-    .listbox-wrapper {
-        display: flex;
-        gap: 30px;
-        justify-content: center;
-        margin-top: 20px;
-    }
-
-    .listbox-buttons {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 15px;
-    }
-
-    select {
-        width: 300px;
-        height: 300px;
-    }
-</style>
 @endsection
 
 @section('content')
-<div class="page-header">
-    <h1 class="page-title">Admin Roles</h1>
-    <div>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Admin Roles</li>
-        </ol>
+    <div class="page-header">
+        <h1 class="page-title">Admin Roles</h1>
+        <div>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Admin Roles</li>
+            </ol>
+        </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-md-12 col-xl-12">
-        <div class="card">
-            <div class="card-header d-flex align-items-center justify-content-between">
-                <h3 class="card-title">Assign Permissions to Role</h3>
-            </div>
+    <div class="row">
+        <div class="col-md-12 col-xl-12">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h3 class="card-title">Assign Permissions to Role</h3>
+                    <a href="{{ route('adminRoleAccessCreateOrEdit') }}">
+                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
+                           Role Access</button>
+                    </a>
+                </div>
 
-            <div class="card-body">
-                <form action="" method="POST">
-                    @csrf
-
-                    <div class="mb-3">
-                        <label for="role_id" class="form-label">Select Role</label>
-                        <select name="role_id" id="role_id" class="form-control" required>
-                            <option value="">-- Select Role --</option>
-                            @foreach ($roles as $role)
-                                <option value="{{ $role->id }}">{{ $role->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="listbox-wrapper">
-                        <select multiple id="availablePermissions" class="form-control">
-                            @foreach ($permissions as $permission)
-                                <option value="{{ $permission->id }}">{{ $permission->name }}</option>
-                            @endforeach
-                        </select>
-
-                        <div class="listbox-buttons">
-                            <button type="button" id="addPermission" class="btn btn-primary">&gt;&gt;</button>
-                            <button type="button" id="removePermission" class="btn btn-danger">&lt;&lt;</button>
+                <div class="card-body">
+                    <div class="row row-sm">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-nowrap border-bottom">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Role Name</th>
+                                            <th>Edit Permission</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($roles as $role)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $role->name }}</td>
+                                                <td>
+                                                    <a href="{{ route('adminRoleAccessCreateOrEdit', $role->id) }}"
+                                                        class="btn btn-sm btn-primary" title="Edit">
+                                                        <i class="fe fe-edit"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                        data-url="{{ route('adminRoleAccessDelete', ['id' => $role->id]) }}"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                        <i class="fe fe-trash-2"></i>
+                                                    </a>
+                                                    
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="5" class="text-center text-muted">No Data found</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-
-                        <select multiple id="assignedPermissions" name="permissions[]" class="form-control">
-                        </select>
                     </div>
-
-                    <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-success">Save Permissions</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <div class="modal effect-scale" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered text-center" role="document">
+            <div class="modal-content modal-content-demo">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="deleteModalLabel">Delete Confirmation</h6>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this Data?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <a href="#" class="btn btn-danger" id="confirmDeleteBtn">Yes, Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('custom_js')
 <script>
     $(document).ready(function () {
-        $('#addPermission').click(function () {
-            $('#availablePermissions option:selected').each(function () {
-                $(this).remove().appendTo('#assignedPermissions');
-            });
-        });
-
-        $('#removePermission').click(function () {
-            $('#assignedPermissions option:selected').each(function () {
-                $(this).remove().appendTo('#availablePermissions');
-            });
-        });
-
-        // Optional: double-click to move
-        $('#availablePermissions').on('dblclick', 'option', function () {
-            $(this).remove().appendTo('#assignedPermissions');
-        });
-
-        $('#assignedPermissions').on('dblclick', 'option', function () {
-            $(this).remove().appendTo('#availablePermissions');
+        $('.delete-btn').on('click', function () {
+            var deleteUrl = $(this).data('url');
+            $('#confirmDeleteBtn').attr('href', deleteUrl);
         });
     });
 </script>

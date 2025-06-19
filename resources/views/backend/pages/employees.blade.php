@@ -43,10 +43,6 @@
                                             <th class="wd-15p border-bottom-0">Name</th>
                                             <th class="wd-15p border-bottom-0">Designation</th>
                                             <th class="wd-15p border-bottom-0">Department</th>
-                                            {{-- <th class="wd-15p border-bottom-0">Phone</th>
-                                            <th class="wd-15p border-bottom-0">AC No</th>
-                                            <th class="wd-15p border-bottom-0">G. Salery</th> --}}
-                                            {{-- <th class="wd-15p border-bottom-0">B. Group</th> --}}
                                             <th class="wd-15p border-bottom-0">Address</th>
                                             <th class="wd-15p border-bottom-0">J. Date</th>
                                             <th class="wd-15p border-bottom-0">Action</th>
@@ -55,7 +51,7 @@
                                     <tbody>
                                         @forelse ($employees as $index => $employee)
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $salary_expenses->firstItem() + $loop->index }}</td>
                                                 <td>
                                                     @if ($employee->picture)
                                                         <img src="{{ asset('uploads/' . $employee->picture) }}"
@@ -68,10 +64,6 @@
                                                 <td>{{ $employee->name }}</td>
                                                 <td>{{ $employee->designation->designation ?? '-' }}</td>
                                                 <td>{{ $employee->department->department ?? '-' }}</td>
-                                                {{-- <td>{{ $employee->phone_number }}</td> --}}
-                                                {{-- <td>{{ $employee->account_no }}</td> --}}
-                                                {{-- <td>{{ $employee->gross_salary }}</td> --}}
-                                                {{-- <td>{{ $employee->blood_group }}</td> --}}
                                                 <td>{{ $employee->address }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($employee->joining_date)->format('d/m/Y') }}
                                                 </td>
@@ -100,6 +92,7 @@
                                         @endforelse
                                     </tbody>
                                 </table>
+                                {{ $employees->links() }}
                             </div>
                         </div>
                     </div>

@@ -34,10 +34,6 @@
                                             <th class="wd-15p border-bottom-0">#</th>
                                             <th class="wd-15p border-bottom-0">ID Number</th>
                                             <th class="wd-15p border-bottom-0">Name</th>
-                                            {{-- <th class="wd-15p border-bottom-0">Designation</th>
-                                            <th class="wd-15p border-bottom-0">Department</th>
-                                            <th class="wd-15p border-bottom-0">Phone No</th>
-                                            <th class="wd-15p border-bottom-0">A/C No</th> --}}
                                             <th class="wd-15p border-bottom-0">P. Month</th>
                                             <th class="wd-15p border-bottom-0">Working Days</th>
                                             <th class="wd-15p border-bottom-0">G. Salary</th>
@@ -50,13 +46,9 @@
                                     <tbody>
                                         @forelse ($salary_expenses as $salary_expense)
                                             <tr>
-                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $salary_expenses->firstItem() + $loop->index }}</td>
                                                 <td>{{ $salary_expense->employee->id_number }}</td>
                                                 <td>{{ $salary_expense->employee->name }}</td>
-                                                {{-- <td>{{ $salary_expense->employee->designation->designation }}</td>
-                                                <td>{{ $salary_expense->employee->department->department }}</td>
-                                                <td>{{ $salary_expense->employee->phone_number }}</td>
-                                                <td>{{ $salary_expense->employee->account_no }}</td> --}}
                                                 <td>{{ App\UtilityFunction::getMonthName($salary_expense->payable_month) }}</td>
                                                 <td>{{ $salary_expense->total_working_day }}</td>
                                                 <td>{{ $salary_expense->employee->gross_salary }}</td>
@@ -80,9 +72,9 @@
                                                 <td class="text-center" colspan="13">No Data Found</td>
                                             </tr>
                                         @endforelse
-
                                     </tbody>
                                 </table>
+                                {{ $salary_expenses->links() }}
                             </div>
                         </div>
                     </div>

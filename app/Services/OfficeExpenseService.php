@@ -16,7 +16,7 @@ class OfficeExpenseService
 {
     public function renderOfficeExpense(): View
     {
-        $office_expenses = OfficeExpense::all();
+        $office_expenses = OfficeExpense::paginate(20);
         return view('backend.pages.office_expense', compact('office_expenses'));
     }
     public function renderOfficeExpenseCreateOrEditPage($id = null): View

@@ -17,7 +17,7 @@ class EmployeeService
 {
     public function renderEmployeeList(): View
     {
-        $employees = Employee::with(['designation', 'department'])->where('status', 1)->get();
+        $employees = Employee::with(['designation', 'department'])->where('status', 1)->paginate(20);
 
         return view('backend.pages.employees', compact('employees'));
     }

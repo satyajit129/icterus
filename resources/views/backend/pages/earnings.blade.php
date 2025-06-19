@@ -47,7 +47,7 @@
                                     <tbody>
                                         @forelse($earnings as $key => $earning)
                                             <tr>
-                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $earnings->firstItem() + $loop->index }}</td>
                                                 <td>{{ $earning->companies->name ?? 'N/A' }}</td>
                                                 <td>{{ $earning->date }}</td>
                                                 <td>{{ $earning->employee->name ?? 'N/A' }}</td>
@@ -79,7 +79,7 @@
                                         @endforelse
                                     </tbody>
                                 </table>
-
+                                {{ $earnings->links() }}
                             </div>
                         </div>
                     </div>

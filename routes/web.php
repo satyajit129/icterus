@@ -104,13 +104,6 @@ Route::prefix('admin')->group(function () {
             Route::post('/save/{id?}', [AuthController::class, 'adminUserSave'])->name('adminUserSave');
             Route::get('/delete/{id}', [AuthController::class, 'adminUserDelete'])->name('adminUserDelete');
         });
-
-        Route::prefix('role')->group(function () {
-            Route::get('/', [AdminController::class, 'adminRole'])->name('adminRole');
-            Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminRoleCreateOrEdit'])->name('adminRoleCreateOrEdit');
-            Route::post('/save/{id?}', [AdminController::class, 'adminRoleSave'])->name('adminRoleSave');
-            Route::get('/delete/{id}', [AdminController::class, 'adminRoleDelete'])->name('adminRoleDelete');
-        });
         Route::prefix('permission')->group(function () {
             Route::get('/', [AdminController::class, 'adminPermission'])->name('adminPermission');
             Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminPermissionCreateOrEdit'])->name('adminPermissionCreateOrEdit');
@@ -119,6 +112,9 @@ Route::prefix('admin')->group(function () {
         });
         Route::prefix('role-access')->group(function(){
             Route::get('/',[AdminController::class,'adminRoleAccess'])->name('adminRoleAccess');
+            Route::get('/create-or-edit/{id?}',[AdminController::class,'adminRoleAccessCreateOrEdit'])->name('adminRoleAccessCreateOrEdit');
+            Route::post('/save/{id?}',[AdminController::class,'adminRoleAccessSave'])->name('adminRoleAccessSave');
+            Route::get('/delete/{id}',[AdminController::class,'adminRoleAccessDelete'])->name('adminRoleAccessDelete');
         });
     });
 });

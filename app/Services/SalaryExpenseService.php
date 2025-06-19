@@ -14,7 +14,7 @@ class SalaryExpenseService
 {
     public function renderSalaryExpenseList(): View
     {
-        $salary_expenses = SalaryExpense::with('employee.designation', 'employee.department')->get();
+        $salary_expenses = SalaryExpense::with('employee.designation', 'employee.department')->paginate(20);
         return view('backend.pages.salary_expense_list', compact('salary_expenses'));
     }
     public function renderSalaryExpenseCreateOrEditPage($id = null): View

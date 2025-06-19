@@ -85,7 +85,7 @@ class CompanyService
     }
     public function renderCompanyDealsList()
     {
-        $company_deals = CompanyDeal::with(['companies', 'dealPayments'])->get();
+        $company_deals = CompanyDeal::with(['companies', 'dealPayments'])->paginate(20);
         return view('backend.pages.company_deals_list', compact('company_deals'));
     }
     public function renderCompanyDealsCreateOrEdit($id = null): View
@@ -220,7 +220,7 @@ class CompanyService
     }
     public function renderEarningList(): View
     {
-        $earnings = Earning::with('employee', 'companies')->get();
+        $earnings = Earning::with('employee', 'companies')->paginate(20);
         return view('backend.pages.earnings', compact('earnings'));
     }
     public function renderEarningCreateOrEdit($id = null): View

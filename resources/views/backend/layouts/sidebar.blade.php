@@ -9,6 +9,7 @@
                 <img src="../assets/images/brand/logo-dark.png" class="header-brand-img light-logo1" alt="logo">
             </a>
         </div>
+
         <div class="main-sidemenu">
             <div class="slide-left disabled" id="slide-left">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="#7b8191" width="24" height="24" viewBox="0 0 24 24">
@@ -17,14 +18,12 @@
             </div>
 
             @php
-                // Route arrays
                 $company_deals_routes = ['adminCompanyDealsList','adminCompanyDealsView','adminCompanyDealsCreateOrEdit','adminDealsPayment', 'adminDealsPaymentCreateOrEdit'];
                 $earning_routes = ['adminEarningList', 'adminEarningCreateOrEdit','adminEarningView'];
                 $salary_routes = ['adminSalaryExpense', 'adminSalaryExpenseCreateOrEdit','adminSalaryExpenseView'];
                 $incentive_routes = ['adminIncentiveExpense', 'adminIncentiveExpenseCreateOrEdit','adminIncentiveExpenseView'];
                 $office_expense_routes = ['adminOfficeExpense', 'adminOfficeExpenseCreateOrEdit','adminOfficeExpenseView'];
 
-                // Active route conditions
                 $is_company_deals_active = Route::is($company_deals_routes);
                 $is_earning_route_active = Route::is($earning_routes);
                 $is_earning_active = $is_company_deals_active || $is_earning_route_active;
@@ -37,53 +36,42 @@
 
             <ul class="side-menu">
 
-                <!-- MAIN -->
+                {{-- DASHBOARD & SETTINGS --}}
                 <li class="sub-category">
-                    <h3>Main</h3>
+                    <h3>Dashboard & Settings</h3>
                 </li>
                 <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminDashboard') ? 'active' : '' }}"
-                        href="{{ route('adminDashboard') }}">
+                    <a class="side-menu__item has-link {{ Route::is('adminDashboard') ? 'active' : '' }}" href="{{ route('adminDashboard') }}">
                         <i class="side-menu__icon fe fe-home"></i>
                         <span class="side-menu__label">Dashboard</span>
                     </a>
                 </li>
                 <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminSettings') ? 'active' : '' }}"
-                        href="{{ route('adminSettings') }}">
+                    <a class="side-menu__item has-link {{ Route::is('adminSettings') ? 'active' : '' }}" href="{{ route('adminSettings') }}">
                         <i class="side-menu__icon fe fe-sliders"></i>
                         <span class="side-menu__label">Settings</span>
                     </a>
                 </li>
 
+                {{-- COMPANY & PARTNERS --}}
+                <li class="sub-category">
+                    <h3>Company & Partners</h3>
+                </li>
                 <li class="slide">
-                    <a class="side-menu__item has-link"
-                        href="{{ route('adminRoleAccess') }}">
-                        <i class="side-menu__icon fe fe-shield"></i>
-                        <span class="side-menu__label">Role Access</span>
+                    <a class="side-menu__item has-link {{ Route::is('adminCompanyList', 'adminCompanyCreateOrEdit', 'adminCompanyView') ? 'active' : '' }}" href="{{ route('adminCompanyList') }}">
+                        <i class="side-menu__icon fe fe-layers"></i>
+                        <span class="side-menu__label">Companies</span>
                     </a>
                 </li>
 
-                <!-- ADMINISTRATION -->
+                {{-- FINANCE & EARNING --}}
                 <li class="sub-category">
-                    <h3>Administration</h3>
-                </li>
-                <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminCompanyList', 'adminCompanyCreateOrEdit', 'adminCompanyView') ? 'active' : '' }}"
-                        href="{{ route('adminCompanyList') }}">
-                        <i class="side-menu__icon fe fe-layers"></i> 
-                        <span class="side-menu__label">Company</span>
-                    </a>
-                </li>
-
-                <!-- EARNING PURPOSE -->
-                <li class="sub-category">
-                    <h3>Earning Purpose</h3>
+                    <h3>Finance & Earning</h3>
                 </li>
                 <li class="slide {{ $is_earning_active ? 'is-expanded' : '' }}">
                     <a class="side-menu__item {{ $is_earning_active ? 'active' : '' }}" data-bs-toggle="slide" href="javascript:void(0)">
                         <i class="side-menu__icon fe fe-trending-up"></i>
-                        <span class="side-menu__label">Earning Purpose</span>
+                        <span class="side-menu__label">Earnings</span>
                         <i class="angle fe fe-chevron-right"></i>
                     </a>
                     <ul class="slide-menu">
@@ -94,46 +82,43 @@
                         </li>
                         <li>
                             <a href="{{ route('adminEarningList') }}" class="slide-item {{ $is_earning_route_active ? 'active' : '' }}">
-                                <i class="fe fe-briefcase me-2"></i> Earning
+                                <i class="fe fe-dollar-sign me-2"></i> Earnings
                             </a>
                         </li>
                     </ul>
                 </li>
 
-                <!-- HUMAN RESOURCES -->
+                {{-- HUMAN RESOURCES --}}
                 <li class="sub-category">
                     <h3>Human Resources</h3>
                 </li>
                 <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminDepartment', 'adminDepartmentCreateOrEdit') ? 'active' : '' }}"
-                        href="{{ route('adminDepartment') }}">
+                    <a class="side-menu__item has-link {{ Route::is('adminDepartment', 'adminDepartmentCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminDepartment') }}">
                         <i class="side-menu__icon fe fe-grid"></i>
-                        <span class="side-menu__label">Department</span>
+                        <span class="side-menu__label">Departments</span>
                     </a>
                 </li>
                 <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminDesignation', 'adminDesignationCreateOrEdit') ? 'active' : '' }}"
-                        href="{{ route('adminDesignation') }}">
+                    <a class="side-menu__item has-link {{ Route::is('adminDesignation', 'adminDesignationCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminDesignation') }}">
                         <i class="side-menu__icon fe fe-briefcase"></i>
-                        <span class="side-menu__label">Designation</span>
+                        <span class="side-menu__label">Designations</span>
                     </a>
                 </li>
                 <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminEmployeeList', 'adminEmployeeCreateOrEdit','adminEmployeeView') ? 'active' : '' }}"
-                        href="{{ route('adminEmployeeList') }}">
+                    <a class="side-menu__item has-link {{ Route::is('adminEmployeeList', 'adminEmployeeCreateOrEdit','adminEmployeeView') ? 'active' : '' }}" href="{{ route('adminEmployeeList') }}">
                         <i class="side-menu__icon fe fe-users"></i>
                         <span class="side-menu__label">Employees</span>
                     </a>
                 </li>
 
-                <!-- EXPENSE MANAGEMENT -->
+                {{-- EXPENSE MANAGEMENT --}}
                 <li class="sub-category">
                     <h3>Expense Management</h3>
                 </li>
                 <li class="slide {{ $is_expense_active ? 'is-expanded' : '' }}">
                     <a class="side-menu__item {{ $is_expense_active ? 'active' : '' }}" data-bs-toggle="slide" href="javascript:void(0)">
                         <i class="side-menu__icon fe fe-dollar-sign"></i>
-                        <span class="side-menu__label">Expense</span>
+                        <span class="side-menu__label">Expenses</span>
                         <i class="angle fe fe-chevron-right"></i>
                     </a>
                     <ul class="slide-menu">
@@ -144,44 +129,39 @@
                         </li>
                         <li>
                             <a href="{{ route('adminIncentiveExpense') }}" class="slide-item {{ $is_incentive_active ? 'active' : '' }}">
-                                <i class="fe fe-award me-2"></i> Incentive
+                                <i class="fe fe-award me-2"></i> Incentives
                             </a>
                         </li>
                         <li>
                             <a href="{{ route('adminOfficeExpense') }}" class="slide-item {{ $is_office_expense_active ? 'active' : '' }}">
-                                <i class="fe fe-briefcase me-2"></i> Office Expense
+                                <i class="fe fe-briefcase me-2"></i> Office Expenses
                             </a>
                         </li>
                     </ul>
                 </li>
 
-                 <!-- Admin Management -->
+                {{-- ADMINISTRATION & ACCESS CONTROL --}}
                 <li class="sub-category">
-                    <h3>Admin Management</h3>
+                    <h3>Administration & Access Control</h3>
                 </li>
                 <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminUserList', 'adminUserCreateOrEdit') ? 'active' : '' }}"
-                        href="{{ route('adminUserList') }}">
+                    <a class="side-menu__item has-link {{ Route::is('adminUserList', 'adminUserCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminUserList') }}">
                         <i class="side-menu__icon fe fe-user-check"></i>
                         <span class="side-menu__label">Admin Users</span>
                     </a>
                 </li>
                 <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminRole','adminRoleCreateOrEdit') ? 'active' : '' }}"
-                        href="{{ route('adminRole') }}">
-                        <i class="side-menu__icon fe fe-shield"></i>
-                        <span class="side-menu__label">Roles</span>
-                    </a>
-                </li>
-                <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminPermission','adminPermissionCreateOrEdit') ? 'active' : '' }}"
-                        href="{{ route('adminPermission') }}">
+                    <a class="side-menu__item has-link {{ Route::is('adminPermission','adminPermissionCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminPermission') }}">
                         <i class="side-menu__icon fe fe-lock"></i>
                         <span class="side-menu__label">Permissions</span>
                     </a>
                 </li>
-                
-
+                <li class="slide">
+                    <a class="side-menu__item has-link {{ Route::is('adminRoleAccess','adminRoleAccessCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminRoleAccess') }}">
+                        <i class="side-menu__icon fe fe-shield"></i>
+                        <span class="side-menu__label">Role Access</span>
+                    </a>
+                </li>
 
             </ul>
 
@@ -193,3 +173,4 @@
         </div>
     </div>
 </div>
+

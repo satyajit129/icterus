@@ -44,7 +44,7 @@
                                     <tbody>
                                         @forelse ($office_expenses as $office_expense)
                                             <tr>
-                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $office_expenses->firstItem() + $loop->index }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($office_expense->date)->format('d-m-Y') }}</td>
                                                 <td>{{ $office_expense->purpose }}</td>
                                                 <td>{{ isset($office_expense->quantity) ? $office_expense->quantity : '----' }}</td>
@@ -69,7 +69,7 @@
                                         @endforelse
                                     </tbody>
                                 </table>
-
+                                {{ $office_expenses->links() }}
                             </div>
                         </div>
                     </div>

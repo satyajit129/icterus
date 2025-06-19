@@ -34,10 +34,6 @@
                                             <th class="wd-15p border-bottom-0">#</th>
                                             <th class="wd-15p border-bottom-0">ID Number</th>
                                             <th class="wd-15p border-bottom-0">Name</th>
-                                            {{-- <th class="wd-15p border-bottom-0">Designation</th>
-                                            <th class="wd-15p border-bottom-0">Department</th>
-                                            <th class="wd-15p border-bottom-0">Phone No</th>
-                                            <th class="wd-15p border-bottom-0">A/C No</th> --}}
                                             <th class="wd-15p border-bottom-0">Month</th>
                                             <th class="wd-15p border-bottom-0">Sales Count</th>
                                             <th class="wd-15p border-bottom-0">Sales Amount</th>
@@ -50,13 +46,9 @@
                                     <tbody>
                                         @forelse ($incentive_expenses as $incentive_expense)
                                             <tr>
-                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $incentive_expenses->firstItem() + $loop->index }}</td>
                                                 <td>{{ $incentive_expense->employee->id_number }}</td>
                                                 <td>{{ $incentive_expense->employee->name }}</td>
-                                                {{-- <td>{{ $incentive_expense->employee->designation->designation }}</td>
-                                                <td>{{ $incentive_expense->employee->department->department }}</td>
-                                                <td>{{ $incentive_expense->employee->phone_number }}</td>
-                                                <td>{{ $incentive_expense->employee->account_no }}</td> --}}
                                                <td>{{ \Carbon\Carbon::parse($incentive_expense->payable_month)->format('M - Y') }}</td>
                                                 <td>{{ $incentive_expense->sales_count }}</td>
                                                 <td>{{ ceil($incentive_expense->sales_amount) }}</td>
@@ -82,6 +74,7 @@
 
                                     </tbody>
                                 </table>
+                                 {{ $incentive_expenses->links() }}
                             </div>
                         </div>
                     </div>

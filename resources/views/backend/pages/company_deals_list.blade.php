@@ -54,7 +54,7 @@
                                     <tbody>
                                         @forelse ($company_deals as $index => $company_deal)
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $company_deals->firstItem() + $loop->index }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($company_deal->date)->format('d F Y') }}</td>
                                                 <td>{{ $company_deal->companies->name }}</td>
                                                 <td>{{ $company_deal->deals }}</td>
@@ -100,6 +100,7 @@
                                         @endforelse
                                     </tbody>
                                 </table>
+                                {{ $company_deals->links() }}
                             </div>
                         </div>
                     </div>

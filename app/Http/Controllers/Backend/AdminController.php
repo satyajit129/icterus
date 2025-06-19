@@ -262,22 +262,6 @@ class AdminController extends Controller
     {
         return $this->companyService->renderEarningView($id);
     }
-    public function adminRole(): View
-    {
-        return $this->rolePermisionService->renderAdminRoleList();
-    }
-    public function adminRoleCreateOrEdit($id= null): View
-    {
-        return $this->rolePermisionService->renderAdminRoleCreateOrEdit($id);
-    }
-    public function adminRoleSave(Request $request, $id=null): RedirectResponse
-    {
-        return $this->rolePermisionService->handleRoleSave($request, $id);
-    }
-    public function adminRoleDelete($id): RedirectResponse
-    {
-        return $this->rolePermisionService->handleRoleDelete($id);
-    }
     public function adminPermission(): View
     {
         return $this->rolePermisionService->renderAdminPermissionList();
@@ -297,6 +281,18 @@ class AdminController extends Controller
     public function adminRoleAccess(): View
     {
         return $this->rolePermisionService->renderRoleAccess();
+    }
+    public function adminRoleAccessCreateOrEdit($id = null): View
+    {
+        return $this->rolePermisionService->renderRoleAccessCreateOrEdit($id);
+    }
+    public function adminRoleAccessSave(Request $request, $id= null): RedirectResponse
+    {
+        return $this->rolePermisionService->handleRoleAccessSave($request, $id);
+    }
+    public function adminRoleAccessDelete($id): RedirectResponse
+    {
+        return $this->rolePermisionService->handleRoleAccessDelete($id);
     }
 
 

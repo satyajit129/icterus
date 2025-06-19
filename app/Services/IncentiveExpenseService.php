@@ -15,7 +15,7 @@ class IncentiveExpenseService
 {
     public function renderIncentiveExpense(): View
     {
-        $incentive_expenses = IncentiveExpense::with('employee.designation','employee.department')->get();
+        $incentive_expenses = IncentiveExpense::with('employee.designation','employee.department')->paginate(20);
         return view('backend.pages.incentive_expense', compact('incentive_expenses'));
     }
     public function renderIncentiveExpenseCreateOrEditPage($id = null): View
