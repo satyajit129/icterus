@@ -63,11 +63,11 @@
                             <tbody>
                                 <tr>
                                     <th style="width: 50%;">Department</th>
-                                    <td style="width: 50%;">{{ $salary_expense->employee->department->name ?? 'N/A' }}</td>
+                                    <td style="width: 50%;">{{ $salary_expense->employee->department->department ?? 'N/A' }}</td>
                                 </tr>
                                 <tr>
                                     <th style="width: 50%;">Designation</th>
-                                    <td style="width: 50%;">{{ $salary_expense->employee->designation->name ?? 'N/A' }}</td>
+                                    <td style="width: 50%;">{{ $salary_expense->employee->designation->designation ?? 'N/A' }}</td>
                                 </tr>
                                 <tr>
                                     <th style="width: 50%;">Phone Number</th>

@@ -41,8 +41,11 @@
                                             <th class="wd-15p border-bottom-0">Date</th>
                                             <th class="wd-15p border-bottom-0">Company Name</th>
                                             <th class="wd-15p border-bottom-0">Deals</th>
-                                            <th class="wd-15p border-bottom-0">Contract Duration</th>
                                             <th class="wd-15p border-bottom-0">Deals Amount</th>
+                                            <th class="wd-15p border-bottom-0">Total Paid</th>
+                                            <th class="wd-15p border-bottom-0">Remaining Balance</th>
+                                            <th class="wd-15p border-bottom-0">Contract Duration</th>
+                                            
                                             <th class="wd-15p border-bottom-0">Payment Frequency</th>
                                             <th class="wd-15p border-bottom-0">Receive Payment</th>
                                             <th class="wd-15p border-bottom-0">Action</th>
@@ -51,17 +54,23 @@
                                     <tbody>
                                         @forelse ($company_deals as $index => $company_deal)
                                             <tr>
-                                                <td>{{ $index + 1 }}</td>
+                                                <td>{{ $company_deals->firstItem() + $loop->index }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($company_deal->date)->format('d F Y') }}</td>
                                                 <td>{{ $company_deal->companies->name }}</td>
                                                 <td>{{ $company_deal->deals }}</td>
-                                                <td>{{ $company_deal->contract_duration }}</td>
+                                                
                                                 <td>{{ $company_deal->deals_amount }}</td>
+                                                <td>
+                                                    {{ number_format($company_deal->dealPayments->sum('amount'), 2) }}
+                                                </td>
+                                                <td>
+                                                    {{ number_format($company_deal->remaining_balance, 2) }}
+                                                </td>
+                                                <td>{{ $company_deal->contract_duration }} M</td>
                                                 <td>{{ $company_deal->payment_frequency }}</td>
 
-                                                <td>
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-success payment-btn"
-                                                        data-id="{{ $company_deal->id }}" title="Make Payment">
+                                                <td class="text-center">
+                                                    <a href="{{ route('adminDealsPayment',$company_deal->id) }}" class="btn btn-sm btn-success" title="Make Payment">
                                                         <i class="fe fe-credit-card"></i>
                                                     </a>
 
@@ -91,6 +100,7 @@
                                         @endforelse
                                     </tbody>
                                 </table>
+                                {{ $company_deals->links() }}
                             </div>
                         </div>
                     </div>
@@ -137,34 +147,6 @@
             $('.delete-btn').on('click', function() {
                 var deleteUrl = $(this).data('url');
                 $('#confirmDeleteBtn').attr('href', deleteUrl);
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('.payment-btn').on('click', function() {
-                var dealId = $(this).data('id');
-
-                $.ajax({
-                    type: "GET",
-                    url: "{{ route('companyDealsPaymentData') }}",
-                    data: {
-                        deals_id: dealId
-                    },
-                    success: function(response) {
-                        // Inject HTML
-                        $('#paymentModal .modal-body').html(response);
-
-                        // Optional: change title
-                        $('#paymentModalLabel').text('Make Payment');
-
-                        // ✅ Simple show!
-                        $('#paymentModal').modal('show');
-                    },
-                    error: function(xhr) {
-                        console.error(xhr.responseText);
-                    }
-                });
             });
         });
     </script>

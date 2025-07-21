@@ -222,10 +222,25 @@ class AdminController extends Controller
     {
         return $this->companyService->renderCompanyDealsView($id);
     }
-    public function companyDealsPaymentData(Request $request): View
+    public function adminDealsPayment($id): View
     {
-       
-        return $this->companyService->renderCompanyDealsPaymentData($request);
+        return $this->companyService->renderadminDealsPayment($id);
+    }
+    public function adminDealsPaymentCreateOrEdit(Request $request, $id= null): View
+    {
+        return $this->companyService->renderDealsPaymentCreateOrEdit($request, $id);
+    }
+    public function adminDealsPaymentSave(Request $request, $id = null): RedirectResponse
+    {
+        return $this->companyService->handleDealsPaymentSave($request, $id);
+    }
+    public function adminDealsPaymentDelete($id): RedirectResponse
+    {
+        return $this->companyService->handleDealsPaymentDelete($id);
+    }
+    public function adminDealsPaymentView($id): View
+    {
+        return $this->companyService->renderDealsPaymentView($id);
     }
     public function adminEarningList(): View
     {
@@ -247,22 +262,6 @@ class AdminController extends Controller
     {
         return $this->companyService->renderEarningView($id);
     }
-    public function adminRole(): View
-    {
-        return $this->rolePermisionService->renderAdminRoleList();
-    }
-    public function adminRoleCreateOrEdit($id= null): View
-    {
-        return $this->rolePermisionService->renderAdminRoleCreateOrEdit($id);
-    }
-    public function adminRoleSave(Request $request, $id=null): RedirectResponse
-    {
-        return $this->rolePermisionService->handleRoleSave($request, $id);
-    }
-    public function adminRoleDelete($id): RedirectResponse
-    {
-        return $this->rolePermisionService->handleRoleDelete($id);
-    }
     public function adminPermission(): View
     {
         return $this->rolePermisionService->renderAdminPermissionList();
@@ -278,6 +277,22 @@ class AdminController extends Controller
     public function adminPermissionDelete($id): RedirectResponse
     {
         return $this->rolePermisionService->handlePermissionDelete($id);
+    }
+    public function adminRoleAccess(): View
+    {
+        return $this->rolePermisionService->renderRoleAccess();
+    }
+    public function adminRoleAccessCreateOrEdit($id = null): View
+    {
+        return $this->rolePermisionService->renderRoleAccessCreateOrEdit($id);
+    }
+    public function adminRoleAccessSave(Request $request, $id= null): RedirectResponse
+    {
+        return $this->rolePermisionService->handleRoleAccessSave($request, $id);
+    }
+    public function adminRoleAccessDelete($id): RedirectResponse
+    {
+        return $this->rolePermisionService->handleRoleAccessDelete($id);
     }
 
 

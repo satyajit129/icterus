@@ -1,30 +1,32 @@
 @extends('backend.layouts.master')
 
-@section('title', 'Earning')
+@section('title', 'Role Access')
 
 @section('custom_css')
 @endsection
-@section('content')
 
+@section('content')
     <div class="page-header">
-        <h1 class="page-title">Earning</h1>
+        <h1 class="page-title">Admin Roles</h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Earning</li>
+                <li class="breadcrumb-item active" aria-current="page">Admin Roles</li>
             </ol>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h3 class="card-title">Earning Data</h3>
-                    <a href="{{ route('adminEarningCreateOrEdit') }}">
+                    <h3 class="card-title">Assign Permissions to Role</h3>
+                    <a href="{{ route('adminRoleAccessCreateOrEdit') }}">
                         <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
-                            Earning</button>
+                           Role Access</button>
                     </a>
                 </div>
+
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
@@ -32,54 +34,39 @@
                                 <table class="table table-bordered text-nowrap border-bottom">
                                     <thead>
                                         <tr>
-                                            <th class="wd-5p">#</th>
-                                            <th class="wd-10p">Company</th>
-                                            <th class="wd-10p">Date</th>
-                                            <th class="wd-10p">Employee</th>
-                                            <th class="wd-10p">Paid Amount</th>
-                                            <th class="wd-10p">Deals Amount</th>
-                                            <th class="wd-10p">Due Amount</th>
-                                            <th class="wd-10p">Product Name</th>
-                                            <th class="wd-15p">Details</th>
-                                            <th class="wd-5p">Action</th>
+                                            <th>#</th>
+                                            <th>Role Name</th>
+                                            <th>Edit Permission</th>
+                                            <th>Delete</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse($earnings as $key => $earning)
+                                        @forelse ($roles as $role)
                                             <tr>
-                                                <td>{{ $earnings->firstItem() + $loop->index }}</td>
-                                                <td>{{ $earning->companies->name ?? 'N/A' }}</td>
-                                                <td>{{ $earning->date }}</td>
-                                                <td>{{ $earning->employee->name ?? 'N/A' }}</td>
-                                                <td>{{ $earning->paid_amount }}</td>
-                                                <td>{{ $earning->deals_amount }}</td>
-                                                <td>{{ $earning->due_amount }}</td>
-                                                <td>{{ $earning->product_name }}</td>
-                                                <td>{{ $earning->details }}</td>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $role->name }}</td>
                                                 <td>
-                                                    <a href="{{ route('adminEarningCreateOrEdit', $earning->id) }}"
+                                                    <a href="{{ route('adminRoleAccessCreateOrEdit', $role->id) }}"
                                                         class="btn btn-sm btn-primary" title="Edit">
                                                         <i class="fe fe-edit"></i>
                                                     </a>
+                                                </td>
+                                                <td>
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminEarningDelete', ['id' => $earning->id]) }}"
+                                                        data-url="{{ route('adminRoleAccessDelete', ['id' => $role->id]) }}"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
                                                         <i class="fe fe-trash-2"></i>
                                                     </a>
-                                                    <a href="{{ route('adminEarningView', $earning->id) }}"
-                                                        class="btn btn-sm btn-info" title="View">
-                                                        <i class="fe fe-eye"></i>
-                                                    </a>
+                                                    
                                                 </td>
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="18" class="text-center">No Data Found</td>
+                                                <td colspan="5" class="text-center text-muted">No Data found</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
                                 </table>
-                                {{ $earnings->links() }}
                             </div>
                         </div>
                     </div>
@@ -105,16 +92,15 @@
             </div>
         </div>
     </div>
-
 @endsection
-@section('custom_js')
-    <script>
-        $(document).ready(function () {
-            $('.delete-btn').on('click', function () {
-                var deleteUrl = $(this).data('url');
-                $('#confirmDeleteBtn').attr('href', deleteUrl);
-            });
-        });
-    </script>
 
+@section('custom_js')
+<script>
+    $(document).ready(function () {
+        $('.delete-btn').on('click', function () {
+            var deleteUrl = $(this).data('url');
+            $('#confirmDeleteBtn').attr('href', deleteUrl);
+        });
+    });
+</script>
 @endsection

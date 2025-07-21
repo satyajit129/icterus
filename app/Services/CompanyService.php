@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\Models\Company;
 use App\Models\CompanyDeal;
+use App\Models\DealPayment;
 use App\Models\Earning;
 use App\Models\Employee;
 use Carbon\Carbon;
+use Dflydev\DotAccessData\Data;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
@@ -83,8 +85,7 @@ class CompanyService
     }
     public function renderCompanyDealsList()
     {
-        $company_deals = CompanyDeal::with('companies')->get();
-        // dd($company_deals);
+        $company_deals = CompanyDeal::with(['companies', 'dealPayments'])->paginate(20);
         return view('backend.pages.company_deals_list', compact('company_deals'));
     }
     public function renderCompanyDealsCreateOrEdit($id = null): View
@@ -142,14 +143,84 @@ class CompanyService
         $company_deal = CompanyDeal::with('companies')->findOrFail($id);
         return view('backend.pages.company_deals_view', compact('company_deal'));
     }
-    public function renderCompanyDealsPaymentData($request): View
+    public function renderadminDealsPayment($id): View
     {
-        $deals_id = $request->deals_id;
-        return view('backend.pages.company_deals_payment', compact('deals_id'));
+        // dd('here');
+        $deal_payments = DealPayment::with('companyDeal.companies')
+            ->where('company_deal_id', $id)
+            ->latest()
+            ->get();
+
+        return view('backend.pages.company_deals_payment', compact('deal_payments', 'id'));
+    }
+    public function renderDealsPaymentCreateOrEdit($request, $id = null): View
+    {
+        $deal_payment = null;
+        if ($id) {
+            $deal_payment = DealPayment::findOrFail($id);
+        }
+        $deal_id = $request->deal_id;
+        return view('backend.pages.company_deals_payment_create_or_edit', compact('deal_payment', 'deal_id'));
+    }
+    public function handleDealsPaymentSave($request, $id = null): RedirectResponse
+    {
+        try {
+            // Validate the incoming request
+            $validated = $request->validate([
+                'company_deal_id' => 'required|exists:company_deals,id', // assuming you have a company_deals table
+                'payment_date' => 'required|date_format:d/m/Y',
+                'amount' => 'required|numeric|min:0',
+                'payment_method' => 'nullable|string|max:100',
+                'notes' => 'nullable|string|max:1000',
+            ]);
+
+            $dealPayment = $id ? DealPayment::findOrFail($id) : new DealPayment();
+            $dealPayment->company_deal_id = $request->company_deal_id;
+            $dealPayment->payment_date = Carbon::createFromFormat('d/m/Y', $request->payment_date)->format('Y-m-d');
+            $dealPayment->amount = $request->amount;
+            $dealPayment->payment_method = $request->payment_method ?? null;
+            $dealPayment->notes = $request->notes ?? null;
+            $dealPayment->save();
+
+            return redirect()
+                ->route('adminDealsPayment', $request->deal_id)
+                ->with('success', 'Deal payment saved successfully.');
+
+        } catch (ValidationException $th) {
+            return redirect()
+                ->back()
+                ->withErrors($th->validator)
+                ->withInput()
+                ->with('error', 'Validation failed: ' . $th->getMessage());
+
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Something went wrong: ' . $e->getMessage());
+        }
+    }
+    public function handleDealsPaymentDelete($id): RedirectResponse
+    {
+        try {
+            $deals_payment = DealPayment::findOrFail($id);
+            $deals_payment->delete();
+            return redirect()->back()->with('success', 'Data deleted successfully!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
+        }
+    }
+    public function renderDealsPaymentView($id): View{
+        // dd('here');
+        $deal_payments = DealPayment::with('companyDeal.companies')
+            ->findOrFail($id);
+            // dd($deal_payments);
+
+        return view('backend.pages.company_deals_payment_view', compact('deal_payments'));
     }
     public function renderEarningList(): View
     {
-        $earnings = Earning::with('employee', 'companies')->get();
+        $earnings = Earning::with('employee', 'companies')->paginate(20);
         return view('backend.pages.earnings', compact('earnings'));
     }
     public function renderEarningCreateOrEdit($id = null): View
