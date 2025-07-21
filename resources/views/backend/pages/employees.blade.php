@@ -51,7 +51,7 @@
                                     <tbody>
                                         @forelse ($employees as $index => $employee)
                                             <tr>
-                                                <td>{{ $salary_expenses->firstItem() + $loop->index }}</td>
+                                                <td>{{ $employees->firstItem() + $loop->index }}</td>
                                                 <td>
                                                     @if ($employee->picture)
                                                         <img src="{{ asset('uploads/' . $employee->picture) }}"

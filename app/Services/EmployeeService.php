@@ -129,6 +129,7 @@ class EmployeeService
     public function seeEmployeeData($id): View
     {
         $employee = Employee::with(['designation', 'department'])->findOrFail($id);
+        // dd($employee);
         return view('backend.pages.employee_view', compact('employee'));
     }
 }
