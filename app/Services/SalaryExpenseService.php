@@ -39,6 +39,7 @@ class SalaryExpenseService
                 'total_working_day' => 'required|integer|min:0|max:31',
                 'total_days_in_month' => 'required|integer|min:28|max:31',
                 'festival_bonus' => 'nullable|numeric|min:0',
+                'extra_charge' => 'nullable|numeric|min:0',
                 'payable_amount' => 'required',
             ]);
 
@@ -50,6 +51,7 @@ class SalaryExpenseService
             $salary_expense->total_days_in_month = $request->total_days_in_month;
             $salary_expense->actual_payable_amount = ($request->payable_amount) - ($request->festival_bonus);
             $salary_expense->festival_bonus = $request->festival_bonus;
+            $salary_expense->extra_charge = $request->extra_charge;
             $salary_expense->payable_amount = $request->payable_amount;
             $salary_expense->save();
 

@@ -118,6 +118,12 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="slide">
+                        <a class="side-menu__item has-link {{ Route::is('salesStatus') ? 'active' : '' }}" href="{{ route('salesStatus') }}">
+                            <i class="side-menu__icon fe fe-bar-chart"></i>
+                            <span class="side-menu__label">Sales Status</span>
+                        </a>
+                    </li>
                     @endif
                 @endif
 
@@ -151,7 +157,6 @@
                     </li>
                     @endif
                 @endif
-
                 
                 @if ($canManageExpense)
                     {{-- EXPENSE MANAGEMENT --}}
@@ -217,7 +222,6 @@
                      @endif
                 @endif
                 
-
             </ul>
 
             <div class="slide-right" id="slide-right">

@@ -234,13 +234,24 @@
                                         <div class="col-md-9">
                                             <input type="number" id="festival_bonus" name="festival_bonus"
                                             class="form-control" placeholder="e.g. 5000"
-                                            value="{{ isset($salary_expense->festival_bonus) ? ceil($salary_expense->festival_bonus) : '' }}">
+                                            value="{{ isset($salary_expense->festival_bonus) ? $salary_expense->festival_bonus : '' }}">
 
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="row mb-2">
+                                        <label class="col-md-3 form-label">Extra Charge</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="extra_charge" name="extra_charge"
+                                                class="form-control" placeholder="e.g. 2500"  
+                                                value="{{ isset($salary_expense->extra_charge) ? $salary_expense->extra_charge : '' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <!-- Payable Amount -->
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -320,15 +331,16 @@
 
             }
 
-            function calculatePayableAmount(grossSalary, totalWorkingDay, festivalBonus, totalDaysInMonth) {
+            function calculatePayableAmount(grossSalary, totalWorkingDay, festivalBonus, extraCharge, totalDaysInMonth) {
                 grossSalary = parseFloat(grossSalary) || 0;
                 totalWorkingDay = parseInt(totalWorkingDay) || 0;
                 festivalBonus = parseFloat(festivalBonus) || 0;
+                extraCharge = parseFloat(extraCharge) || 0;
                 totalDaysInMonth = parseInt(totalDaysInMonth) || 0;
 
                 if (grossSalary <= 0 || totalDaysInMonth <= 0) return 0;
                 const dailySalary = grossSalary / totalDaysInMonth;
-                const payableAmount = (dailySalary * totalWorkingDay) + festivalBonus;
+                const payableAmount = (dailySalary * totalWorkingDay) + festivalBonus + extraCharge;
                 return payableAmount.toFixed(2);
             }
 
@@ -336,8 +348,9 @@
                 const grossSalary = $('#gross_salary').val();
                 const totalWorkingDay = $('#total_working_day').val();
                 const festivalBonus = $('#festival_bonus').val();
+                const extraCharge = $('#extra_charge').val();
                 const totalDaysInMonth = $('#total_days_in_month').val();
-                const payable = calculatePayableAmount(grossSalary, totalWorkingDay, festivalBonus,
+                const payable = calculatePayableAmount(grossSalary, totalWorkingDay, festivalBonus, extraCharge,
                     totalDaysInMonth);
                 $('#payable_amount').val(payable);
             }
@@ -375,7 +388,7 @@
                 updatePayableAmount();
             });
 
-            $('#total_working_day, #festival_bonus').on('change keyup', updatePayableAmount);
+            $('#total_working_day, #festival_bonus, #extra_charge').on('change keyup', updatePayableAmount);
 
             $('#employee_id').on('change', function() {
                 const employeeId = $(this).val();

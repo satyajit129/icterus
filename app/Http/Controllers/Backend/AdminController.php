@@ -242,9 +242,9 @@ class AdminController extends Controller
     {
         return $this->companyService->renderDealsPaymentView($id);
     }
-    public function adminEarningList(): View
+    public function adminEarningList(Request $request): View
     {
-        return $this->companyService->renderEarningList();
+        return $this->companyService->renderEarningList($request);
     }
     public function adminEarningCreateOrEdit($id = null): View
     {

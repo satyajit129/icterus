@@ -98,6 +98,9 @@ Route::prefix('admin')->group(function () {
                 Route::get('/view/{id}', [AdminController::class, 'adminEarningView'])->name('adminEarningView');
             });
         });
+        Route::prefix('/sales-status')->group(function(){
+            Route::get('/',[AdminController::class,'salesStatus'])->name('salesStatus');
+        });
         Route::prefix('/admin-user')->group(function () {
             Route::get('/', [AuthController::class, 'adminUserList'])->name('adminUserList');
             Route::get('/create-or-edit/{id?}', [AuthController::class, 'adminUserCreateOrEdit'])->name('adminUserCreateOrEdit');

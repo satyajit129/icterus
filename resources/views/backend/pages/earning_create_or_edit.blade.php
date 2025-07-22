@@ -116,8 +116,11 @@
                                     <div class="col-md-9">
                                         <select name="sales_status" class="form-control form-select" required>
                                             <option value="">Choose Status</option>
-                                            <option value="New Sales" {{ old('sales_status', $earning->sales_status ?? '') == 'New Sales' ? 'selected' : '' }}>New Sales</option>
-                                            <option value="Due" {{ old('sales_status', $earning->sales_status ?? '') == 'Due' ? 'selected' : '' }}>Due</option>
+                                            @forelse ($sales_statuses as $sales_status)
+                                                <option value="{{ $sales_status->id }}"{{ isset($earning) && $earning->sales_status == $sales_status->id ? 'selected' : '' }}>{{ $sales_status->status }}</option>
+                                            @empty
+                                                <p>No Data Found</p>
+                                            @endforelse
                                         </select>
                                     </div>
                                 </div>
