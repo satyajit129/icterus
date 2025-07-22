@@ -6,11 +6,11 @@
 
 @section('content')
     <div class="page-header">
-        <h1 class="page-title">Profile Update</h1>
+        <h1 class="page-title">Profile Edit</h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Profile Update</li>
+                <li class="breadcrumb-item active" aria-current="page">Profile Edit</li>
             </ol>
         </div>
     </div>
@@ -18,7 +18,7 @@
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Profile Update</h3>
+                    <h3 class="card-title">Profile Edit</h3>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('adminProfileUpdate') }}" method="POST" enctype="multipart/form-data">

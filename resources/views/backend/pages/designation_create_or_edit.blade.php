@@ -1,19 +1,19 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($designation->id) ? 'Designation Update' : 'Designation Create')
+@section('title', isset($designation->id) ? 'Designation Edit' : 'Designation Create')
 @section('custom_css')
 @endsection
 
 @section('content')
     <div class="page-header">
-        <h1 class="page-title">@if(isset($designation->id)) Designation Update @else Designation Create @endif </h1>
+        <h1 class="page-title">@if(isset($designation->id)) Designation Edit @else Designation Create @endif </h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
                     <a href="{{ route('adminDesignation') }}">Designation </a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">@if(isset($designation->id)) Designation Update
+                <li class="breadcrumb-item active" aria-current="page">@if(isset($designation->id)) Designation Edit
                 @else Designation Create @endif </li>
             </ol>
         </div>
@@ -22,7 +22,7 @@
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">@if(isset($designation->id)) Designation Update @else Designation Create @endif
+                    <h3 class="card-title">@if(isset($designation->id)) Designation Edit @else Designation Create @endif
                     </h3>
                 </div>
                 <div class="card-body">

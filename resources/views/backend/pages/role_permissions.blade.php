@@ -36,8 +36,8 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Role Name</th>
-                                            <th>Edit Permission</th>
-                                            <th>Delete</th>
+                                            <th>Assign Permissison</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -46,12 +46,17 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $role->name }}</td>
                                                 <td>
+                                                    <ul>
+                                                    @foreach ($role->permissions as $permission)
+                                                        <li>{{ $permission->bangla_code }}</li>
+                                                    @endforeach
+                                                    </ul>
+                                                </td>
+                                                <td>
                                                     <a href="{{ route('adminRoleAccessCreateOrEdit', $role->id) }}"
                                                         class="btn btn-sm btn-primary" title="Edit">
                                                         <i class="fe fe-edit"></i>
                                                     </a>
-                                                </td>
-                                                <td>
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
                                                         data-url="{{ route('adminRoleAccessDelete', ['id' => $role->id]) }}"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">

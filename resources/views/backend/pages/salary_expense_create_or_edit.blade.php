@@ -1,6 +1,6 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($salary_expense->id) ? 'Salary Expense Update' : 'Salary Expense ')
+@section('title', isset($salary_expense->id) ? 'Salary Expense Edit' : 'Salary Expense ')
 @section('custom_css')
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endsection
@@ -9,9 +9,9 @@
     <div class="page-header">
         <h1 class="page-title">
             @if (isset($salary_expense->id))
-                Salary Expense Update
+                Salary Expense Edit
             @else
-                Salary Expense
+                Salary Expense Create
             @endif
         </h1>
         <div>
@@ -22,9 +22,9 @@
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
                     @if (isset($salary_expense->id))
-                        Salary Expense Update
+                        Salary Expense Edit
                     @else
-                        Salary Expense
+                        Salary Expense Create
                     @endif
                 </li>
             </ol>
@@ -36,9 +36,9 @@
                 <div class="card-header">
                     <h3 class="card-title">
                         @if (isset($salary_expense->id))
-                            Salary Expense Update
+                            Salary Expense Edit
                         @else
-                            Salary Expense
+                            Salary Expense Create
                         @endif
                     </h3>
                 </div>
@@ -200,7 +200,7 @@
                                                     'November' => 11,
                                                     'December' => 12,
                                                 ] as $name => $num)
-                                                    <option value="{{ $num }}">{{ $name }}</option>
+                                                   <option value="{{ $num }}" {{ isset($salary_expense) && $salary_expense->payable_month == $num ? 'selected' : '' }}>{{ $name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>

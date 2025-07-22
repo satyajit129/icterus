@@ -1,12 +1,12 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($company->id) ? 'Company Update' : 'Company Create')
+@section('title', isset($company->id) ? 'Company Edit' : 'Company Create')
 @section('custom_css')
 @endsection
 
 @section('content')
     <div class="page-header">
-        <h1 class="page-title">@if(isset($company->id)) Company Update @else Company Create @endif </h1>
+        <h1 class="page-title">@if(isset($company->id)) Company Edit @else Company Create @endif </h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>

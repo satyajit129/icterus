@@ -90,10 +90,7 @@ class CompanyService
     }
     public function renderCompanyDealsCreateOrEdit($id = null): View
     {
-        $company_deal = null;
-        if ($id) {
-            $company_deal = CompanyDeal::findOrFail($id);
-        }
+        $company_deal = $id ? CompanyDeal::findOrFail($id) : null;
         $companies = Company::all();
         return view('backend.pages.company_deals_create_or_edit', compact('company_deal', 'companies'));
     }

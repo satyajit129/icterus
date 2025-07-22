@@ -1,6 +1,6 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($incentive_expense->id) ? 'Incentive Expense Update' : 'Incentive Expense ')
+@section('title', isset($incentive_expense->id) ? 'Incentive Expense Edit' : 'Incentive Expense ')
 @section('custom_css')
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endsection
@@ -9,9 +9,9 @@
     <div class="page-header">
         <h1 class="page-title">
             @if (isset($incentive_expense->id))
-                Incentive Expense Update
+                Incentive Expense Edit
             @else
-                Incentive Expense
+                Incentive Expense Create
             @endif
         </h1>
         <div>
@@ -22,9 +22,9 @@
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
                     @if (isset($incentive_expense->id))
-                        Incentive Expense Update
+                        Incentive Expense Edit
                     @else
-                        Incentive Expense
+                        Incentive Expense Create
                     @endif
                 </li>
             </ol>
@@ -36,9 +36,9 @@
                 <div class="card-header">
                     <h3 class="card-title">
                         @if (isset($incentive_expense->id))
-                            Incentive Expense Update
+                            Incentive Expense Edit
                         @else
-                            Incentive Expense
+                            Incentive Expense Create
                         @endif
                     </h3>
                 </div>

@@ -15,8 +15,11 @@ use Illuminate\Http\RedirectResponse;
 
 class AuthService
 {
-    public function renderadminLogin(): View
+    public function renderadminLogin(): View| RedirectResponse
     {
+        if (Auth::check() && Auth::user()->role === UserRole::ADMIN) {
+            return redirect()->intended(url()->previous());
+        }
         return view('backend.pages.admin_login');
     }
     public function handleLoginRequest($request): RedirectResponse

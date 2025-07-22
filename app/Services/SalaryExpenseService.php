@@ -19,11 +19,8 @@ class SalaryExpenseService
     }
     public function renderSalaryExpenseCreateOrEditPage($id = null): View
     {
-        $salary_expense = null;
         $employees = Employee::where('status', 1)->get();
-        if ($id) {
-            $salary_expense = SalaryExpense::findOrFail($id);
-        }
+        $salary_expense = $id ? SalaryExpense::findOrFail($id) : null;
         return view('backend.pages.salary_expense_create_or_edit', compact('employees', 'salary_expense'));
     }
     public function handleSalaryExpenseSave($request, $id): RedirectResponse

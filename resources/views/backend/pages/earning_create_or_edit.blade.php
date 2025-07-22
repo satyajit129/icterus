@@ -1,20 +1,20 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($earning->id) ? 'Earning Update' : 'Earning Create')
+@section('title', isset($earning->id) ? 'Earning Edit' : 'Earning Create')
 @section('custom_css')
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endsection
 
 @section('content')
     <div class="page-header">
-        <h1 class="page-title">@if(isset($earning->id)) Earning Update @else Earning Create @endif </h1>
+        <h1 class="page-title">@if(isset($earning->id)) Earning Edit @else Earning Create @endif </h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
                     <a href="{{ route('adminEarningList') }}">Earning</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">@if(isset($earning->id)) Earning Update
+                <li class="breadcrumb-item active" aria-current="page">@if(isset($earning->id)) Earning Edit
                 @else Earning Create @endif </li>
             </ol>
         </div>
@@ -23,7 +23,7 @@
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">@if(isset($earning->id)) Earning Update @else Earning Create @endif
+                    <h3 class="card-title">@if(isset($earning->id)) Earning Edit @else Earning Create @endif
                     </h3>
                 </div>
                 <div class="card-body">

@@ -5,9 +5,9 @@
                 href="javascript:void(0)"></a>
             <!-- sidebar-toggle-->
             <a class="logo-horizontal " href="index.html">
-                <img src="../assets/images/brand/logo-white.png" class="header-brand-img desktop-logo" alt="logo">
+                <img src="{{ asset('uploads/'. $settings->logo) }}" class="header-brand-img desktop-logo" alt="logo" style="width: 10%; margin-left: 50%;">
 
-                <img src="../assets/images/brand/logo-dark.png" class="header-brand-img light-logo1" alt="logo">
+                <img src="{{ asset('uploads/'. $settings->logo) }}" class="header-brand-img light-logo1" alt="logo" style="width: 10%; margin-left: 50%;">
             </a>
 
             <div class="d-flex order-lg-2 ms-auto header-right-icons">

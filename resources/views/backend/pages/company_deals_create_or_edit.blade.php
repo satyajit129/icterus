@@ -1,6 +1,6 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($company_deal_deal->id) ? 'Company Deal Update' : 'Company Deal Create')
+@section('title', isset($company_deal->id) ? 'Company Deal Edit' : 'Company Deal Create')
 @section('custom_css')
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endsection
@@ -8,8 +8,8 @@
 @section('content')
     <div class="page-header">
         <h1 class="page-title">
-            @if (isset($company_deal_deal->id))
-                Company Deal Update
+            @if (isset($company_deal->id))
+                Company Deal Edit
             @else
                 Company Deal Create
             @endif
@@ -19,7 +19,7 @@
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
                     @if (isset($company_deal->id))
-                        Company Deal Update
+                        Company Deal Edit
                     @else
                         Company Deal Create
                     @endif
@@ -33,7 +33,7 @@
                 <div class="card-header">
                     <h3 class="card-title">
                         @if (isset($company_deal->id))
-                            Company Deal Update
+                            Company Deal Edit
                         @else
                             Company Deal Create
                         @endif
