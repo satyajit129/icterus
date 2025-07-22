@@ -118,12 +118,12 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="slide">
+                    {{-- <li class="slide">
                         <a class="side-menu__item has-link {{ Route::is('salesStatus') ? 'active' : '' }}" href="{{ route('salesStatus') }}">
                             <i class="side-menu__icon fe fe-bar-chart"></i>
                             <span class="side-menu__label">Sales Status</span>
                         </a>
-                    </li>
+                    </li> --}}
                     @endif
                 @endif
 
