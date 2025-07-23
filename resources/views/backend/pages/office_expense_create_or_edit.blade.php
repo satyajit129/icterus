@@ -50,7 +50,23 @@
 
                         <div class="row mb-4">
                             <div class="col-md-12">
+                                <div class="row mb-2">
+                                    <label class="col-md-4 form-label">Expense Category <span class="text-danger">*</span></label>
+                                    <div class="col-md-8">
+                                        <select name="category_id" class="form-control">
+                                            <option selected disabled>Select an Option</option>
+                                            @forelse ($expense_categories as $expense_category)
+                                                <option value="{{ $expense_category->id }}"
+                                                    {{ isset($office_expense) && $expense_category->id == $office_expense->category_id ? 'selected' : '' }}>
+                                                    {{ $expense_category->name }}
+                                                </option>
 
+                                            @empty
+                                                <p>No Data Found</p>
+                                            @endforelse
+                                        </select>
+                                    </div>
+                                </div>
                                 <!-- Date -->
                                 @php
                                     $formattedDate = old('date', isset($office_expense->date) ? \Carbon\Carbon::parse($office_expense->date)->format('d/m/Y') : '');

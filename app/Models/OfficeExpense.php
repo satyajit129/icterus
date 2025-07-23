@@ -8,4 +8,8 @@ class OfficeExpense extends Model
 {
     protected $table = "office_expenses";
     protected $guarded = [];
+
+    public function category(){
+        return $this->belongsTo(ExpenseCategory::class,'category_id', 'id');
+    }
 }

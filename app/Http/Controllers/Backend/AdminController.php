@@ -54,9 +54,9 @@ class AdminController extends Controller
         $this->rolePermisionService = $rolePermisionService;
     }
 
-    public function adminDashboard(): View
+    public function adminDashboard(Request $request): View
     {
-        return $this->dashboardService->renderDashboard();
+        return $this->dashboardService->renderDashboard($request);
     }
     public function adminSettings(): View
     {
@@ -122,9 +122,9 @@ class AdminController extends Controller
     {
         return $this->employeeService->seeEmployeeData($id);
     }
-    public function adminSalaryExpense(): View
+    public function adminSalaryExpense(Request $request): View
     {
-        return $this->salaryExpenseService->renderSalaryExpenseList();
+        return $this->salaryExpenseService->renderSalaryExpenseList($request);
     }
     public function adminSalaryExpenseCreateOrEdit($id = null): View
     {
@@ -142,9 +142,13 @@ class AdminController extends Controller
     {
         return $this->salaryExpenseService->renderSalaryExpenseView($id);
     }
-    public function adminIncentiveExpense(): View
+    public function adminSalaryExpenseStatusUpdate(Request $request): RedirectResponse
     {
-        return $this->incentiveExpenseService->renderIncentiveExpense();
+        return $this->salaryExpenseService->handleSalaryExpenseStatusUpdate($request);
+    }
+    public function adminIncentiveExpense(Request $request): View
+    {
+        return $this->incentiveExpenseService->renderIncentiveExpense($request);
     }
     public function adminIncentiveExpenseCreateOrEdit($id = null): View
     {
@@ -294,6 +298,37 @@ class AdminController extends Controller
     {
         return $this->rolePermisionService->handleRoleAccessDelete($id);
     }
-
+    public function adminSalesStatus(): View
+    {
+        return $this->officeExpenseService->renderSalesStatus();
+    }
+    public function adminSalesStatusCreateOrEdit($id = null): View
+    {
+        return $this->officeExpenseService->renderSalesStatusCreateOrEdit($id);
+    }
+    public function adminSalesStatusSave(Request $request, $id= null): RedirectResponse
+    {
+        return $this->officeExpenseService->handleSalesStatusSave($request, $id);
+    }
+    public function adminSalesStatusDelete($id): RedirectResponse
+    {
+        return $this->officeExpenseService->handleSalesStatusDelete($id);
+    }
+    public function adminExpenseCategory(): View
+    {
+        return $this->officeExpenseService->renderExpenseCategory();
+    }
+    public function adminExpenseCategoryCreateOrEdit($id = null): View
+    {
+        return $this->officeExpenseService->renderExpenseCategoryCreateOrEdit($id);
+    }
+    public function adminExpenseCategorySave(Request $request, $id = null): RedirectResponse
+    {
+        return $this->officeExpenseService->handleExpenseCategorySave($request, $id);
+    }
+    public function adminExpenseCategoryDelete($id): RedirectResponse
+    {
+        return $this->officeExpenseService->handleExpenseCategoryDelete($id);
+    }
 
 }

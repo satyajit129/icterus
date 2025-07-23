@@ -3,7 +3,7 @@
 @section('title', 'Earning')
 
 @section('custom_css')
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @endsection
 @section('content')
 
@@ -26,7 +26,8 @@
                     <form action="{{ route('adminEarningList') }}" method="GET">
                         @csrf
                         <div class="row">
-                            <div class="col-lg-6">
+                            {{-- Company  --}}
+                            <div class="col-md-6 col-lg-3">
                                 <div class="mb-4">
                                     <label class="form-label">Company</label>
                                     <select name="company_id" id="company_id"
@@ -41,21 +42,27 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+
+                            <div class="col-md-6 col-lg-3">
                                 <div class="mb-4">
-                                    <label class="form-label">Date</label>
-                                    <input type="text" name="date" class="form-control fc-datepicker"
-                                        value="{{ request('date') }}" autocomplete="off" placeholder="DD/MM/YYYY">
+                                    <label class="form-label">Date Range</label>
+                                    <input type="text" name="date" class="form-control date-range-picker"
+                                        value="{{ request('date') }}" autocomplete="off"
+                                        placeholder="DD/MM/YYYY - DD/MM/YYYY">
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+
+                            {{-- Row 2: Employee Name & Sales Status --}}
+                            <div class="col-md-6 col-lg-3">
                                 <div class="mb-4">
                                     <label class="form-label">Employee Name</label>
-                                    <input type="text" name="name" class="form-control" value="{{ request('name') }}"
-                                        autocomplete="off" placeholder="Enter Employee Name">
+                                    <input type="text" name="name" class="form-control"
+                                        value="{{ request('name') }}" autocomplete="off"
+                                        placeholder="Enter Employee Name">
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+
+                            <div class="col-md-6 col-lg-3">
                                 <div class="mb-4">
                                     <label class="form-label">Sales Status</label>
                                     <select name="sales_status" class="form-control">
@@ -70,6 +77,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="mb-4 float-end">
                             <a href="{{ route('adminEarningList') }}" class="btn btn-secondary btn-sm">Reset</a>
                             <button type="submit" class="btn btn-primary btn-sm">Filter</button>
@@ -186,7 +194,11 @@
 @section('custom_js')
     <script src="{{ asset('js/select2.full.min.js') }}"></script>
     <script src="{{ asset('js/select2.js') }}"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <!-- Moment.js -->
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
     <script>
         $(document).ready(function() {
             $('.delete-btn').on('click', function() {
@@ -198,12 +210,21 @@
 
     <script>
         $(function() {
-            $(".fc-datepicker").datepicker({
-                dateFormat: "dd/mm/yy",
-                changeMonth: true,
-                changeYear: true
+            $('.date-range-picker').daterangepicker({
+                locale: {
+                    format: 'DD/MM/YYYY'
+                },
+                autoUpdateInput: false
+            });
+            $('.date-range-picker').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format(
+                    'DD/MM/YYYY'));
+            });
+            $('.date-range-picker').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
             });
         });
     </script>
+
 
 @endsection

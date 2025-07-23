@@ -52,6 +52,7 @@
                 $canManageAdmin       = $user->hasPermission('manage_admin');
                 $canManagePermission  = $user->hasPermission('manage_permission');
                 $canManageRoleAccess  = $user->hasPermission('manage_role_access');
+                $canManageSalesStatus = $user->hasPermission('manage_sales_status');
             @endphp
             <ul class="side-menu">
 
@@ -93,37 +94,40 @@
                     @endif
                 @endif
 
-                @if ($canManageEarnings)
+                @if ($canManageEarnings || $canManageSalesStatus)
                     {{-- FINANCE & EARNING --}}
                     <li class="sub-category">
                         <h3>Finance & Earning</h3>
                     </li>
                     @if ($canManageEarnings)
-                    <li class="slide {{ $is_earning_active ? 'is-expanded' : '' }}">
-                        <a class="side-menu__item {{ $is_earning_active ? 'active' : '' }}" data-bs-toggle="slide" href="javascript:void(0)">
-                            <i class="side-menu__icon fe fe-trending-up"></i>
-                            <span class="side-menu__label">Earnings</span>
-                            <i class="angle fe fe-chevron-right"></i>
-                        </a>
-                        <ul class="slide-menu">
-                            <li>
-                                <a href="{{ route('adminCompanyDealsList') }}" class="slide-item {{ $is_company_deals_active ? 'active' : '' }}">
-                                    <i class="fe fe-briefcase me-2"></i> Company Deals
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('adminEarningList') }}" class="slide-item {{ $is_earning_route_active ? 'active' : '' }}">
-                                    <i class="fe fe-dollar-sign me-2"></i> Earnings
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    {{-- <li class="slide">
-                        <a class="side-menu__item has-link {{ Route::is('salesStatus') ? 'active' : '' }}" href="{{ route('salesStatus') }}">
-                            <i class="side-menu__icon fe fe-bar-chart"></i>
-                            <span class="side-menu__label">Sales Status</span>
-                        </a>
-                    </li> --}}
+                        <li class="slide {{ $is_earning_active ? 'is-expanded' : '' }}">
+                            <a class="side-menu__item {{ $is_earning_active ? 'active' : '' }}" data-bs-toggle="slide" href="javascript:void(0)">
+                                <i class="side-menu__icon fe fe-trending-up"></i>
+                                <span class="side-menu__label">Earnings</span>
+                                <i class="angle fe fe-chevron-right"></i>
+                            </a>
+                            <ul class="slide-menu">
+                                <li>
+                                    <a href="{{ route('adminCompanyDealsList') }}" class="slide-item {{ $is_company_deals_active ? 'active' : '' }}">
+                                        <i class="fe fe-briefcase me-2"></i> Company Deals
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('adminEarningList') }}" class="slide-item {{ $is_earning_route_active ? 'active' : '' }}">
+                                        <i class="fe fe-dollar-sign me-2"></i> Earnings
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+
+                    @if ($canManageSalesStatus)
+                        <li class="slide">
+                            <a class="side-menu__item has-link {{ Route::is('adminSalesStatus','adminSalesStatusCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminSalesStatus') }}">
+                                <i class="side-menu__icon fe fe-bar-chart"></i>
+                                <span class="side-menu__label">Sales Status</span>
+                            </a>
+                        </li>
                     @endif
                 @endif
 
@@ -187,6 +191,12 @@
                                 </a>
                             </li>
                         </ul>
+                    </li>
+                    <li class="slide">
+                        <a class="side-menu__item has-link {{ Route::is('adminExpenseCategory','adminExpenseCategoryCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminExpenseCategory') }}">
+                            <i class="side-menu__icon fe fe-tag"></i>
+                            <span class="side-menu__label">Expense Category</span>
+                        </a>
                     </li>
                     @endif
                 @endif

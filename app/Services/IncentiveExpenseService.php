@@ -8,14 +8,37 @@ use App\Models\IncentiveExpense;
 use App\Models\SalaryExpense;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class IncentiveExpenseService
 {
-    public function renderIncentiveExpense(): View
+    public function renderIncentiveExpense(Request $request): View
     {
-        $incentive_expenses = IncentiveExpense::with('employee.designation','employee.department')->paginate(20);
+        $query = IncentiveExpense::with('employee.designation', 'employee.department');
+
+    if ($request->filled('payable_month')) {
+        $query->whereMonth('payable_month', $request->payable_month);
+    }
+
+    if ($request->filled('payable_year')) {
+        $query->whereYear('payable_month', $request->payable_year);
+    }
+
+    if ($request->filled('name')) {
+        $query->whereHas('employee', function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->name . '%');
+        });
+    }
+
+    if ($request->filled('employee_id')) {
+        $query->whereHas('employee', function ($q) use ($request) {
+            $q->where('id_number', 'like', '%' . $request->employee_id . '%');
+        });
+    }
+
+    $incentive_expenses = $query->paginate(20)->appends($request->all());
         return view('backend.pages.incentive_expense', compact('incentive_expenses'));
     }
     public function renderIncentiveExpenseCreateOrEditPage($id = null): View

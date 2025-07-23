@@ -224,7 +224,12 @@ class CompanyService
                 $query->where('company_id', $request->company_id);
             })
             ->when($request->filled('date'), function ($query) use ($request) {
-                $query->whereDate('date', \Carbon\Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d'));
+                $dates = explode(' - ', $request->date);
+                if (count($dates) === 2) {
+                    $start = \Carbon\Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
+                    $end = \Carbon\Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
+                    $query->whereBetween('date', [$start, $end]);
+                }
             })
             ->when($request->filled('name'), function ($query) use ($request) {
                 $query->whereHas('employee', function ($q) use ($request) {

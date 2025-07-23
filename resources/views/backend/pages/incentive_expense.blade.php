@@ -19,6 +19,80 @@
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
+                    <h3 class="card-title">Filter Data</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('adminIncentiveExpense') }}" method="GET">
+                        @csrf
+                        <div class="row">
+                            {{-- First Row --}}
+                            <div class="col-md-6 col-lg-3">
+                                <div class="mb-4">
+                                    <label class="form-label">Month</label>
+                                    <select id="payable_month" name="payable_month"
+                                        class="form-control select2-show-search form-select" required>
+                                        <option selected disabled>Select Month</option>
+                                        @foreach ([
+                                                'January' => 1,
+                                                'February' => 2,
+                                                'March' => 3,
+                                                'April' => 4,
+                                                'May' => 5,
+                                                'June' => 6,
+                                                'July' => 7,
+                                                'August' => 8,
+                                                'September' => 9,
+                                                'October' => 10,
+                                                'November' => 11,
+                                                'December' => 12,
+                                            ] as $name => $num)
+                                            <option value="{{ $num }}" {{ request('payable_month') == $num ? 'selected' : '' }}>{{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-3">
+                                <div class="mb-4">
+                                    <label class="form-label">Year</label>
+                                    <input type="text" class="form-control" name="payable_year"
+                                        value="{{ request('payable_year') }}" placeholder="Enter Year">
+                                </div>
+                            </div>
+
+                            {{-- Second Row --}}
+                            <div class="col-md-6 col-lg-3">
+                                <div class="mb-4">
+                                    <label class="form-label">Employee Name</label>
+                                    <input type="text" name="name" class="form-control" value="{{ request('name') }}"
+                                        autocomplete="off" placeholder="Enter Employee Name">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-3">
+                                <div class="mb-4">
+                                    <label class="form-label">Employee ID</label>
+                                    <input type="text" name="employee_id" class="form-control"
+                                        value="{{ request('employee_id') }}" autocomplete="off"
+                                        placeholder="Enter Employee ID">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 float-end">
+                            <a href="{{ route('adminSalaryExpense') }}" class="btn btn-secondary btn-sm">Reset</a>
+                            <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-xl-12">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Incentive Expense Data</h3>
                     <a href="{{ route('adminIncentiveExpenseCreateOrEdit') }}">
                         <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Incentive Expense</button>
@@ -35,6 +109,7 @@
                                             <th class="wd-15p border-bottom-0">ID Number</th>
                                             <th class="wd-15p border-bottom-0">Name</th>
                                             <th class="wd-15p border-bottom-0">Month</th>
+                                            <th class="wd-15p border-bottom-0">Year</th>
                                             <th class="wd-15p border-bottom-0">Sales Count</th>
                                             <th class="wd-15p border-bottom-0">Sales Amount</th>
                                             <th class="wd-15p border-bottom-0">Incentive Amount</th>
@@ -49,11 +124,12 @@
                                                 <td>{{ $incentive_expenses->firstItem() + $loop->index }}</td>
                                                 <td>{{ $incentive_expense->employee->id_number }}</td>
                                                 <td>{{ $incentive_expense->employee->name }}</td>
-                                               <td>{{ \Carbon\Carbon::parse($incentive_expense->payable_month)->format('M - Y') }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($incentive_expense->payable_month)->format('M') }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($incentive_expense->payable_month)->format('Y') }}</td>
                                                 <td>{{ $incentive_expense->sales_count }}</td>
-                                                <td>{{ ceil($incentive_expense->sales_amount) }}</td>
-                                                <td>{{ ceil($incentive_expense->incentive_amount) }}</td>
-                                                <td>{{ ceil($incentive_expense->payable_amount) }}</td>
+                                                <td>{{ $incentive_expense->sales_amount }}</td>
+                                                <td>{{ $incentive_expense->incentive_amount }}</td>
+                                                <td>{{ $incentive_expense->payable_amount }}</td>
                                                 <td>
                                                     <a href="{{ route('adminIncentiveExpenseCreateOrEdit', $incentive_expense->id) }}"
                                                         class="btn btn-sm btn-primary"><i class="fe fe-edit"></i></a>
