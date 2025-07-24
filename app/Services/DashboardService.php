@@ -6,6 +6,7 @@ use App\Enum\SalaryStatus;
 use App\Models\Earning;
 use App\Models\Employee;
 use App\Models\IncentiveExpense;
+use App\Models\Loan;
 use App\Models\OfficeExpense;
 use App\Models\SalaryExpense;
 use Illuminate\View\View;
@@ -35,7 +36,8 @@ class DashboardService
     {
         return $this->getSalaryCost($month, $year)
             + $this->getIncentiveCost($month, $year)
-            + $this->getOfficeExpense($month, $year);
+            + $this->getOfficeExpense($month, $year)
+            + $this->getLoanExpense($month, $year);
     }
 
     private function getTotalEarning($month = null, $year = null): float
@@ -78,6 +80,33 @@ class DashboardService
 
         return $query->sum('amount');
     }
+    private function getLoanExpense($month = null, $year = null): float 
+    {
+        $loan_query = Loan::query();
+
+        if (!is_null($month) && !is_null($year)) {
+            $loan_query->whereMonth('date', $month)
+                    ->whereYear('date', $year);
+        }
+
+        $loans = $loan_query->with(['loanPayment' => function ($query) use ($month, $year) {
+            if (!is_null($month) && !is_null($year)) {
+                $query->whereMonth('payment_date', $month)
+                    ->whereYear('payment_date', $year);
+            }
+        }])->get();
+
+        $total_loan_amount = $loans->sum('amount');
+
+        $total_paid_amount = $loans->sum(function ($loan) {
+            return $loan->loanPayment->sum('amount');
+        });
+
+        $net_loan_expense = $total_loan_amount - $total_paid_amount;
+
+        return $net_loan_expense;
+    }
+
 
     private function getPaidEarningAmount($month = null, $year = null): float
     {

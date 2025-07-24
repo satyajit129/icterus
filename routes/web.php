@@ -10,7 +10,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 Route::prefix('admin')->group(function () {
+    Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
     Route::get('/login', [AuthController::class, 'adminLogin'])->name('adminLogin');
     Route::post('/login-request', [AuthController::class, 'adminLoginRequest'])->name('adminLoginRequest');
 
@@ -73,6 +75,17 @@ Route::prefix('admin')->group(function () {
                 Route::get('/create-or-edit/{id?}',[AdminController::class,'adminExpenseCategoryCreateOrEdit'])->name('adminExpenseCategoryCreateOrEdit');
                 Route::post('/save/{id?}',[AdminController::class,'adminExpenseCategorySave'])->name('adminExpenseCategorySave');
                 Route::get('/delete/{id}',[AdminController::class,'adminExpenseCategoryDelete'])->name('adminExpenseCategoryDelete');
+            });
+            Route::prefix('loan')->group(function(){
+                Route::get('/',[AdminController::class,'adminLoanList'])->name('adminLoanList');
+                Route::get('/create-or-edit/{id?}',[AdminController::class,'adminLoanCreateOrEdit'])->name('adminLoanCreateOrEdit');
+                Route::post('/save/{id?}',[AdminController::class,'adminLoanSave'])->name('adminLoanSave');
+                Route::get('/delete/{id}',[AdminController::class,'adminLoanDelete'])->name('adminLoanDelete');
+
+                Route::post('/make-payment/{id?}',[AdminController::class,'adminLoanMakePayment'])->name('adminLoanMakePayment');
+                Route::get('/payment-details',[AdminController::class,'adminLoanPaymentDetails'])->name('adminLoanPaymentDetails');
+                Route::get('/payment-fatch',[AdminController::class,'adminLoanPaymentFetch'])->name('adminLoanPaymentFetch');
+                Route::post('/update/{id?}',[AdminController::class,'adminLoanPaymentUpdate'])->name('adminLoanPaymentUpdate');
             });
         });
         Route::prefix('company')->group(function () {

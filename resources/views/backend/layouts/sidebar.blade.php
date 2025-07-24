@@ -39,7 +39,6 @@
 
             {{-- Permission --}}
             @php
-                
                 $user = auth()->user();
                 $canManageDashboard   = $user->hasPermission('manage_dashboard');
                 $canManageSettings    = $user->hasPermission('manage_settings');
@@ -53,6 +52,7 @@
                 $canManagePermission  = $user->hasPermission('manage_permission');
                 $canManageRoleAccess  = $user->hasPermission('manage_role_access');
                 $canManageSalesStatus = $user->hasPermission('manage_sales_status');
+                $canManageExpenseCategory = $user->hasPermission('expense_category_manage');
             @endphp
             <ul class="side-menu">
 
@@ -162,7 +162,7 @@
                     @endif
                 @endif
                 
-                @if ($canManageExpense)
+                @if ($canManageExpense || $canManageExpenseCategory)
                     {{-- EXPENSE MANAGEMENT --}}
                     <li class="sub-category">
                         <h3>Expense Management</h3>
@@ -192,13 +192,24 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="slide">
-                        <a class="side-menu__item has-link {{ Route::is('adminExpenseCategory','adminExpenseCategoryCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminExpenseCategory') }}">
-                            <i class="side-menu__icon fe fe-tag"></i>
-                            <span class="side-menu__label">Expense Category</span>
-                        </a>
-                    </li>
                     @endif
+                        <li class="slide">
+                            <a class="side-menu__item has-link {{ Route::is('adminLoanList','adminLoanCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminLoanList') }}">
+                                <i class="side-menu__icon fe fe-file-text"></i>
+                                <span class="side-menu__label">Loan</span>
+                            </a>
+                        </li>
+                    @if ($canManageExpenseCategory)
+                        <li class="slide">
+                            <a class="side-menu__item has-link {{ Route::is('adminExpenseCategory','adminExpenseCategoryCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminExpenseCategory') }}">
+                                <i class="side-menu__icon fe fe-tag"></i>
+                                <span class="side-menu__label">Expense Category</span>
+                            </a>
+                        </li>
+                    @endif
+
+                    
+                    
                 @endif
                 
                 @if ($canManageAdmin || $canManagePermission || $canManageRoleAccess)

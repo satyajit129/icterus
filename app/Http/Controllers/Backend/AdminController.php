@@ -9,6 +9,7 @@ use App\Services\DepartmentService;
 use App\Services\DesignationService;
 use App\Services\EmployeeService;
 use App\Services\IncentiveExpenseService;
+use App\Services\LoanService;
 use App\Services\OfficeExpenseService;
 use App\Services\RolePermisionService;
 use App\Services\SalaryExpenseService;
@@ -29,6 +30,7 @@ class AdminController extends Controller
     protected DashboardService $dashboardService;
     protected CompanyService $companyService;
     protected RolePermisionService $rolePermisionService;
+    protected LoanService $loanService;
 
     public function __construct(
         SettingService $settingService,
@@ -41,6 +43,7 @@ class AdminController extends Controller
         DashboardService $dashboardService,
         CompanyService $companyService,
         RolePermisionService $rolePermisionService,
+        LoanService $loanService,
     ) {
         $this->settingService = $settingService;
         $this->designationService = $designationService;
@@ -52,6 +55,7 @@ class AdminController extends Controller
         $this->dashboardService = $dashboardService;
         $this->companyService = $companyService;
         $this->rolePermisionService = $rolePermisionService;
+        $this->loanService = $loanService;
     }
 
     public function adminDashboard(Request $request): View
@@ -329,6 +333,38 @@ class AdminController extends Controller
     public function adminExpenseCategoryDelete($id): RedirectResponse
     {
         return $this->officeExpenseService->handleExpenseCategoryDelete($id);
+    }
+    public function adminLoanList(): View
+    {
+        return $this->loanService->renderLoanList();
+    }
+    public function adminLoanCreateOrEdit($id = null): View 
+    {
+        return $this->loanService->renderLoanCreateOrEdit($id);
+    }
+    public function adminLoanSave(Request $request, $id = null): RedirectResponse
+    {
+        return $this->loanService->handleLoanSave($request, $id);
+    }
+    public function adminLoanDelete($id): RedirectResponse
+    {
+        return $this->loanService->handleLoanDelete($id);
+    }
+    public function adminLoanMakePayment(Request $request, $id= null): RedirectResponse
+    {
+        return $this->loanService->handleLoanMakePayment($request, $id);
+    }
+    public function adminLoanPaymentDetails(Request $request): View
+    {
+        return $this->loanService->renderLoanPaymentDetails($request);
+    }
+    public function adminLoanPaymentFetch(Request $request): View
+    {
+        return $this->loanService->renderLoanPaymentFetch($request);
+    }
+    public function adminLoanPaymentUpdate(Request $request): RedirectResponse
+    {
+        return $this->loanService->handleLoanPaymentUpdate($request);
     }
 
 }
