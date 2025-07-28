@@ -132,7 +132,7 @@
                                                 </td>
                                                 <td>{{ $salary_expense->payable_year }}</td>
                                                 <td>{{ $salary_expense->total_working_day }}</td>
-                                                <td>{{ $salary_expense->employee->gross_salary }}</td>
+                                                <td>{{ $salary_expense->gross_salary }}</td>
                                                 <td>{{ $salary_expense->festival_bonus ?? '-----' }}</td>
                                                 <td>{{ $salary_expense->payable_amount }}</td>
                                                 <td>

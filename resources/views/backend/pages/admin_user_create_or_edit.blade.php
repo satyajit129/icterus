@@ -21,9 +21,10 @@
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">@if(isset($admin_user->id)) Admin User Edit @else Admin User Create @endif
                     </h3>
+                    <a href="{{ route('adminUserList') }}" class="btn btn-primary btn-sm"><i class="fe fe-arrow-left me-1"></i> Back to List</a>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('adminUserSave', $admin_user->id ?? '') }}" method="POST" enctype="multipart/form-data">

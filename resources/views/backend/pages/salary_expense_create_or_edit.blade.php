@@ -33,7 +33,7 @@
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">
                         @if (isset($salary_expense->id))
                             Salary Expense Edit
@@ -41,6 +41,7 @@
                             Salary Expense Create
                         @endif
                     </h3>
+                    <a href="{{ route('adminSalaryExpense') }}" class="btn btn-primary btn-sm"><i class="fe fe-arrow-left me-1"></i> Back to List</a>
                 </div>
 
                 <div class="card-body">
@@ -146,7 +147,7 @@
                                         <label class="col-md-3 form-label">Gross Salary</label>
                                         <div class="col-md-9">
                                             <input type="text" name="gross_salary" id="gross_salary" class="form-control"
-                                                readonly required>
+                                                readonly required value="{{ isset($salary_expense->gross_salary) ? $salary_expense->gross_salary : '' }}">
                                         </div>
                                     </div>
                                 </div>
@@ -290,6 +291,7 @@
     <script src="{{ asset('js/select2.js') }}"></script>
     <script>
         $(document).ready(function() {
+            const isEdit = {{ isset($salary_expense->id) ? 'true' : 'false' }};
             function isLeapYear(year) {
                 return ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0));
             }
@@ -374,7 +376,9 @@
                         $('#designation').val(data.data.designation?.designation ?? '');
                         $('#department').val(data.data.department?.department ?? '');
                         $('#phone_number').val(data.data.phone_number);
-                        $('#gross_salary').val(data.data.gross_salary);
+                        if (!isEdit) {
+                            $('#gross_salary').val(data.data.gross_salary); // only update if not editing
+                        }
                         $('#account_no').val(data.data.account_no);
                         updatePayableAmount();
                     }

@@ -30,10 +30,12 @@
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">
                         {{ isset($loan->id) ? 'Loan Edit' : 'Loan Create' }}
                     </h3>
+                    
+                     <a href="{{ route('adminLoanList') }}" class="btn btn-primary btn-sm"><i class="fe fe-arrow-left me-1"></i> Back to List</a>
                 </div>
 
                 <div class="card-body">

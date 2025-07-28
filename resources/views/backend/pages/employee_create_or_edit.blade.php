@@ -22,10 +22,11 @@
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">
                         @if(isset($employee->id)) Employee Edit @else Employee Create @endif
                     </h3>
+                    <a href="{{ route('adminEmployeeList') }}" class="btn btn-primary btn-sm"><i class="fe fe-arrow-left me-1"></i> Back to List</a>
                 </div>
 
                 <div class="card-body">
@@ -37,7 +38,7 @@
                             <!-- Employee ID -->
                             <div class="col-md-6">
                                 <div class="row mb-2">
-                                    <label class="col-md-4 form-label">Employee ID Number</label>
+                                    <label class="col-md-4 form-label">Employee ID Number <span style="color: red;">*</span></label>
                                     <div class="col-md-8">
                                         <input type="text" class="form-control" name="id_number"
                                             placeholder="Enter Employee ID"
@@ -49,7 +50,7 @@
                             <!-- Employee Name -->
                             <div class="col-md-6">
                                 <div class="row mb-2">
-                                    <label class="col-md-4 form-label">Employee Name</label>
+                                    <label class="col-md-4 form-label">Employee Name <span style="color: red;">*</span></label>
                                     <div class="col-md-8">
                                         <input type="text" class="form-control" name="name"
                                             value="{{ old('name', $employee->name ?? '') }}" required>
@@ -61,7 +62,7 @@
                             <!-- Designation -->
                             <div class="col-md-6">
                                 <div class="row mb-2">
-                                    <label class="col-md-4 form-label">Designation</label>
+                                    <label class="col-md-4 form-label">Designation <span style="color: red;">*</span></label>
                                     <div class="col-md-8">
                                         <select class="form-control" name="designation_id" required>
                                             <option value="" disabled selected>Select Designation</option>
@@ -82,7 +83,7 @@
                             <!-- Department -->
                             <div class="col-md-6">
                                 <div class="row mb-2">
-                                    <label class="col-md-4 form-label">Department</label>
+                                    <label class="col-md-4 form-label">Department <span style="color: red;">*</span></label>
                                     <div class="col-md-8">
                                         <select class="form-control" name="department_id" required>
                                             <option value="" disabled selected>Select Department</option>
@@ -102,7 +103,7 @@
                             <!-- Phone Number -->
                             <div class="col-md-6">
                                 <div class="row mb-2">
-                                    <label class="col-md-4 form-label">Phone Number</label>
+                                    <label class="col-md-4 form-label">Phone Number <span style="color: red;">*</span></label>
                                     <div class="col-md-8">
                                         <input type="text" class="form-control" name="phone_number"
                                             placeholder="Enter Phone Number"
@@ -118,7 +119,7 @@
                                     <div class="col-md-8">
                                         <input type="text" class="form-control" name="account_no"
                                             placeholder="Enter Account Number"
-                                            value="{{ old('account_no', $employee->account_no ?? '') }}" required>
+                                            value="{{ old('account_no', $employee->account_no ?? '') }}" >
                                     </div>
                                 </div>
                             </div>
@@ -126,7 +127,7 @@
                             <!-- Gross Salary -->
                             <div class="col-md-6">
                                 <div class="row mb-2">
-                                    <label class="col-md-4 form-label">Gross Salary</label>
+                                    <label class="col-md-4 form-label">Gross Salary <span style="color: red;">*</span></label>
                                     <div class="col-md-8">
                                         <input type="text" class="form-control" name="gross_salary"
                                             placeholder="Enter Gross Salary"
@@ -140,7 +141,7 @@
                                 <div class="row mb-2">
                                     <label class="col-md-4 form-label">Blood Group</label>
                                     <div class="col-md-8">
-                                        <select class="form-control" name="blood_group" required>
+                                        <select class="form-control" name="blood_group">
                                             <option value="" disabled {{ old('blood_group', $employee->blood_group ?? '') == '' ? 'selected' : '' }}>
                                                 Select Blood Group
                                             </option>
@@ -164,7 +165,7 @@
                                     <label class="col-md-4 form-label">Address</label>
                                     <div class="col-md-8">
                                         <input type="text" class="form-control" name="address" placeholder="Enter Address"
-                                            value="{{ old('address', $employee->address ?? '') }}" required>
+                                            value="{{ old('address', $employee->address ?? '') }}" >
                                     </div>
                                 </div>
                             </div>
@@ -173,7 +174,7 @@
                             <div class="col-md-6">
                                 <div class="row mb-2">
                                     <label class="col-md-4 form-label">
-                                        Picture
+                                        Picture 
                                         @if(isset($employee->picture) && $employee->picture)
                                             <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#pictureModal" title="View Picture">
                                                 <span class="badge bg-primary">View</span>
@@ -191,7 +192,7 @@
                             <!-- Joining Date -->
                             <div class="col-md-6">
                                 <div class="row mb-2">
-                                    <label class="col-md-4 form-label">Joining Date</label>
+                                    <label class="col-md-4 form-label">Joining Date <span style="color: red;">*</span></label>
                                     <div class="col-md-8">
                                         <div class="input-group">
                                             @php

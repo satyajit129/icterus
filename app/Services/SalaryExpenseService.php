@@ -71,6 +71,7 @@ class SalaryExpenseService
             $salary_expense = $id ? SalaryExpense::findOrFail($id) : new SalaryExpense();
             $salary_expense->employee_id = $request->employee_id;
             $salary_expense->payable_month = $request->payable_month;
+            $salary_expense->gross_salary = $request->gross_salary;
             $salary_expense->payable_year = $request->payable_year;
             $salary_expense->total_working_day = $request->total_working_day;
             $salary_expense->total_days_in_month = $request->total_days_in_month;

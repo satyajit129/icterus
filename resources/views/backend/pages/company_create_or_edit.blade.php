@@ -10,9 +10,6 @@
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">
-                    <a href="{{ route('adminDepartment') }}">Department</a>
-                </li>
                 <li class="breadcrumb-item active" aria-current="page">@if(isset($company->id)) Company Update
                 @else Company Create @endif </li>
             </ol>
@@ -21,9 +18,10 @@
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">@if(isset($company->id)) Company Update @else Company Create @endif
                     </h3>
+                   <a href="{{ route('adminCompanyList') }}" class="btn btn-primary btn-sm"><i class="fe fe-arrow-left me-1"></i> Back to List</a>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('adminCompanySave', $company->id ?? '') }}" method="POST" enctype="multipart/form-data">
