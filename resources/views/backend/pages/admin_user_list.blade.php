@@ -12,7 +12,7 @@
 @section('content')
 
     <div class="page-header">
-        <h1 class="page-title">Employee</h1>
+        <h1 class="page-title">Admin User</h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>

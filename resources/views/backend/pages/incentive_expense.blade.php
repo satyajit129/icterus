@@ -101,8 +101,8 @@
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered text-nowrap border-bottom">
+                            <div >
+                                <table class="table table-bordered text-nowrap border-bottom table-responsive">
                                     <thead>
                                         <tr>
                                             <th class="wd-15p border-bottom-0">#</th>
@@ -131,16 +131,23 @@
                                                 <td>{{ $incentive_expense->incentive_amount }}</td>
                                                 <td>{{ $incentive_expense->payable_amount }}</td>
                                                 <td>
-                                                    <a href="{{ route('adminIncentiveExpenseCreateOrEdit', $incentive_expense->id) }}"
-                                                        class="btn btn-sm btn-primary"><i class="fe fe-edit"></i></a>
+                                                    <a href="{{ route('adminIncentiveExpenseCreateOrEdit', ['id' => $incentive_expense->id, 'page' => request('page')]) }}"
+                                                    class="btn btn-sm btn-primary">
+                                                        <i class="fe fe-edit"></i>
+                                                    </a>
+
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminIncentiveExpenseDelete', ['id' => $incentive_expense->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                    data-url="{{ route('adminIncentiveExpenseDelete', ['id' => $incentive_expense->id, 'page' => request('page')]) }}"
+                                                    data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                         <i class="fe fe-trash"></i>
                                                     </a>
+
                                                     <a href="{{ route('adminIncentiveExpenseView', $incentive_expense->id) }}"
-                                                        class="btn btn-sm btn-info"><i class="fe fe-eye"></i></a>
+                                                    class="btn btn-sm btn-info">
+                                                        <i class="fe fe-eye"></i>
+                                                    </a>
                                                 </td>
+
                                             </tr>
                                         @empty
                                             <tr>

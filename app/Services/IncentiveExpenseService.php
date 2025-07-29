@@ -39,7 +39,7 @@ class IncentiveExpenseService
     }
 
     $incentive_expenses = $query->paginate(20)->appends($request->all());
-        return view('backend.pages.incentive_expense', compact('incentive_expenses'));
+    return view('backend.pages.incentive_expense', compact('incentive_expenses'));
     }
     public function renderIncentiveExpenseCreateOrEditPage($id = null): View
     {
@@ -76,7 +76,10 @@ class IncentiveExpenseService
             $incentive_expense->incentive_amount = $request->incentive_amount;
             $incentive_expense->payable_amount = $request->payable_amount;
             $incentive_expense->save();
-            return redirect()->route('adminIncentiveExpense')->with('success', 'Incentive Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
+           return redirect()
+            ->route('adminIncentiveExpense', ['page' => request('page', 1)])
+            ->with('success', 'Incentive Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
+
 
         } catch (ValidationException $th) {
             return redirect()
@@ -96,11 +99,17 @@ class IncentiveExpenseService
         try {
             $employee = IncentiveExpense::findOrFail($id);
             $employee->delete();
-            return redirect()->route('adminIncentiveExpense')->with('success', 'Incentive Expense deleted successfully!');
+
+            return redirect()
+                ->route('adminIncentiveExpense', ['page' => request('page', 1)])
+                ->with('success', 'Incentive Expense deleted successfully!');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }
     }
+
     public function renderIncentiveExpenseView($id): View
     {
         $incentive_expense = IncentiveExpense::with('employee', 'employee.designation', 'employee.department')->findOrFail($id);

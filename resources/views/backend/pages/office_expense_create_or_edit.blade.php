@@ -48,7 +48,7 @@
                     <form action="{{ route('adminOfficeExpenseSave', $office_expense->id ?? '') }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
-
+                        <input type="hidden" name="page" value="{{ request('page') }}">
                         <div class="row mb-4">
                             <div class="col-md-12">
                                 <div class="row mb-2">

@@ -16,12 +16,40 @@ use Illuminate\View\View;
 
 class OfficeExpenseService
 {
-    public function renderOfficeExpense(): View
+
+    public function renderOfficeExpense($request): View
     {
-        $office_expenses = OfficeExpense::with('category')->paginate(20);
-       
-        return view('backend.pages.office_expense', compact('office_expenses'));
+        $query = OfficeExpense::with('category');
+
+        // Filter by category_id
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Filter by purpose (assuming partial match)
+        if ($request->filled('purpose')) {
+            $query->where('purpose', 'like', '%' . $request->purpose . '%');
+        }
+
+        // Filter by date range (assuming date stored in a column named 'date')
+        if ($request->filled('date')) {
+            // Assuming date range is in format "DD/MM/YYYY - DD/MM/YYYY"
+            $dates = explode(' - ', $request->date);
+            if (count($dates) == 2) {
+                // Convert dates to Y-m-d format
+                $startDate = Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
+                $endDate = Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
+
+                $query->whereBetween('date', [$startDate, $endDate]);
+            }
+        }
+
+        $office_expenses = $query->paginate(20)->appends($request->except('page')); // keep filter params in pagination links
+        $expense_categories = ExpenseCategory::all();
+
+        return view('backend.pages.office_expense', compact('office_expenses', 'expense_categories'));
     }
+
     public function renderOfficeExpenseCreateOrEditPage($id = null): View
     {
         $expense_categories = ExpenseCategory::all();
@@ -54,7 +82,11 @@ class OfficeExpenseService
 
             $office_expense->save();
 
-            return redirect()->route('adminOfficeExpense')->with('success', 'Office Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
+            return redirect()
+                ->route('adminOfficeExpense', ['page' => request()->input('page', 1)])
+                ->with('success', 'Office Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
+
+
         } catch (ValidationException $th) {
             return redirect()
                 ->back()
@@ -73,11 +105,16 @@ class OfficeExpenseService
         try {
             $employee = OfficeExpense::findOrFail($id);
             $employee->delete();
-            return redirect()->route('adminOfficeExpense')->with('success', 'Office Expense deleted successfully!');
+
+            return redirect()
+                ->route('adminOfficeExpense', ['page' => request('page', 1)])
+                ->with('success', 'Office Expense deleted successfully!');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }
     }
+
     public function renderOfficeExpenseView($id): View
     {
         $office_expense = OfficeExpense::findOrFail($id);

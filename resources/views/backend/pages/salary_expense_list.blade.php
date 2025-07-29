@@ -103,8 +103,8 @@
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered text-nowrap border-bottom">
+                            <div >
+                                <table class="table table-bordered text-nowrap border-bottom table-responsive">
                                     <thead>
                                         <tr>
                                             <th class="wd-15p border-bottom-0">#</th>
@@ -116,6 +116,7 @@
                                             <th class="wd-15p border-bottom-0">Working Days</th>
                                             <th class="wd-15p border-bottom-0">G. Salary</th>
                                             <th class="wd-15p border-bottom-0">Bonus</th>
+                                            <th class="wd-15p border-bottom-0">E. Charge</th>
                                             <th class="wd-15p border-bottom-0">P .Amount</th>
                                             <th class="wd-15p border-bottom-0">Status</th>
                                             <th class="wd-15p border-bottom-0">Action</th>
@@ -134,6 +135,7 @@
                                                 <td>{{ $salary_expense->total_working_day }}</td>
                                                 <td>{{ $salary_expense->gross_salary }}</td>
                                                 <td>{{ $salary_expense->festival_bonus ?? '-----' }}</td>
+                                                <td>{{ $salary_expense->extra_charge ?? '-----' }}</td>
                                                 <td>{{ $salary_expense->payable_amount }}</td>
                                                 <td>
                                                     @if ($salary_expense->salary_status)
@@ -148,19 +150,24 @@
                                                         </button>
                                                     @endif
                                                 </td>
-                                                <td>
-                                                    <a href="{{ route('adminSalaryExpenseCreateOrEdit', $salary_expense->id) }}"
-                                                        class="btn btn-sm btn-primary"><i class="fe fe-edit"></i></a>
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminSalaryExpenseDelete', ['id' => $salary_expense->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        <i class="fe fe-trash-2"></i>
-                                                    </a>
-                                                    <a href="{{ route('adminSalaryExpenseView', $salary_expense->id) }}"
-                                                        class="btn btn-sm btn-info">
-                                                        <i class="fe fe-eye"></i>
-                                                    </a>
-                                                </td>
+                                               <td>
+                                                <a href="{{ route('adminSalaryExpenseCreateOrEdit', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
+                                                class="btn btn-sm btn-primary">
+                                                <i class="fe fe-edit"></i>
+                                                </a>
+
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                data-url="{{ route('adminSalaryExpenseDelete', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
+                                                data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                <i class="fe fe-trash-2"></i>
+                                                </a>
+
+                                                <a href="{{ route('adminSalaryExpenseView', $salary_expense->id) }}"
+                                                class="btn btn-sm btn-info">
+                                                <i class="fe fe-eye"></i>
+                                                </a>
+                                            </td>
+
                                             </tr>
                                         @empty
                                             <tr>

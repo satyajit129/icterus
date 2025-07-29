@@ -48,7 +48,7 @@
                     <form action="{{ route('adminIncentiveExpenseSave', $incentive_expense->id ?? '') }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
-
+                        <input type="hidden" name="page" value="{{ request('page') }}">
                         <div class="row mb-4">
                             <!-- Employee Selection -->
                             <div class="col-md-6">

@@ -31,6 +31,7 @@
                     <form action="{{ route('adminEarningSave', $earning->id ?? '') }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
+                        <input type="hidden" name="page" value="{{ request('page') }}">
                         <div class="row">
                             <div class="col-md-12">
 
@@ -99,7 +100,7 @@
                                     </div>
                                 </div>
 
-                                
+
 
                                 {{-- Transaction ID --}}
                                 <div class="row mb-4">
