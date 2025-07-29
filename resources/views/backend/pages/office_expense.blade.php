@@ -3,6 +3,7 @@
 @section('title', 'Office Expense')
 
 @section('custom_css')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @endsection
 @section('content')
 
@@ -13,6 +14,58 @@
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Office Expense</li>
             </ol>
+        </div>
+    </div>
+        <div class="row">
+        <div class="col-md-12 col-xl-12">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h3 class="card-title">Filter Data</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('adminOfficeExpense') }}" method="GET">
+                        @csrf
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Expense Category</label>
+                                    <select name="category_id" class="form-control select2-show-search form-select">
+                                        <option value="">Choose one</option>
+                                        @foreach ($expense_categories as $expense_category)
+                                            <option value="{{ $expense_category->id }}"
+                                                {{ request('category_id') == $expense_category->id ? 'selected' : '' }}>
+                                                {{ $expense_category->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Date Range</label>
+                                    <input type="text" name="date" class="form-control date-range-picker"
+                                        value="{{ request('date') }}" autocomplete="off"
+                                        placeholder="DD/MM/YYYY - DD/MM/YYYY">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="mb-4">
+                                    <label class="form-label">Purpose</label>
+                                    <input type="text" name="purpose" class="form-control"
+                                        value="{{ request('purpose') }}" autocomplete="off"
+                                        placeholder="Enter purpose">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4 float-end">
+                            <a href="{{ route('adminOfficeExpense') }}" class="btn btn-secondary btn-sm">Reset</a>
+                            <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -47,7 +100,7 @@
                                             <tr>
                                                 <td>{{ $office_expenses->firstItem() + $loop->index }}</td>
                                                 <td>{{ $office_expense->category->name ?? 'N/A' }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($office_expense->date)->format('d-m-Y') }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($office_expense->date)->format('d/m/Y') }}</td>
                                                 <td>{{ $office_expense->purpose }}</td>
                                                 <td>{{ isset($office_expense->quantity) ? $office_expense->quantity : '----' }}</td>
                                                 <td>{{ $office_expense->details }}</td>
@@ -69,7 +122,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td class="text-center" colspan="7">No Data Found</td>
+                                                <td class="text-center" colspan="8">No Data Found</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
@@ -103,11 +156,32 @@
 
 @endsection
 @section('custom_js')
+    <script src="{{ asset('js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('js/select2.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script>
         $(document).ready(function () {
             $('.delete-btn').on('click', function () {
                 var deleteUrl = $(this).data('url');
                 $('#confirmDeleteBtn').attr('href', deleteUrl);
+            });
+        });
+    </script>
+        <script>
+        $(function() {
+            $('.date-range-picker').daterangepicker({
+                locale: {
+                    format: 'DD/MM/YYYY'
+                },
+                autoUpdateInput: false
+            });
+            $('.date-range-picker').on('apply.daterangepicker', function(ev, picker) {
+                $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format(
+                    'DD/MM/YYYY'));
+            });
+            $('.date-range-picker').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
             });
         });
     </script>

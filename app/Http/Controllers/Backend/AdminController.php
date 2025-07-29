@@ -170,9 +170,9 @@ class AdminController extends Controller
     {
         return $this->incentiveExpenseService->renderIncentiveExpenseView($id);
     }
-    public function adminOfficeExpense(): View
+    public function adminOfficeExpense(Request $request): View
     {
-        return $this->officeExpenseService->renderOfficeExpense();
+        return $this->officeExpenseService->renderOfficeExpense($request);
     }
     public function adminOfficeExpenseCreateOrEdit($id = null): View
     {
@@ -338,7 +338,7 @@ class AdminController extends Controller
     {
         return $this->loanService->renderLoanList();
     }
-    public function adminLoanCreateOrEdit($id = null): View 
+    public function adminLoanCreateOrEdit($id = null): View
     {
         return $this->loanService->renderLoanCreateOrEdit($id);
     }

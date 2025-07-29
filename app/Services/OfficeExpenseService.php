@@ -16,12 +16,40 @@ use Illuminate\View\View;
 
 class OfficeExpenseService
 {
-    public function renderOfficeExpense(): View
-    {
-        $office_expenses = OfficeExpense::with('category')->paginate(20);
 
-        return view('backend.pages.office_expense', compact('office_expenses'));
+    public function renderOfficeExpense($request): View
+    {
+        $query = OfficeExpense::with('category');
+
+        // Filter by category_id
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Filter by purpose (assuming partial match)
+        if ($request->filled('purpose')) {
+            $query->where('purpose', 'like', '%' . $request->purpose . '%');
+        }
+
+        // Filter by date range (assuming date stored in a column named 'date')
+        if ($request->filled('date')) {
+            // Assuming date range is in format "DD/MM/YYYY - DD/MM/YYYY"
+            $dates = explode(' - ', $request->date);
+            if (count($dates) == 2) {
+                // Convert dates to Y-m-d format
+                $startDate = Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
+                $endDate = Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
+
+                $query->whereBetween('date', [$startDate, $endDate]);
+            }
+        }
+
+        $office_expenses = $query->paginate(20)->appends($request->except('page')); // keep filter params in pagination links
+        $expense_categories = ExpenseCategory::all();
+
+        return view('backend.pages.office_expense', compact('office_expenses', 'expense_categories'));
     }
+
     public function renderOfficeExpenseCreateOrEditPage($id = null): View
     {
         $expense_categories = ExpenseCategory::all();
