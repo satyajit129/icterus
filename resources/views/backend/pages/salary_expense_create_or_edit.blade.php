@@ -48,7 +48,7 @@
                     <form action="{{ route('adminSalaryExpenseSave', $salary_expense->id ?? '') }}" method="POST"
                         enctype="multipart/form-data">
                         @csrf
-
+                        <input type="hidden" name="page" value="{{ request('page') }}">
                         <div class="row mb-4">
                             <!-- Employee Selection -->
                             <div class="col-md-6">
@@ -247,7 +247,7 @@
                                         <label class="col-md-3 form-label">Extra Charge</label>
                                         <div class="col-md-9">
                                             <input type="text" id="extra_charge" name="extra_charge"
-                                                class="form-control" placeholder="e.g. 2500"  
+                                                class="form-control" placeholder="e.g. 2500"
                                                 value="{{ isset($salary_expense->extra_charge) ? $salary_expense->extra_charge : '' }}">
                                         </div>
                                     </div>

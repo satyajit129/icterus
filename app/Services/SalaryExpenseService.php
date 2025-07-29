@@ -81,7 +81,10 @@ class SalaryExpenseService
             $salary_expense->payable_amount = $request->payable_amount;
             $salary_expense->save();
 
-            return redirect()->route('adminSalaryExpense')->with('success', 'Salary Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
+            return redirect()
+                ->route('adminSalaryExpense', ['page' => request('page', 1)])
+                ->with('success', 'Salary Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
+
         } catch (ValidationException $th) {
             return redirect()
                 ->back()
@@ -100,11 +103,17 @@ class SalaryExpenseService
         try {
             $employee = SalaryExpense::findOrFail($id);
             $employee->delete();
-            return redirect()->route('adminSalaryExpense')->with('success', 'Salary Expense deleted successfully!');
+
+            return redirect()
+                ->route('adminSalaryExpense', ['page' => request('page', 1)])
+                ->with('success', 'Salary Expense deleted successfully!');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }
     }
+
     public function renderSalaryExpenseView($id): View
     {
         $salary_expense = SalaryExpense::with('employee', 'employee.designation', 'employee.department')->findOrFail($id);

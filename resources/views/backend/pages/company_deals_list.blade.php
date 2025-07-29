@@ -33,8 +33,8 @@
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered text-nowrap border-bottom">
+                            <div>
+                                <table class="table table-bordered text-nowrap border-bottom table-responsive">
                                     <thead>
                                         <tr>
                                             <th class="wd-15p border-bottom-0">#</th>
@@ -45,7 +45,7 @@
                                             <th class="wd-15p border-bottom-0">Total Paid</th>
                                             <th class="wd-15p border-bottom-0">Remaining Balance</th>
                                             <th class="wd-15p border-bottom-0">Contract Duration</th>
-                                            
+
                                             <th class="wd-15p border-bottom-0">Payment Frequency</th>
                                             <th class="wd-15p border-bottom-0">Receive Payment</th>
                                             <th class="wd-15p border-bottom-0">Action</th>
@@ -58,7 +58,7 @@
                                                 <td>{{ \Carbon\Carbon::parse($company_deal->date)->format('d F Y') }}</td>
                                                 <td>{{ $company_deal->companies->name }}</td>
                                                 <td>{{ $company_deal->deals }}</td>
-                                                
+
                                                 <td>{{ $company_deal->deals_amount }}</td>
                                                 <td>
                                                     {{ number_format($company_deal->dealPayments->sum('amount'), 2) }}
@@ -77,21 +77,23 @@
                                                 </td>
 
                                                 <td>
-                                                    <a href="{{ route('adminCompanyDealsCreateOrEdit', $company_deal->id) }}"
-                                                        class="btn btn-sm btn-primary" title="Edit">
+                                                    <a href="{{ route('adminCompanyDealsCreateOrEdit', ['id' => $company_deal->id, 'page' => request('page')]) }}"
+                                                    class="btn btn-sm btn-primary" title="Edit">
                                                         <i class="fe fe-edit"></i>
                                                     </a>
 
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminCompanyDealsDelete', ['id' => $company_deal->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                    data-url="{{ route('adminCompanyDealsDelete', ['id' => $company_deal->id, 'page' => request('page')]) }}"
+                                                    data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
                                                         <i class="fe fe-trash-2"></i>
                                                     </a>
+
                                                     <a href="{{ route('adminCompanyDealsView', $company_deal->id) }}"
-                                                        class="btn btn-sm btn-info" title="View">
+                                                    class="btn btn-sm btn-info" title="View">
                                                         <i class="fe fe-eye"></i>
                                                     </a>
                                                 </td>
+
                                             </tr>
                                         @empty
                                             <tr>

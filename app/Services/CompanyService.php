@@ -116,7 +116,10 @@ class CompanyService
             $company_deal->payment_frequency = $request->payment_frequency;
             $company_deal->save();
 
-            return redirect()->route('adminCompanyDealsList')->with('success', $id ? 'Data Updated Successfully!' : 'Data Created Successfully!');
+            return redirect()
+                ->route('adminCompanyDealsList', ['page' => request('page', 1)])
+                ->with('success', $id ? 'Data Updated Successfully!' : 'Data Created Successfully!');
+
         } catch (ValidationException $e) {
             return redirect()
                 ->back()
@@ -131,11 +134,17 @@ class CompanyService
         try {
             $company_deal = CompanyDeal::findOrFail($id);
             $company_deal->delete();
-            return redirect()->route('adminCompanyDealsList')->with('success', 'Data deleted successfully!');
+
+            return redirect()
+                ->route('adminCompanyDealsList', ['page' => request('page', 1)])
+                ->with('success', 'Data deleted successfully!');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }
     }
+
     public function renderCompanyDealsView($id): View
     {
         $company_deal = CompanyDeal::with('companies')->findOrFail($id);
@@ -226,8 +235,8 @@ class CompanyService
             ->when($request->filled('date'), function ($query) use ($request) {
                 $dates = explode(' - ', $request->date);
                 if (count($dates) === 2) {
-                    $start = \Carbon\Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
-                    $end = \Carbon\Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
+                    $start = Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
+                    $end = Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
                     $query->whereBetween('date', [$start, $end]);
                 }
             })
@@ -286,7 +295,10 @@ class CompanyService
             $earning->product_name = $request->product_name;
             $earning->details = $request->details;
             $earning->save();
-            return redirect()->route('adminEarningList')->with('success', $id ? 'Earning updated successfully!' : 'Earning created successfully!');
+            return redirect()
+                ->route('adminEarningList', ['page' => $request->input('page', 1)])
+                ->with('success', $id ? 'Earning updated successfully!' : 'Earning created successfully!');
+
 
         } catch (ValidationException $th) {
             return redirect()
@@ -306,11 +318,17 @@ class CompanyService
         try {
             $earning = Earning::findOrFail($id);
             $earning->delete();
-            return redirect()->route('adminEarningList')->with('success', 'Data deleted successfully!');
+
+            return redirect()
+                ->route('adminEarningList', ['page' => request('page', 1)])
+                ->with('success', 'Data deleted successfully!');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }
     }
+
     public function renderEarningView($id): View
     {
         $earning = Earning::with('employee', 'companies')->findOrFail($id);

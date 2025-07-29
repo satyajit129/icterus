@@ -19,7 +19,7 @@ class OfficeExpenseService
     public function renderOfficeExpense(): View
     {
         $office_expenses = OfficeExpense::with('category')->paginate(20);
-       
+
         return view('backend.pages.office_expense', compact('office_expenses'));
     }
     public function renderOfficeExpenseCreateOrEditPage($id = null): View
@@ -54,7 +54,11 @@ class OfficeExpenseService
 
             $office_expense->save();
 
-            return redirect()->route('adminOfficeExpense')->with('success', 'Office Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
+            return redirect()
+                ->route('adminOfficeExpense', ['page' => request()->input('page', 1)])
+                ->with('success', 'Office Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
+
+
         } catch (ValidationException $th) {
             return redirect()
                 ->back()
@@ -73,11 +77,16 @@ class OfficeExpenseService
         try {
             $employee = OfficeExpense::findOrFail($id);
             $employee->delete();
-            return redirect()->route('adminOfficeExpense')->with('success', 'Office Expense deleted successfully!');
+
+            return redirect()
+                ->route('adminOfficeExpense', ['page' => request('page', 1)])
+                ->with('success', 'Office Expense deleted successfully!');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'An error occurred while deleting: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'An error occurred while deleting: ' . $e->getMessage());
         }
     }
+
     public function renderOfficeExpenseView($id): View
     {
         $office_expense = OfficeExpense::findOrFail($id);

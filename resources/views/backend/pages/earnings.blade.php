@@ -101,8 +101,8 @@
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered text-nowrap border-bottom">
+                            <div >
+                                <table class="table table-bordered text-nowrap border-bottom table-responsive">
                                     <thead>
                                         <tr>
                                             <th class="wd-5p">#</th>
@@ -141,20 +141,23 @@
                                                 <td>{{ $earning->product_name }}</td>
                                                 <td>{{ $earning->details }}</td>
                                                 <td>
-                                                    <a href="{{ route('adminEarningCreateOrEdit', $earning->id) }}"
-                                                        class="btn btn-sm btn-primary" title="Edit">
+                                                    <a href="{{ route('adminEarningCreateOrEdit', ['id' => $earning->id, 'page' => request('page')]) }}"
+                                                    class="btn btn-sm btn-primary" title="Edit">
                                                         <i class="fe fe-edit"></i>
                                                     </a>
+
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminEarningDelete', ['id' => $earning->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                    data-url="{{ route('adminEarningDelete', ['id' => $earning->id, 'page' => request('page')]) }}"
+                                                    data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
                                                         <i class="fe fe-trash-2"></i>
                                                     </a>
+
                                                     <a href="{{ route('adminEarningView', $earning->id) }}"
-                                                        class="btn btn-sm btn-info" title="View">
+                                                    class="btn btn-sm btn-info" title="View">
                                                         <i class="fe fe-eye"></i>
                                                     </a>
                                                 </td>
+
                                             </tr>
                                         @empty
                                             <tr>

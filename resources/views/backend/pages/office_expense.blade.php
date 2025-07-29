@@ -27,8 +27,8 @@
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered text-nowrap border-bottom">
+                            <div>
+                                <table class="table table-bordered text-nowrap border-bottom table-responsive">
                                     <thead>
                                         <tr>
                                             <th class="wd-15p border-bottom-0">#</th>
@@ -53,13 +53,16 @@
                                                 <td>{{ $office_expense->details }}</td>
                                                 <td>{{ number_format($office_expense->amount, 2) }}</td>
                                                 <td>
-                                                   <a href="{{ route('adminOfficeExpenseCreateOrEdit', $office_expense->id) }}"
-                                                        class="btn btn-sm btn-primary"><i class="fe fe-edit"></i></a>
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminOfficeExpenseDelete', ['id' => $office_expense->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        <i class="fe fe-trash"></i>
+                                                   <a href="{{ route('adminOfficeExpenseCreateOrEdit', ['id' => $office_expense->id, 'page' => request('page')]) }}"
+                                                        class="btn btn-sm btn-primary">
+                                                        <i class="fe fe-edit"></i>
                                                     </a>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                        data-url="{{ route('adminOfficeExpenseDelete', ['id' => $office_expense->id, 'page' => request('page')]) }}"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                            <i class="fe fe-trash"></i>
+                                                    </a>
+
                                                     <a href="{{ route('adminOfficeExpenseView', $office_expense->id) }}"
                                                         class="btn btn-sm btn-info"><i class="fe fe-eye"></i></a>
                                                 </td>
