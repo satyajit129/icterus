@@ -1,6 +1,6 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($salary_expense->id) ? 'Salary Expense Update' : 'Salary Expense ')
+@section('title', isset($salary_expense->id) ? 'Salary Expense Edit' : 'Salary Expense ')
 @section('custom_css')
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endsection
@@ -9,9 +9,9 @@
     <div class="page-header">
         <h1 class="page-title">
             @if (isset($salary_expense->id))
-                Salary Expense Update
+                Salary Expense Edit
             @else
-                Salary Expense
+                Salary Expense Create
             @endif
         </h1>
         <div>
@@ -22,9 +22,9 @@
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
                     @if (isset($salary_expense->id))
-                        Salary Expense Update
+                        Salary Expense Edit
                     @else
-                        Salary Expense
+                        Salary Expense Create
                     @endif
                 </li>
             </ol>
@@ -33,14 +33,15 @@
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">
                         @if (isset($salary_expense->id))
-                            Salary Expense Update
+                            Salary Expense Edit
                         @else
-                            Salary Expense
+                            Salary Expense Create
                         @endif
                     </h3>
+                    <a href="{{ route('adminSalaryExpense') }}" class="btn btn-primary btn-sm"><i class="fe fe-arrow-left me-1"></i> Back to List</a>
                 </div>
 
                 <div class="card-body">
@@ -146,7 +147,7 @@
                                         <label class="col-md-3 form-label">Gross Salary</label>
                                         <div class="col-md-9">
                                             <input type="text" name="gross_salary" id="gross_salary" class="form-control"
-                                                readonly required>
+                                                readonly required value="{{ isset($salary_expense->gross_salary) ? $salary_expense->gross_salary : '' }}">
                                         </div>
                                     </div>
                                 </div>
@@ -200,7 +201,7 @@
                                                     'November' => 11,
                                                     'December' => 12,
                                                 ] as $name => $num)
-                                                    <option value="{{ $num }}">{{ $name }}</option>
+                                                   <option value="{{ $num }}" {{ isset($salary_expense) && $salary_expense->payable_month == $num ? 'selected' : '' }}>{{ $name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -234,13 +235,24 @@
                                         <div class="col-md-9">
                                             <input type="number" id="festival_bonus" name="festival_bonus"
                                             class="form-control" placeholder="e.g. 5000"
-                                            value="{{ isset($salary_expense->festival_bonus) ? ceil($salary_expense->festival_bonus) : '' }}">
+                                            value="{{ isset($salary_expense->festival_bonus) ? $salary_expense->festival_bonus : '' }}">
 
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="row mb-2">
+                                        <label class="col-md-3 form-label">Extra Charge</label>
+                                        <div class="col-md-9">
+                                            <input type="text" id="extra_charge" name="extra_charge"
+                                                class="form-control" placeholder="e.g. 2500"  
+                                                value="{{ isset($salary_expense->extra_charge) ? $salary_expense->extra_charge : '' }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <!-- Payable Amount -->
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -279,6 +291,7 @@
     <script src="{{ asset('js/select2.js') }}"></script>
     <script>
         $(document).ready(function() {
+            const isEdit = {{ isset($salary_expense->id) ? 'true' : 'false' }};
             function isLeapYear(year) {
                 return ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0));
             }
@@ -320,15 +333,16 @@
 
             }
 
-            function calculatePayableAmount(grossSalary, totalWorkingDay, festivalBonus, totalDaysInMonth) {
+            function calculatePayableAmount(grossSalary, totalWorkingDay, festivalBonus, extraCharge, totalDaysInMonth) {
                 grossSalary = parseFloat(grossSalary) || 0;
                 totalWorkingDay = parseInt(totalWorkingDay) || 0;
                 festivalBonus = parseFloat(festivalBonus) || 0;
+                extraCharge = parseFloat(extraCharge) || 0;
                 totalDaysInMonth = parseInt(totalDaysInMonth) || 0;
 
                 if (grossSalary <= 0 || totalDaysInMonth <= 0) return 0;
                 const dailySalary = grossSalary / totalDaysInMonth;
-                const payableAmount = (dailySalary * totalWorkingDay) + festivalBonus;
+                const payableAmount = (dailySalary * totalWorkingDay) + festivalBonus + extraCharge;
                 return payableAmount.toFixed(2);
             }
 
@@ -336,8 +350,9 @@
                 const grossSalary = $('#gross_salary').val();
                 const totalWorkingDay = $('#total_working_day').val();
                 const festivalBonus = $('#festival_bonus').val();
+                const extraCharge = $('#extra_charge').val();
                 const totalDaysInMonth = $('#total_days_in_month').val();
-                const payable = calculatePayableAmount(grossSalary, totalWorkingDay, festivalBonus,
+                const payable = calculatePayableAmount(grossSalary, totalWorkingDay, festivalBonus, extraCharge,
                     totalDaysInMonth);
                 $('#payable_amount').val(payable);
             }
@@ -361,7 +376,9 @@
                         $('#designation').val(data.data.designation?.designation ?? '');
                         $('#department').val(data.data.department?.department ?? '');
                         $('#phone_number').val(data.data.phone_number);
-                        $('#gross_salary').val(data.data.gross_salary);
+                        if (!isEdit) {
+                            $('#gross_salary').val(data.data.gross_salary); // only update if not editing
+                        }
                         $('#account_no').val(data.data.account_no);
                         updatePayableAmount();
                     }
@@ -375,7 +392,7 @@
                 updatePayableAmount();
             });
 
-            $('#total_working_day, #festival_bonus').on('change keyup', updatePayableAmount);
+            $('#total_working_day, #festival_bonus, #extra_charge').on('change keyup', updatePayableAmount);
 
             $('#employee_id').on('change', function() {
                 const employeeId = $(this).val();

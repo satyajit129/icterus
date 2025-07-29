@@ -41,7 +41,22 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    public function adminRole(){
-        return $this->belongsTo(Role::class,'admin_role_id', 'id');
+    public function adminRole()
+    {
+        return $this->belongsTo(Role::class, 'admin_role_id', 'id');
+    }
+
+    // Check if user has a role
+    public function hasRole($roleName)
+    {
+        return optional($this->adminRole)->name === $roleName;
+    }
+
+    // Check if user has a permission via role
+    public function hasPermission($permissionName)
+    {
+        return optional($this->adminRole)
+            ->permissions // collection of permissions
+            ->contains('name', $permissionName);
     }
 }

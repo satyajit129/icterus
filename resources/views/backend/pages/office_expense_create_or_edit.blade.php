@@ -1,6 +1,6 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($office_expense->id) ? 'Office Expense Update' : 'Office Expense Update')
+@section('title', isset($office_expense->id) ? 'Office Expense Edit' : 'Office Expense Create')
 @section('custom_css')
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endsection
@@ -9,9 +9,9 @@
     <div class="page-header">
         <h1 class="page-title">
             @if (isset($office_expense->id))
-                Office Expense Update
+                Office Expense Edit
             @else
-                Office Expense Update
+                Office Expense Create
             @endif
         </h1>
         <div>
@@ -22,9 +22,9 @@
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
                     @if (isset($office_expense->id))
-                        Office Expense Update
+                        Office Expense Edit
                     @else
-                        Office Expense Update
+                        Office Expense Create
                     @endif
                 </li>
             </ol>
@@ -33,14 +33,15 @@
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">
                         @if (isset($office_expense->id))
-                            Office Expense Update
+                            Office Expense Edit
                         @else
-                            Office Expense Update
+                            Office Expense Create
                         @endif
                     </h3>
+                    <a href="{{ route('adminOfficeExpense') }}" class="btn btn-primary btn-sm"><i class="fe fe-arrow-left me-1"></i> Back to List</a>
                 </div>
 
                 <div class="card-body">
@@ -50,7 +51,23 @@
 
                         <div class="row mb-4">
                             <div class="col-md-12">
+                                <div class="row mb-2">
+                                    <label class="col-md-4 form-label">Expense Category <span class="text-danger">*</span></label>
+                                    <div class="col-md-8">
+                                        <select name="category_id" class="form-control">
+                                            <option selected disabled>Select an Option</option>
+                                            @forelse ($expense_categories as $expense_category)
+                                                <option value="{{ $expense_category->id }}"
+                                                    {{ isset($office_expense) && $expense_category->id == $office_expense->category_id ? 'selected' : '' }}>
+                                                    {{ $expense_category->name }}
+                                                </option>
 
+                                            @empty
+                                                <p>No Data Found</p>
+                                            @endforelse
+                                        </select>
+                                    </div>
+                                </div>
                                 <!-- Date -->
                                 @php
                                     $formattedDate = old('date', isset($office_expense->date) ? \Carbon\Carbon::parse($office_expense->date)->format('d/m/Y') : '');

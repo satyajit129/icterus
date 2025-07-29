@@ -1,19 +1,19 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($role->id) ? 'Role Update' : 'Role Create')
+@section('title', isset($role->id) ? 'Role Edit' : 'Role Create')
 @section('custom_css')
 @endsection
 
 @section('content')
     <div class="page-header">
-        <h1 class="page-title">@if(isset($role->id)) Role Update @else Role Create @endif </h1>
+        <h1 class="page-title">@if(isset($role->id)) Role Edit @else Role Create @endif </h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
                     <a href="{{ route('adminDesignation') }}">Role </a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">@if(isset($role->id)) Role Update
+                <li class="breadcrumb-item active" aria-current="page">@if(isset($role->id)) Role Edit
                 @else Role Create @endif </li>
             </ol>
         </div>
@@ -22,7 +22,7 @@
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">@if(isset($role->id)) Role Update @else Role Create @endif
+                    <h3 class="card-title">@if(isset($role->id)) Role Edit @else Role Create @endif
                     </h3>
                 </div>
                 <div class="card-body">

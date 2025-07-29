@@ -1,19 +1,19 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($department->id) ? 'Department Update' : 'Department Create')
+@section('title', isset($department->id) ? 'Department Edit' : 'Department Create')
 @section('custom_css')
 @endsection
 
 @section('content')
     <div class="page-header">
-        <h1 class="page-title">@if(isset($department->id)) Department Update @else Department Create @endif </h1>
+        <h1 class="page-title">@if(isset($department->id)) Department Edit @else Department Create @endif </h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
                     <a href="{{ route('adminDepartment') }}">Department </a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">@if(isset($department->id)) Department Update
+                <li class="breadcrumb-item active" aria-current="page">@if(isset($department->id)) Department Edit
                 @else Department Create @endif </li>
             </ol>
         </div>
@@ -21,9 +21,10 @@
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">@if(isset($department->id)) Department Update @else Department Create @endif
+                <div class="card-header d-flex justify-content-between">
+                    <h3 class="card-title">@if(isset($department->id)) Department Edit @else Department Create @endif
                     </h3>
+                    <a href="{{ route('adminDepartment') }}" class="btn btn-primary btn-sm"><i class="fe fe-arrow-left me-1"></i> Back to List</a>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('adminDepartmentSave', $department->id ?? '') }}" method="POST" enctype="multipart/form-data">

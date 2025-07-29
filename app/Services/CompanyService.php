@@ -7,6 +7,7 @@ use App\Models\CompanyDeal;
 use App\Models\DealPayment;
 use App\Models\Earning;
 use App\Models\Employee;
+use App\Models\SalesStatus;
 use Carbon\Carbon;
 use Dflydev\DotAccessData\Data;
 use Exception;
@@ -90,10 +91,7 @@ class CompanyService
     }
     public function renderCompanyDealsCreateOrEdit($id = null): View
     {
-        $company_deal = null;
-        if ($id) {
-            $company_deal = CompanyDeal::findOrFail($id);
-        }
+        $company_deal = $id ? CompanyDeal::findOrFail($id) : null;
         $companies = Company::all();
         return view('backend.pages.company_deals_create_or_edit', compact('company_deal', 'companies'));
     }
@@ -214,24 +212,44 @@ class CompanyService
         // dd('here');
         $deal_payments = DealPayment::with('companyDeal.companies')
             ->findOrFail($id);
-            // dd($deal_payments);
 
         return view('backend.pages.company_deals_payment_view', compact('deal_payments'));
     }
-    public function renderEarningList(): View
+    public function renderEarningList($request): View
     {
-        $earnings = Earning::with('employee', 'companies')->paginate(20);
-        return view('backend.pages.earnings', compact('earnings'));
+        $companies = Company::select('id', 'name')->get();
+        $sales_statuses = SalesStatus::all();
+        $earnings = Earning::with('employee', 'companies')
+            ->when($request->filled('company_id'), function ($query) use ($request) {
+                $query->where('company_id', $request->company_id);
+            })
+            ->when($request->filled('date'), function ($query) use ($request) {
+                $dates = explode(' - ', $request->date);
+                if (count($dates) === 2) {
+                    $start = \Carbon\Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
+                    $end = \Carbon\Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
+                    $query->whereBetween('date', [$start, $end]);
+                }
+            })
+            ->when($request->filled('name'), function ($query) use ($request) {
+                $query->whereHas('employee', function ($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->name . '%');
+                });
+            })
+            ->when($request->filled('sales_status'), function ($query) use ($request) {
+                $query->where('sales_status', $request->sales_status);
+            })
+            ->paginate(20)
+            ->appends($request->all());
+        return view('backend.pages.earnings', compact('earnings','companies','sales_statuses'));
     }
     public function renderEarningCreateOrEdit($id = null): View
     {
-        $earning = null;
-        if ($id) {
-            $earning = Earning::with('employee', 'companies')->findOrFail($id);
-        }
+        $earning = $id ? Earning::with('employee', 'companies')->findOrFail($id) : null;
         $employees = Employee::select('id', 'name')->where('status', 1)->get();
         $companies = Company::select('id', 'name')->get();
-        return view('backend.pages.earning_create_or_edit', compact('earning', 'employees', 'companies'));
+        $sales_statuses = SalesStatus::all();
+        return view('backend.pages.earning_create_or_edit', compact('earning', 'employees', 'companies', 'sales_statuses'));
     }
     public function handleEarningSave($request, $id = null): RedirectResponse
     {
@@ -244,7 +262,7 @@ class CompanyService
                 'phone_number' => 'nullable|string|max:255',
                 'paid_amount' => 'nullable|numeric',
                 'trnx_id' => 'nullable|string|max:255',
-                'sales_status' => 'nullable|string|max:255',
+                'sales_status' => 'nullable',
                 'customer_number' => 'nullable|string|max:255',
                 'deals_amount' => 'nullable|numeric',
                 'due_amount' => 'nullable|numeric',

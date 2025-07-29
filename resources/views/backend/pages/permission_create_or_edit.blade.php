@@ -1,19 +1,19 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($permission->id) ? 'Permission Update' : 'Permission Create')
+@section('title', isset($permission->id) ? 'Permission Edit' : 'Permission Create')
 @section('custom_css')
 @endsection
 
 @section('content')
     <div class="page-header">
-        <h1 class="page-title">@if(isset($permission->id)) Permission Update @else Permission Create @endif </h1>
+        <h1 class="page-title">@if(isset($permission->id)) Permission Edit @else Permission Create @endif </h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
                     <a href="{{ route('adminDesignation') }}">Permission </a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">@if(isset($permission->id)) Permission Update
+                <li class="breadcrumb-item active" aria-current="page">@if(isset($permission->id)) Permission Edit
                 @else Permission Create @endif </li>
             </ol>
         </div>
@@ -21,9 +21,11 @@
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">@if(isset($permission->id)) Permission Update @else Permission Create @endif
+                <div class="card-header d-flex justify-content-between">
+                    <h3 class="card-title">@if(isset($permission->id)) Permission Edit @else Permission Create @endif
                     </h3>
+                    
+                    <a href="{{ route('adminPermission') }}" class="btn btn-primary btn-sm"><i class="fe fe-arrow-left me-1"></i> Back to List</a>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('adminPermissionSave', $permission->id ?? '') }}" method="POST" enctype="multipart/form-data">

@@ -1,6 +1,6 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($incentive_expense->id) ? 'Incentive Expense Update' : 'Incentive Expense ')
+@section('title', isset($incentive_expense->id) ? 'Incentive Expense Edit' : 'Incentive Expense ')
 @section('custom_css')
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endsection
@@ -9,9 +9,9 @@
     <div class="page-header">
         <h1 class="page-title">
             @if (isset($incentive_expense->id))
-                Incentive Expense Update
+                Incentive Expense Edit
             @else
-                Incentive Expense
+                Incentive Expense Create
             @endif
         </h1>
         <div>
@@ -22,9 +22,9 @@
                 </li>
                 <li class="breadcrumb-item active" aria-current="page">
                     @if (isset($incentive_expense->id))
-                        Incentive Expense Update
+                        Incentive Expense Edit
                     @else
-                        Incentive Expense
+                        Incentive Expense Create
                     @endif
                 </li>
             </ol>
@@ -33,14 +33,15 @@
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between">
                     <h3 class="card-title">
                         @if (isset($incentive_expense->id))
-                            Incentive Expense Update
+                            Incentive Expense Edit
                         @else
-                            Incentive Expense
+                            Incentive Expense Create
                         @endif
                     </h3>
+                    <a href="{{ route('adminIncentiveExpense') }}" class="btn btn-primary btn-sm"><i class="fe fe-arrow-left me-1"></i> Back to List</a>
                 </div>
 
                 <div class="card-body">

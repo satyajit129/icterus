@@ -10,7 +10,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
 Route::prefix('admin')->group(function () {
+    Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
     Route::get('/login', [AuthController::class, 'adminLogin'])->name('adminLogin');
     Route::post('/login-request', [AuthController::class, 'adminLoginRequest'])->name('adminLoginRequest');
 
@@ -52,6 +54,7 @@ Route::prefix('admin')->group(function () {
                 Route::post('/save/{id?}', [AdminController::class, 'adminSalaryExpenseSave'])->name('adminSalaryExpenseSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminSalaryExpenseDelete'])->name('adminSalaryExpenseDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminSalaryExpenseView'])->name('adminSalaryExpenseView');
+                Route::post('/status-update', [AdminController::class, 'adminSalaryExpenseStatusUpdate'])->name('adminSalaryExpenseStatusUpdate');
             });
             Route::prefix('incentive-expense')->group(function () {
                 Route::get('/', [AdminController::class, 'adminIncentiveExpense'])->name('adminIncentiveExpense');
@@ -66,6 +69,23 @@ Route::prefix('admin')->group(function () {
                 Route::post('/save/{id?}', [AdminController::class, 'adminOfficeExpenseSave'])->name('adminOfficeExpenseSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminOfficeExpenseDelete'])->name('adminOfficeExpenseDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminOfficeExpenseView'])->name('adminOfficeExpenseView');
+            });
+            Route::prefix('category')->group(function(){
+                Route::get('/',[AdminController::class,'adminExpenseCategory'])->name('adminExpenseCategory');
+                Route::get('/create-or-edit/{id?}',[AdminController::class,'adminExpenseCategoryCreateOrEdit'])->name('adminExpenseCategoryCreateOrEdit');
+                Route::post('/save/{id?}',[AdminController::class,'adminExpenseCategorySave'])->name('adminExpenseCategorySave');
+                Route::get('/delete/{id}',[AdminController::class,'adminExpenseCategoryDelete'])->name('adminExpenseCategoryDelete');
+            });
+            Route::prefix('loan')->group(function(){
+                Route::get('/',[AdminController::class,'adminLoanList'])->name('adminLoanList');
+                Route::get('/create-or-edit/{id?}',[AdminController::class,'adminLoanCreateOrEdit'])->name('adminLoanCreateOrEdit');
+                Route::post('/save/{id?}',[AdminController::class,'adminLoanSave'])->name('adminLoanSave');
+                Route::get('/delete/{id}',[AdminController::class,'adminLoanDelete'])->name('adminLoanDelete');
+
+                Route::post('/make-payment/{id?}',[AdminController::class,'adminLoanMakePayment'])->name('adminLoanMakePayment');
+                Route::get('/payment-details',[AdminController::class,'adminLoanPaymentDetails'])->name('adminLoanPaymentDetails');
+                Route::get('/payment-fatch',[AdminController::class,'adminLoanPaymentFetch'])->name('adminLoanPaymentFetch');
+                Route::post('/update/{id?}',[AdminController::class,'adminLoanPaymentUpdate'])->name('adminLoanPaymentUpdate');
             });
         });
         Route::prefix('company')->group(function () {
@@ -97,6 +117,12 @@ Route::prefix('admin')->group(function () {
                 Route::get('/delete/{id}', [AdminController::class, 'adminEarningDelete'])->name('adminEarningDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminEarningView'])->name('adminEarningView');
             });
+        });
+        Route::prefix('/sales-status')->group(function(){
+            Route::get('/',[AdminController::class,'adminSalesStatus'])->name('adminSalesStatus');
+            Route::get('/create-or-edit/{id?}',[AdminController::class,'adminSalesStatusCreateOrEdit'])->name('adminSalesStatusCreateOrEdit');
+            Route::post('/save/{id?}',[AdminController::class,'adminSalesStatusSave'])->name('adminSalesStatusSave');
+            Route::get('/delete/{id}',[AdminController::class,'adminSalesStatusDelete'])->name('adminSalesStatusDelete');
         });
         Route::prefix('/admin-user')->group(function () {
             Route::get('/', [AuthController::class, 'adminUserList'])->name('adminUserList');

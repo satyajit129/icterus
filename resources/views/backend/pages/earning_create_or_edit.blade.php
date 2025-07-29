@@ -1,20 +1,20 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($earning->id) ? 'Earning Update' : 'Earning Create')
+@section('title', isset($earning->id) ? 'Earning Edit' : 'Earning Create')
 @section('custom_css')
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 @endsection
 
 @section('content')
     <div class="page-header">
-        <h1 class="page-title">@if(isset($earning->id)) Earning Update @else Earning Create @endif </h1>
+        <h1 class="page-title">@if(isset($earning->id)) Earning Edit @else Earning Create @endif </h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">
                     <a href="{{ route('adminEarningList') }}">Earning</a>
                 </li>
-                <li class="breadcrumb-item active" aria-current="page">@if(isset($earning->id)) Earning Update
+                <li class="breadcrumb-item active" aria-current="page">@if(isset($earning->id)) Earning Edit
                 @else Earning Create @endif </li>
             </ol>
         </div>
@@ -22,9 +22,10 @@
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">@if(isset($earning->id)) Earning Update @else Earning Create @endif
+                <div class="card-header d-flex justify-content-between">
+                    <h3 class="card-title">@if(isset($earning->id)) Earning Edit @else Earning Create @endif
                     </h3>
+                    <a href="{{ route('adminEarningList') }}" class="btn btn-primary btn-sm"><i class="fe fe-arrow-left me-1"></i> Back to List</a>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('adminEarningSave', $earning->id ?? '') }}" method="POST"
@@ -116,8 +117,11 @@
                                     <div class="col-md-9">
                                         <select name="sales_status" class="form-control form-select" required>
                                             <option value="">Choose Status</option>
-                                            <option value="New Sales" {{ old('sales_status', $earning->sales_status ?? '') == 'New Sales' ? 'selected' : '' }}>New Sales</option>
-                                            <option value="Due" {{ old('sales_status', $earning->sales_status ?? '') == 'Due' ? 'selected' : '' }}>Due</option>
+                                            @forelse ($sales_statuses as $sales_status)
+                                                <option value="{{ $sales_status->id }}"{{ isset($earning) && $earning->sales_status == $sales_status->id ? 'selected' : '' }}>{{ $sales_status->status }}</option>
+                                            @empty
+                                                <p>No Data Found</p>
+                                            @endforelse
                                         </select>
                                     </div>
                                 </div>

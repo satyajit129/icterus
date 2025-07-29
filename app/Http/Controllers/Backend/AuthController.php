@@ -16,7 +16,7 @@ class AuthController extends Controller
     {
         $this->authService = $authService;
     }
-    public function adminLogin(): View
+    public function adminLogin(): View|RedirectResponse
     {
         return $this->authService->renderadminLogin();
     }

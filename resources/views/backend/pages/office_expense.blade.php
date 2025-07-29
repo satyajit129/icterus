@@ -32,6 +32,7 @@
                                     <thead>
                                         <tr>
                                             <th class="wd-15p border-bottom-0">#</th>
+                                             <th class="wd-15p border-bottom-0">Category</th>
                                             <th class="wd-15p border-bottom-0">Date</th>
                                             <th class="wd-15p border-bottom-0">Purpose</th>
                                             <th class="wd-15p border-bottom-0">Quantity</th>
@@ -45,6 +46,7 @@
                                         @forelse ($office_expenses as $office_expense)
                                             <tr>
                                                 <td>{{ $office_expenses->firstItem() + $loop->index }}</td>
+                                                <td>{{ $office_expense->category->name ?? 'N/A' }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($office_expense->date)->format('d-m-Y') }}</td>
                                                 <td>{{ $office_expense->purpose }}</td>
                                                 <td>{{ isset($office_expense->quantity) ? $office_expense->quantity : '----' }}</td>

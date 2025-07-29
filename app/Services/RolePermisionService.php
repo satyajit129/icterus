@@ -62,7 +62,7 @@ class RolePermisionService
     }
     public function renderRoleAccess(): View
     {
-        $roles = Role::all();
+        $roles = Role::with('permissions')->get();
         $permissions = Permission::all();
         return view('backend.pages.role_permissions', compact('roles', 'permissions'));
     }

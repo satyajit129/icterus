@@ -1,12 +1,12 @@
 @extends('backend.layouts.master')
 
-@section('title', isset($admin_user->id) ? 'Admin User Update' : 'Admin User Create')
+@section('title', isset($admin_user->id) ? 'Admin User Edit' : 'Admin User Create')
 @section('custom_css')
 @endsection
 
 @section('content')
     <div class="page-header">
-        <h1 class="page-title">@if(isset($admin_user->id)) Admin User Update @else Admin User Create @endif </h1>
+        <h1 class="page-title">@if(isset($admin_user->id)) Admin User Edit @else Admin User Create @endif </h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -21,9 +21,10 @@
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">@if(isset($admin_user->id)) Admin User Update @else Admin User Create @endif
+                <div class="card-header d-flex justify-content-between">
+                    <h3 class="card-title">@if(isset($admin_user->id)) Admin User Edit @else Admin User Create @endif
                     </h3>
+                    <a href="{{ route('adminUserList') }}" class="btn btn-primary btn-sm"><i class="fe fe-arrow-left me-1"></i> Back to List</a>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('adminUserSave', $admin_user->id ?? '') }}" method="POST" enctype="multipart/form-data">

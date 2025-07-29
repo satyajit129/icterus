@@ -1,74 +1,60 @@
 @extends('backend.layouts.master')
 
-@section('title', 'Role Access')
+@section('title', 'Expense Category')
 
 @section('custom_css')
 @endsection
-
 @section('content')
+
     <div class="page-header">
-        <h1 class="page-title">Admin Roles</h1>
+        <h1 class="page-title">Expense Category</h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Admin Roles</li>
+                <li class="breadcrumb-item active" aria-current="page">Expense Category</li>
             </ol>
         </div>
     </div>
-
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h3 class="card-title">Assign Permissions to Role</h3>
-                    <a href="{{ route('adminRoleAccessCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
-                           Role Access</button>
+                    <h3 class="card-title">Expense Category Data</h3>
+                    <a href="{{ route('adminExpenseCategoryCreateOrEdit') }}">
+                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Expense Category</button>
                     </a>
                 </div>
-
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered text-nowrap border-bottom">
+                                <table class="table table-bordered text-nowrap">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>Role Name</th>
-                                            <th>Assign Permissison</th>
-                                            <th>Action</th>
+                                            <th class="wd-15p border-bottom-0">#</th>
+                                            <th class="wd-15p border-bottom-0">Name</th>
+                                            <th class="wd-15p border-bottom-0">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($roles as $role)
+                                        @forelse ($categories as $category)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $role->name }}</td>
+                                                <td>{{ $category->name }}</td>
                                                 <td>
-                                                    <ul>
-                                                    @foreach ($role->permissions as $permission)
-                                                        <li>{{ $permission->bangla_code }}</li>
-                                                    @endforeach
-                                                    </ul>
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('adminRoleAccessCreateOrEdit', $role->id) }}"
-                                                        class="btn btn-sm btn-primary" title="Edit">
-                                                        <i class="fe fe-edit"></i>
-                                                    </a>
+                                                    <a href="{{ route('adminExpenseCategoryCreateOrEdit', $category->id) }}"
+                                                        class="btn btn-sm btn-primary"><i class="fe fe-edit"></i></a>
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminRoleAccessDelete', ['id' => $role->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
-                                                        <i class="fe fe-trash-2"></i>
+                                                        data-url="{{ route('adminExpenseCategoryDelete', ['id' => $category->id]) }}"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                        <i class="fe fe-trash"></i>
                                                     </a>
-                                                    
                                                 </td>
                                             </tr>
                                         @empty
-                                            <tr>
-                                                <td colspan="5" class="text-center text-muted">No Data found</td>
-                                            </tr>
+                                        <tr> 
+                                            <td colspan="3" class="text-center"> No Data found</td>
+                                        </tr>
                                         @endforelse
                                     </tbody>
                                 </table>
@@ -97,15 +83,15 @@
             </div>
         </div>
     </div>
-@endsection
 
+@endsection
 @section('custom_js')
-<script>
-    $(document).ready(function () {
-        $('.delete-btn').on('click', function () {
-            var deleteUrl = $(this).data('url');
-            $('#confirmDeleteBtn').attr('href', deleteUrl);
+    <script>
+        $(document).ready(function () {
+            $('.delete-btn').on('click', function () {
+                var deleteUrl = $(this).data('url');
+                $('#confirmDeleteBtn').attr('href', deleteUrl);
+            });
         });
-    });
-</script>
+    </script>
 @endsection

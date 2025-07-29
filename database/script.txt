@@ -1,0 +1,5 @@
+ALTER TABLE `salary_expenses` ADD `extra_charge` DECIMAL(10,2) NULL DEFAULT NULL AFTER `actual_payable_amount`; 
+
+ALTER TABLE `office_expenses` ADD `category_id` BIGINT(30) NULL DEFAULT NULL AFTER `id`;
+
+ALTER TABLE `salary_expenses` ADD `salary_status` TINYINT(4) NOT NULL DEFAULT '0' AFTER `payable_amount`;
