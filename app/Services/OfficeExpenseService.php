@@ -46,8 +46,10 @@ class OfficeExpenseService
                 $query->whereBetween('date', [$startDate, $endDate]);
             }
         }
+        // Sort by date DESC (newest first)
+        $query->orderBy('date', 'desc');
 
-        $office_expenses = $query->paginate(20)->appends($request->except('page')); // keep filter params in pagination links
+        $office_expenses = $query->paginate(20)->appends($request->except('page')); 
         $expense_categories = ExpenseCategory::all();
 
         return view('backend.pages.office_expense', compact('office_expenses', 'expense_categories'));
