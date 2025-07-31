@@ -25,10 +25,16 @@
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Company Deals Data</h3>
-                    <a href="{{ route('adminCompanyDealsCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
-                            Company Deals</button>
-                    </a>
+                    <div>
+                        <a href="{{ route('adminCompanyDealsExport') }}" class="btn btn-sm btn-primary">
+                            <i class="fe fe-download me-1"></i> Download Data
+                        </a>
+
+                        <a href="{{ route('adminCompanyDealsCreateOrEdit') }}">
+                            <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
+                                Company Deals</button>
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">
@@ -45,7 +51,6 @@
                                             <th class="wd-15p border-bottom-0">Total Paid</th>
                                             <th class="wd-15p border-bottom-0">Remaining Balance</th>
                                             <th class="wd-15p border-bottom-0">Contract Duration</th>
-
                                             <th class="wd-15p border-bottom-0">Payment Frequency</th>
                                             <th class="wd-15p border-bottom-0">Receive Payment</th>
                                             <th class="wd-15p border-bottom-0">Action</th>

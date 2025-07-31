@@ -3,6 +3,7 @@
 
 namespace App\Services;
 
+use App\Exports\SalaryExpenseExport;
 use App\Models\Employee;
 use App\Models\SalaryExpense;
 use Exception;
@@ -10,6 +11,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class SalaryExpenseService
 {
@@ -84,7 +87,6 @@ class SalaryExpenseService
             return redirect()
                 ->route('adminSalaryExpense', ['page' => request('page', 1)])
                 ->with('success', 'Salary Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
-
         } catch (ValidationException $th) {
             return redirect()
                 ->back()
@@ -144,5 +146,10 @@ class SalaryExpenseService
                 ->withInput()
                 ->with('error', 'Failed: ' . $e->getMessage());
         }
+    }
+    public function renderSalaryExpenseExport($request): BinaryFileResponse
+    {
+        $data = $request->only(['payable_month', 'payable_year', 'name', 'employee_id']);
+        return Excel::download(new SalaryExpenseExport($data), 'salary_expense.xlsx');
     }
 }

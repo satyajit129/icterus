@@ -73,9 +73,14 @@
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Office Expense Data</h3>
-                    <a href="{{ route('adminOfficeExpenseCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Office Expense</button>
-                    </a>
+                    <div>
+                        <a href="{{ route('adminOfficeExpenseExport', request()->query()) }}" class="btn btn-sm btn-primary me-2">
+                                <i class="fe fe-download me-1"></i> Download Data
+                            </a>
+                        <a href="{{ route('adminOfficeExpenseCreateOrEdit') }}">
+                            <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Office Expense</button>
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exports\CompanyDealsExport;
 use App\Models\Company;
 use App\Models\CompanyDeal;
 use App\Models\DealPayment;
@@ -14,6 +15,9 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\EarningExport;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class CompanyService
 {
@@ -149,6 +153,10 @@ class CompanyService
     {
         $company_deal = CompanyDeal::with('companies')->findOrFail($id);
         return view('backend.pages.company_deals_view', compact('company_deal'));
+    }
+    public function renderCompanyDealsExport(): BinaryFileResponse
+    {
+        return Excel::download(new CompanyDealsExport, 'company_deals.xlsx');
     }
     public function renderadminDealsPayment($id): View
     {
@@ -333,6 +341,11 @@ class CompanyService
     {
         $earning = Earning::with('employee', 'companies')->findOrFail($id);
         return view('backend.pages.earning_view', compact('earning'));
+    }
+    public function renderEarningExport($request): BinaryFileResponse
+    {
+        $data =   $request->only(['company_id', 'name', 'sales_status', 'date']);
+        return Excel::download(new EarningExport($data), 'earnings.xlsx');
     }
 
 }

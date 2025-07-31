@@ -3,6 +3,7 @@
 
 namespace App\Services;
 
+use App\Exports\OfficeExpenseExport;
 use App\Models\Employee;
 use App\Models\ExpenseCategory;
 use App\Models\OfficeExpense;
@@ -13,6 +14,8 @@ use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class OfficeExpenseService
 {
@@ -119,6 +122,11 @@ class OfficeExpenseService
     {
         $office_expense = OfficeExpense::findOrFail($id);
         return view('backend.pages.office_expense_view', compact('office_expense'));
+    }
+    public function renderOfficeExpenseExport($request): BinaryFileResponse
+    {
+        $data = $request->only(['category_id', 'date', 'purpose']);
+        return Excel::download(new OfficeExpenseExport($data), 'office_expense.xlsx');
     }
     public function renderSalesStatus(): View
     {

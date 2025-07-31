@@ -17,6 +17,7 @@ use App\Services\SettingService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AdminController extends Controller
 {
@@ -126,6 +127,10 @@ class AdminController extends Controller
     {
         return $this->employeeService->seeEmployeeData($id);
     }
+    public function adminEmployeeExport(): BinaryFileResponse
+    {
+        return $this->employeeService->renderEmployeeExport();
+    }
     public function adminSalaryExpense(Request $request): View
     {
         return $this->salaryExpenseService->renderSalaryExpenseList($request);
@@ -150,6 +155,10 @@ class AdminController extends Controller
     {
         return $this->salaryExpenseService->handleSalaryExpenseStatusUpdate($request);
     }
+    public function adminSalaryExpenseExport(Request $request): BinaryFileResponse
+    {
+        return $this->salaryExpenseService->renderSalaryExpenseExport($request);
+    }
     public function adminIncentiveExpense(Request $request): View
     {
         return $this->incentiveExpenseService->renderIncentiveExpense($request);
@@ -170,6 +179,10 @@ class AdminController extends Controller
     {
         return $this->incentiveExpenseService->renderIncentiveExpenseView($id);
     }
+    public function adminIncentiveExpenseExport(Request $request): BinaryFileResponse
+    {
+        return $this->incentiveExpenseService->renderIncentiveExpenseExport($request);
+    }
     public function adminOfficeExpense(Request $request): View
     {
         return $this->officeExpenseService->renderOfficeExpense($request);
@@ -189,6 +202,10 @@ class AdminController extends Controller
     public function adminOfficeExpenseView($id): View
     {
         return $this->officeExpenseService->renderOfficeExpenseView($id);
+    }
+    public function adminOfficeExpenseExport(Request $request): BinaryFileResponse
+    {
+        return $this->officeExpenseService->renderOfficeExpenseExport($request);
     }
     public function adminCompanyList(): View
     {
@@ -230,6 +247,10 @@ class AdminController extends Controller
     {
         return $this->companyService->renderCompanyDealsView($id);
     }
+    public function adminCompanyDealsExport(): BinaryFileResponse
+    {
+        return $this->companyService->renderCompanyDealsExport();
+    }
     public function adminDealsPayment($id): View
     {
         return $this->companyService->renderadminDealsPayment($id);
@@ -269,6 +290,10 @@ class AdminController extends Controller
     public function adminEarningView($id): View
     {
         return $this->companyService->renderEarningView($id);
+    }
+    public function adminEarningExport(Request $request): BinaryFileResponse    
+    {
+        return $this->companyService->renderEarningExport($request);
     }
     public function adminPermission(): View
     {

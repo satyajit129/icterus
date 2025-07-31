@@ -25,10 +25,15 @@
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Employees Data</h3>
-                    <a href="{{ route('adminEmployeeCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
-                            Employee</button>
-                    </a>
+                    <div>
+                         <a href="{{ route('adminEmployeeExport') }}" class="btn btn-primary btn-sm">
+                            <i class="fe fe-download me-2"></i>Download Data
+                        </a>
+                        <a href="{{ route('adminEmployeeCreateOrEdit') }}">
+                            <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Employee</button>
+                        </a>
+                    </div>
+                    
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">

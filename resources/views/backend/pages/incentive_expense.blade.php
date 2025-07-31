@@ -32,7 +32,7 @@
                                     <select id="payable_month" name="payable_month"
                                         class="form-control select2-show-search form-select" required>
                                         <option selected disabled>Select Month</option>
-                                        @foreach ([
+                                            @foreach ([
                                                 'January' => 1,
                                                 'February' => 2,
                                                 'March' => 3,
@@ -46,8 +46,10 @@
                                                 'November' => 11,
                                                 'December' => 12,
                                             ] as $name => $num)
-                                            <option value="{{ $num }}" {{ request('payable_month') == $num ? 'selected' : '' }}>{{ $name }}</option>
-                                        @endforeach
+                                            <option value="{{ $num }}"
+                                                {{ request('payable_month') == $num ? 'selected' : '' }}>{{ $name }}
+                                            </option>
+                                            @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -78,13 +80,11 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="mb-4 float-end">
-                            <a href="{{ route('adminSalaryExpense') }}" class="btn btn-secondary btn-sm">Reset</a>
+                            <a href="{{ route('adminIncentiveExpense') }}" class="btn btn-secondary btn-sm">Reset</a>
                             <button type="submit" class="btn btn-primary btn-sm">Filter</button>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
@@ -92,16 +92,24 @@
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
-                <div class="card-header d-flex align-items-center justify-content-between">
-                    <h3 class="card-title">Incentive Expense Data</h3>
-                    <a href="{{ route('adminIncentiveExpenseCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Incentive Expense</button>
-                    </a>
-                </div>
+                <div class="card">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h3 class="card-title">Incentive Expense Data</h3>
+                        <div>
+                            <a href="{{ route('adminIncentiveExpenseExport', request()->query()) }}" class="btn btn-sm btn-primary me-2">
+                                <i class="fe fe-download me-1"></i> Download Data
+                            </a>
+                            <a href="{{ route('adminIncentiveExpenseCreateOrEdit') }}">
+                                <button type="button" class="btn btn-primary btn-sm">
+                                    <i class="fe fe-plus me-2"></i>Add Incentive Expense
+                                </button>
+                            </a>
+                        </div>
+                    </div>
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
-                            <div >
+                            <div>
                                 <table class="table table-bordered text-nowrap border-bottom ">
                                     <thead>
                                         <tr>
@@ -124,40 +132,40 @@
                                                 <td>{{ $incentive_expenses->firstItem() + $loop->index }}</td>
                                                 <td>{{ $incentive_expense->employee->id_number }}</td>
                                                 <td>{{ $incentive_expense->employee->name }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($incentive_expense->payable_month)->format('M') }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($incentive_expense->payable_month)->format('Y') }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($incentive_expense->payable_month)->format('M') }}
+                                                </td>
+                                                <td>{{ \Carbon\Carbon::parse($incentive_expense->payable_month)->format('Y') }}
+                                                </td>
                                                 <td>{{ $incentive_expense->sales_count }}</td>
                                                 <td>{{ $incentive_expense->sales_amount }}</td>
                                                 <td>{{ $incentive_expense->incentive_amount }}</td>
                                                 <td>{{ $incentive_expense->payable_amount }}</td>
                                                 <td>
                                                     <a href="{{ route('adminIncentiveExpenseCreateOrEdit', ['id' => $incentive_expense->id, 'page' => request('page')]) }}"
-                                                    class="btn btn-sm btn-primary">
+                                                        class="btn btn-sm btn-primary">
                                                         <i class="fe fe-edit"></i>
                                                     </a>
 
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                    data-url="{{ route('adminIncentiveExpenseDelete', ['id' => $incentive_expense->id, 'page' => request('page')]) }}"
-                                                    data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                        data-url="{{ route('adminIncentiveExpenseDelete', ['id' => $incentive_expense->id, 'page' => request('page')]) }}"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                         <i class="fe fe-trash"></i>
                                                     </a>
 
                                                     <a href="{{ route('adminIncentiveExpenseView', $incentive_expense->id) }}"
-                                                    class="btn btn-sm btn-info">
+                                                        class="btn btn-sm btn-info">
                                                         <i class="fe fe-eye"></i>
                                                     </a>
                                                 </td>
-
                                             </tr>
                                         @empty
                                             <tr>
                                                 <td class="text-center" colspan="13">No Data Found</td>
                                             </tr>
                                         @endforelse
-
                                     </tbody>
                                 </table>
-                                 {{ $incentive_expenses->links() }}
+                                {{ $incentive_expenses->links() }}
                             </div>
                         </div>
                     </div>
@@ -187,8 +195,8 @@
 @endsection
 @section('custom_js')
     <script>
-        $(document).ready(function () {
-            $('.delete-btn').on('click', function () {
+        $(document).ready(function() {
+            $('.delete-btn').on('click', function() {
                 var deleteUrl = $(this).data('url');
                 $('#confirmDeleteBtn').attr('href', deleteUrl);
             });

@@ -3,6 +3,8 @@
 
 namespace App\Services;
 
+use App\Exports\EarningExport;
+use App\Exports\IncentiveExpenseExport;
 use App\Models\Employee;
 use App\Models\IncentiveExpense;
 use App\Models\SalaryExpense;
@@ -11,6 +13,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class IncentiveExpenseService
 {
@@ -18,28 +22,28 @@ class IncentiveExpenseService
     {
         $query = IncentiveExpense::with('employee.designation', 'employee.department');
 
-    if ($request->filled('payable_month')) {
-        $query->whereMonth('payable_month', $request->payable_month);
-    }
+        if ($request->filled('payable_month')) {
+            $query->whereMonth('payable_month', $request->payable_month);
+        }
 
-    if ($request->filled('payable_year')) {
-        $query->whereYear('payable_month', $request->payable_year);
-    }
+        if ($request->filled('payable_year')) {
+            $query->whereYear('payable_month', $request->payable_year);
+        }
 
-    if ($request->filled('name')) {
-        $query->whereHas('employee', function ($q) use ($request) {
-            $q->where('name', 'like', '%' . $request->name . '%');
-        });
-    }
+        if ($request->filled('name')) {
+            $query->whereHas('employee', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->name . '%');
+            });
+        }
 
-    if ($request->filled('employee_id')) {
-        $query->whereHas('employee', function ($q) use ($request) {
-            $q->where('id_number', 'like', '%' . $request->employee_id . '%');
-        });
-    }
+        if ($request->filled('employee_id')) {
+            $query->whereHas('employee', function ($q) use ($request) {
+                $q->where('id_number', 'like', '%' . $request->employee_id . '%');
+            });
+        }
 
-    $incentive_expenses = $query->paginate(20)->appends($request->all());
-    return view('backend.pages.incentive_expense', compact('incentive_expenses'));
+        $incentive_expenses = $query->paginate(20)->appends($request->all());
+        return view('backend.pages.incentive_expense', compact('incentive_expenses'));
     }
     public function renderIncentiveExpenseCreateOrEditPage($id = null): View
     {
@@ -48,7 +52,7 @@ class IncentiveExpenseService
         if ($id) {
             $incentive_expense = IncentiveExpense::findOrFail($id);
         }
-        return view('backend.pages.incentive_expense_create_or_edit', compact('employees','incentive_expense'));
+        return view('backend.pages.incentive_expense_create_or_edit', compact('employees', 'incentive_expense'));
     }
     public function handleIncentiveExpenseSave($request, $id): RedirectResponse
     {
@@ -70,17 +74,15 @@ class IncentiveExpenseService
 
             $incentive_expense = $id ? IncentiveExpense::findOrFail($id) : new IncentiveExpense();
             $incentive_expense->employee_id = $request->employee_id;
-           $incentive_expense->payable_month = $request->payable_month . '-01';
+            $incentive_expense->payable_month = $request->payable_month . '-01';
             $incentive_expense->sales_count = $request->sales_count;
             $incentive_expense->sales_amount = $request->sales_amount;
             $incentive_expense->incentive_amount = $request->incentive_amount;
             $incentive_expense->payable_amount = $request->payable_amount;
             $incentive_expense->save();
-           return redirect()
-            ->route('adminIncentiveExpense', ['page' => request('page', 1)])
-            ->with('success', 'Incentive Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
-
-
+            return redirect()
+                ->route('adminIncentiveExpense', ['page' => request('page', 1)])
+                ->with('success', 'Incentive Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
         } catch (ValidationException $th) {
             return redirect()
                 ->back()
@@ -114,5 +116,10 @@ class IncentiveExpenseService
     {
         $incentive_expense = IncentiveExpense::with('employee', 'employee.designation', 'employee.department')->findOrFail($id);
         return view('backend.pages.incentive_expense_view', compact('incentive_expense'));
+    }
+    public function renderIncentiveExpenseExport($request): BinaryFileResponse
+    {
+        $data = $request->only(['payable_month', 'payable_year', 'name', 'employee_id']);
+        return Excel::download(new IncentiveExpenseExport($data), 'incentive_expenses.xlsx');
     }
 }

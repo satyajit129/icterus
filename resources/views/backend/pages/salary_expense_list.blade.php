@@ -26,14 +26,13 @@
                     <form action="{{ route('adminSalaryExpense') }}" method="GET">
                         @csrf
                         <div class="row">
-                            {{-- First Row --}}
                             <div class="col-md-6 col-lg-3">
                                 <div class="mb-4">
                                     <label class="form-label">Month</label>
                                     <select id="payable_month" name="payable_month"
                                         class="form-control select2-show-search form-select" required>
                                         <option selected disabled>Select Month</option>
-                                        @foreach ([
+                                            @foreach ([
                                                 'January' => 1,
                                                 'February' => 2,
                                                 'March' => 3,
@@ -47,7 +46,9 @@
                                                 'November' => 11,
                                                 'December' => 12,
                                             ] as $name => $num)
-                                            <option value="{{ $num }}" {{ request('payable_month') == $num ? 'selected' : '' }}>{{ $name }}</option>
+                                            <option value="{{ $num }}"
+                                                {{ request('payable_month') == $num ? 'selected' : '' }}>{{ $name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -95,11 +96,19 @@
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Salary Expense Data</h3>
-                    <a href="{{ route('adminSalaryExpenseCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Salary
-                            Expense</button>
-                    </a>
+                    <div>
+                        <a href="{{ route('adminSalaryExpenseExport', request()->query()) }}"
+                            class="btn btn-sm btn-primary me-2">
+                            <i class="fe fe-download me-1"></i> Download Data
+                        </a>
+                        <a href="{{ route('adminSalaryExpenseCreateOrEdit') }}">
+                            <button type="button" class="btn btn-primary btn-sm">
+                                <i class="fe fe-plus me-2"></i>Add Salary Expense
+                            </button>
+                        </a>
+                    </div>
                 </div>
+
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
@@ -141,8 +150,7 @@
                                                     @if ($salary_expense->salary_status)
                                                         <button type="button"
                                                             class="btn btn-sm {{ $salary_expense->salary_status->badgeClass() }} open-status-modal"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#salaryStatusModal"
+                                                            data-bs-toggle="modal" data-bs-target="#salaryStatusModal"
                                                             data-id="{{ $salary_expense->id }}"
                                                             data-name="{{ $salary_expense->employee->name }}">
                                                             <i class="{{ $salary_expense->salary_status->icon() }}"></i>
@@ -150,23 +158,23 @@
                                                         </button>
                                                     @endif
                                                 </td>
-                                               <td>
-                                                <a href="{{ route('adminSalaryExpenseCreateOrEdit', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
-                                                class="btn btn-sm btn-primary">
-                                                <i class="fe fe-edit"></i>
-                                                </a>
+                                                <td>
+                                                    <a href="{{ route('adminSalaryExpenseCreateOrEdit', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
+                                                        class="btn btn-sm btn-primary">
+                                                        <i class="fe fe-edit"></i>
+                                                    </a>
 
-                                                <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                data-url="{{ route('adminSalaryExpenseDelete', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
-                                                data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                <i class="fe fe-trash-2"></i>
-                                                </a>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                        data-url="{{ route('adminSalaryExpenseDelete', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                        <i class="fe fe-trash-2"></i>
+                                                    </a>
 
-                                                <a href="{{ route('adminSalaryExpenseView', $salary_expense->id) }}"
-                                                class="btn btn-sm btn-info">
-                                                <i class="fe fe-eye"></i>
-                                                </a>
-                                            </td>
+                                                    <a href="{{ route('adminSalaryExpenseView', $salary_expense->id) }}"
+                                                        class="btn btn-sm btn-info">
+                                                        <i class="fe fe-eye"></i>
+                                                    </a>
+                                                </td>
 
                                             </tr>
                                         @empty
@@ -204,38 +212,41 @@
     </div>
 
     <!-- Salary Status Modal -->
-<div class="modal effect-scale" id="salaryStatusModal" tabindex="-1" aria-labelledby="salaryStatusModalLabel" aria-hidden="true">
-    <div class="modal-dialog ">
-        <form method="POST" action="{{ route('adminSalaryExpenseStatusUpdate') }}">
-            @csrf
-            <input type="hidden" name="salary_expense_id" id="salaryExpenseId">
+    <div class="modal effect-scale" id="salaryStatusModal" tabindex="-1" aria-labelledby="salaryStatusModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog ">
+            <form method="POST" action="{{ route('adminSalaryExpenseStatusUpdate') }}">
+                @csrf
+                <input type="hidden" name="salary_expense_id" id="salaryExpenseId">
 
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Change Salary Status</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <p id="modalEmployeeName" class="mb-3"></p>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="status" value="1" id="approveOption">
-                        <label class="form-check-label" for="approveOption">Approve</label>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Change Salary Status</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="status" value="2" id="disapproveOption">
-                        <label class="form-check-label" for="disapproveOption">Disapprove</label>
+
+                    <div class="modal-body">
+                        <p id="modalEmployeeName" class="mb-3"></p>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" value="1"
+                                id="approveOption">
+                            <label class="form-check-label" for="approveOption">Approve</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" value="2"
+                                id="disapproveOption">
+                            <label class="form-check-label" for="disapproveOption">Disapprove</label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Update Status</button>
                     </div>
                 </div>
-
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Update Status</button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 
 
 @endsection
@@ -256,7 +267,7 @@
     </script>
 
     <script>
-        $(document).on('click', '.open-status-modal', function () {
+        $(document).on('click', '.open-status-modal', function() {
             const id = $(this).data('id');
             const name = $(this).data('name');
 

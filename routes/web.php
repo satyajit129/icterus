@@ -45,6 +45,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/delete/{id}', [AdminController::class, 'adminEmployeeDelete'])->name('adminEmployeeDelete');
             Route::get('/data', [AdminController::class, 'adminEmployeeData'])->name('adminEmployeeData');
             Route::get('/view/{id}', [AdminController::class, 'adminEmployeeView'])->name('adminEmployeeView');
+            Route::get('/export',[AdminController::class,'adminEmployeeExport'])->name('adminEmployeeExport');
         });
 
         Route::prefix('expense')->group(function () {
@@ -55,6 +56,7 @@ Route::prefix('admin')->group(function () {
                 Route::get('/delete/{id}', [AdminController::class, 'adminSalaryExpenseDelete'])->name('adminSalaryExpenseDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminSalaryExpenseView'])->name('adminSalaryExpenseView');
                 Route::post('/status-update', [AdminController::class, 'adminSalaryExpenseStatusUpdate'])->name('adminSalaryExpenseStatusUpdate');
+                Route::get('/export',[AdminController::class,'adminSalaryExpenseExport'])->name('adminSalaryExpenseExport');
             });
             Route::prefix('incentive-expense')->group(function () {
                 Route::get('/', [AdminController::class, 'adminIncentiveExpense'])->name('adminIncentiveExpense');
@@ -62,6 +64,7 @@ Route::prefix('admin')->group(function () {
                 Route::post('/save/{id?}', [AdminController::class, 'adminIncentiveExpenseSave'])->name('adminIncentiveExpenseSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminIncentiveExpenseDelete'])->name('adminIncentiveExpenseDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminIncentiveExpenseView'])->name('adminIncentiveExpenseView');
+                Route::get('/export',[AdminController::class,'adminIncentiveExpenseExport'])->name('adminIncentiveExpenseExport');
             });
             Route::prefix('office-expense')->group(function () {
                 Route::get('/', [AdminController::class, 'adminOfficeExpense'])->name('adminOfficeExpense');
@@ -69,6 +72,7 @@ Route::prefix('admin')->group(function () {
                 Route::post('/save/{id?}', [AdminController::class, 'adminOfficeExpenseSave'])->name('adminOfficeExpenseSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminOfficeExpenseDelete'])->name('adminOfficeExpenseDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminOfficeExpenseView'])->name('adminOfficeExpenseView');
+                Route::get('/export',[AdminController::class,'adminOfficeExpenseExport'])->name('adminOfficeExpenseExport');
             });
             Route::prefix('category')->group(function(){
                 Route::get('/',[AdminController::class,'adminExpenseCategory'])->name('adminExpenseCategory');
@@ -101,6 +105,7 @@ Route::prefix('admin')->group(function () {
                 Route::post('/save/{id?}', [AdminController::class, 'adminCompanyDealsSave'])->name('adminCompanyDealsSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminCompanyDealsDelete'])->name('adminCompanyDealsDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminCompanyDealsView'])->name('adminCompanyDealsView');
+                Route::get('/export',[AdminController::class,'adminCompanyDealsExport'])->name('adminCompanyDealsExport');
 
                 Route::prefix('payment')->group(function () {
                     Route::get('/list/{id}', [AdminController::class, 'adminDealsPayment'])->name('adminDealsPayment');
@@ -116,6 +121,7 @@ Route::prefix('admin')->group(function () {
                 Route::post('/save/{id?}', [AdminController::class, 'adminEarningSave'])->name('adminEarningSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminEarningDelete'])->name('adminEarningDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminEarningView'])->name('adminEarningView');
+                Route::get('/export',[AdminController::class,'adminEarningExport'])->name('adminEarningExport');
             });
         });
         Route::prefix('/sales-status')->group(function(){

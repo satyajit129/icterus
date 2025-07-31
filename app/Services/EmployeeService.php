@@ -3,6 +3,7 @@
 
 namespace App\Services;
 
+use App\Exports\EmployeeExport;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\Employee;
@@ -12,6 +13,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Exception;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class EmployeeService
 {
@@ -131,5 +134,9 @@ class EmployeeService
         $employee = Employee::with(['designation', 'department'])->findOrFail($id);
         // dd($employee);
         return view('backend.pages.employee_view', compact('employee'));
+    }
+    public function renderEmployeeExport(): BinaryFileResponse
+    {
+        return Excel::download(new EmployeeExport(), 'employee.xlsx');
     }
 }
