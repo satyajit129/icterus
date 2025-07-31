@@ -102,7 +102,7 @@
                     <div class="row row-sm">
                         <div class="card-body">
                             <div >
-                                <table class="table table-bordered text-nowrap border-bottom table-responsive">
+                                <table class="table table-bordered text-nowrap border-bottom ">
                                     <thead>
                                         <tr>
                                             <th class="wd-15p border-bottom-0">#</th>

@@ -94,15 +94,14 @@
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Earning Data</h3>
                     <a href="{{ route('adminEarningCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
-                            Earning</button>
+                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Earning</button>
                     </a>
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
-                            <div >
-                                <table class="table table-bordered text-nowrap border-bottom table-responsive">
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-nowrap border-bottom ">
                                     <thead>
                                         <tr>
                                             <th class="wd-5p">#</th>
