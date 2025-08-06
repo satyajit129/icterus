@@ -14,6 +14,7 @@ use App\Services\OfficeExpenseService;
 use App\Services\RolePermisionService;
 use App\Services\SalaryExpenseService;
 use App\Services\SettingService;
+use App\Services\StudentService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -32,6 +33,7 @@ class AdminController extends Controller
     protected CompanyService $companyService;
     protected RolePermisionService $rolePermisionService;
     protected LoanService $loanService;
+     protected StudentService $studentService;
 
     public function __construct(
         SettingService $settingService,
@@ -45,6 +47,7 @@ class AdminController extends Controller
         CompanyService $companyService,
         RolePermisionService $rolePermisionService,
         LoanService $loanService,
+        StudentService $studentService,
     ) {
         $this->settingService = $settingService;
         $this->designationService = $designationService;
@@ -57,6 +60,7 @@ class AdminController extends Controller
         $this->companyService = $companyService;
         $this->rolePermisionService = $rolePermisionService;
         $this->loanService = $loanService;
+        $this->studentService= $studentService;
     }
 
     public function adminDashboard(Request $request): View
@@ -391,5 +395,28 @@ class AdminController extends Controller
     {
         return $this->loanService->handleLoanPaymentUpdate($request);
     }
-
+    public function AdminStudentList(): View
+    {
+        return $this->studentService->renderStudentList();
+    }
+    public function adminStudentCreateOrEdit($id= null): View
+    {
+        return $this->studentService->renderStudentCreateOrEdit($id);
+    }
+    public function adminStudentSave(Request $request, $id = null): RedirectResponse
+    {
+        return $this->studentService->handleStudentSave($request, $id);
+    }
+    public function adminStudentDelete($id): RedirectResponse
+    {
+        return $this->studentService->handleStudentDelete( $id);
+    }
+    public function adminStudentPaymentList($student_id): View
+    {
+        return $this->studentService->renderStudentPaymentList($student_id);
+    }
+    public function adminStudentPaymentCreateOrEdit($id): View
+    {
+        return $this->student
+    }
 }

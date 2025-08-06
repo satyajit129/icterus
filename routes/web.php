@@ -148,5 +148,19 @@ Route::prefix('admin')->group(function () {
             Route::post('/save/{id?}',[AdminController::class,'adminRoleAccessSave'])->name('adminRoleAccessSave');
             Route::get('/delete/{id}',[AdminController::class,'adminRoleAccessDelete'])->name('adminRoleAccessDelete');
         });
+        Route::prefix('student')->group(function(){
+            Route::get('/list',[AdminController::class,'adminStudentList'])->name('adminStudentList');
+            Route::get('/create-or-edit/{id?}',[AdminController::class,'adminStudentCreateOrEdit'])->name('adminStudentCreateOrEdit');
+            Route::post('/save/{id?}',[AdminController::class,'adminStudentSave'])->name('adminStudentSave');
+            Route::get('/delete/{id}',[AdminController::class,'adminStudentDelete'])->name('adminStudentDelete');
+            
+            Route::prefix('payment')->group(function() {
+                Route::get('/list/{id}',[AdminController::class,'adminStudentPaymentList'])->name('adminStudentPaymentList');
+                Route::get('/create-or-edit/{id?}',[AdminController::class,'adminStudentPaymentCreateOrEdit'])->name('adminStudentPaymentCreateOrEdit');
+                Route::post('/save/{id?}',[AdminController::class,'adminStudentPaymentSave'])->name('adminStudentPaymentSave');
+                Route::get('/delete/{id}',[AdminController::class,'adminStudentPaymentDelete'])->name('adminStudentPaymentDelete');
+            });
+        });
+
     });
 });

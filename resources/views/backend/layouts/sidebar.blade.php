@@ -25,7 +25,7 @@
                 $salary_routes = ['adminSalaryExpense', 'adminSalaryExpenseCreateOrEdit','adminSalaryExpenseView'];
                 $incentive_routes = ['adminIncentiveExpense', 'adminIncentiveExpenseCreateOrEdit','adminIncentiveExpenseView'];
                 $office_expense_routes = ['adminOfficeExpense', 'adminOfficeExpenseCreateOrEdit','adminOfficeExpenseView'];
-
+                // $students_routes = 
                 $is_company_deals_active = Route::is($company_deals_routes);
                 $is_earning_route_active = Route::is($earning_routes);
                 $is_earning_active = $is_company_deals_active || $is_earning_route_active;
@@ -34,6 +34,7 @@
                 $is_incentive_active = Route::is($incentive_routes);
                 $is_office_expense_active = Route::is($office_expense_routes);
                 $is_expense_active = $is_salary_active || $is_incentive_active || $is_office_expense_active;
+                // $is_student_active = 
             @endphp
 
 
@@ -53,6 +54,7 @@
                 $canManageRoleAccess  = $user->hasPermission('manage_role_access');
                 $canManageSalesStatus = $user->hasPermission('manage_sales_status');
                 $canManageExpenseCategory = $user->hasPermission('expense_category_manage');
+                $canManageLoan = $user->hasPermission('manage_loan');
             @endphp
             <ul class="side-menu">
 
@@ -162,7 +164,7 @@
                     @endif
                 @endif
                 
-                @if ($canManageExpense || $canManageExpenseCategory)
+                @if ($canManageExpense || $canManageExpenseCategory || $canManageLoan)
                     {{-- EXPENSE MANAGEMENT --}}
                     <li class="sub-category">
                         <h3>Expense Management</h3>
@@ -193,12 +195,16 @@
                         </ul>
                     </li>
                     @endif
+                    
+                    @if ($canManageLoan)
                         <li class="slide">
                             <a class="side-menu__item has-link {{ Route::is('adminLoanList','adminLoanCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminLoanList') }}">
                                 <i class="side-menu__icon fe fe-file-text"></i>
                                 <span class="side-menu__label">Loan</span>
                             </a>
                         </li>
+                    @endif
+
                     @if ($canManageExpenseCategory)
                         <li class="slide">
                             <a class="side-menu__item has-link {{ Route::is('adminExpenseCategory','adminExpenseCategoryCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminExpenseCategory') }}">
@@ -207,10 +213,18 @@
                             </a>
                         </li>
                     @endif
-
-                    
-                    
                 @endif
+                {{-- EXPENSE MANAGEMENT --}}
+                <li class="sub-category">
+                    <h3>Student Management</h3>
+                </li>
+                <li class="slide">
+                    <a class="side-menu__item has-link {{ Route::is('adminStudentList','adminStudentCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminStudentList') }}">
+                        <i class="side-menu__icon fe fe-users"></i>
+                        <span class="side-menu__label">Student List</span>
+                    </a>
+                </li>
+
                 
                 @if ($canManageAdmin || $canManagePermission || $canManageRoleAccess)
                     {{-- ADMINISTRATION & ACCESS CONTROL --}}
