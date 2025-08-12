@@ -99,7 +99,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/delete/{id}', [AdminController::class, 'adminCompanyDelete'])->name('adminCompanyDelete');
             Route::get('/view/{id}', [AdminController::class, 'adminCompanyView'])->name('adminCompanyView');
 
-            Route::prefix('/deals')->group(function () {
+            Route::prefix('deals')->group(function () {
                 Route::get('/', [AdminController::class, 'adminCompanyDealsList'])->name('adminCompanyDealsList');
                 Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminCompanyDealsCreateOrEdit'])->name('adminCompanyDealsCreateOrEdit');
                 Route::post('/save/{id?}', [AdminController::class, 'adminCompanyDealsSave'])->name('adminCompanyDealsSave');
@@ -124,13 +124,13 @@ Route::prefix('admin')->group(function () {
                 Route::get('/export',[AdminController::class,'adminEarningExport'])->name('adminEarningExport');
             });
         });
-        Route::prefix('/sales-status')->group(function(){
+        Route::prefix('sales-status')->group(function(){
             Route::get('/',[AdminController::class,'adminSalesStatus'])->name('adminSalesStatus');
             Route::get('/create-or-edit/{id?}',[AdminController::class,'adminSalesStatusCreateOrEdit'])->name('adminSalesStatusCreateOrEdit');
             Route::post('/save/{id?}',[AdminController::class,'adminSalesStatusSave'])->name('adminSalesStatusSave');
             Route::get('/delete/{id}',[AdminController::class,'adminSalesStatusDelete'])->name('adminSalesStatusDelete');
         });
-        Route::prefix('/admin-user')->group(function () {
+        Route::prefix('admin-user')->group(function () {
             Route::get('/', [AuthController::class, 'adminUserList'])->name('adminUserList');
             Route::get('/create-or-edit/{id?}', [AuthController::class, 'adminUserCreateOrEdit'])->name('adminUserCreateOrEdit');
             Route::post('/save/{id?}', [AuthController::class, 'adminUserSave'])->name('adminUserSave');
@@ -156,7 +156,7 @@ Route::prefix('admin')->group(function () {
             
             Route::prefix('payment')->group(function() {
                 Route::get('/list/{id}',[AdminController::class,'adminStudentPaymentList'])->name('adminStudentPaymentList');
-                Route::get('/create-or-edit/{id?}',[AdminController::class,'adminStudentPaymentCreateOrEdit'])->name('adminStudentPaymentCreateOrEdit');
+                Route::get('/create-or-edit/{student_id}/{payment_id?}', [AdminController::class, 'adminStudentPaymentCreateOrEdit'])->name('adminStudentPaymentCreateOrEdit');
                 Route::post('/save/{id?}',[AdminController::class,'adminStudentPaymentSave'])->name('adminStudentPaymentSave');
                 Route::get('/delete/{id}',[AdminController::class,'adminStudentPaymentDelete'])->name('adminStudentPaymentDelete');
             });

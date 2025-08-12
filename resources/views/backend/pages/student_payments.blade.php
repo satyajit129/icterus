@@ -22,7 +22,7 @@
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Student Payment Data</h3>
                     <div>
-                        <a href="{{ route('adminStudentPaymentCreateOrEdit') }}">
+                        <a href="{{ route('adminStudentPaymentCreateOrEdit', ['student_id' => $student_id]) }}">
                             <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Payment</button>
                         </a>
                     </div>
@@ -54,15 +54,9 @@
                                                 <td>{{ number_format($payment->amount, 2) }}</td>
                                                 <td>{{ $payment->created_at->format('d-m-Y') }}</td>
                                                 <td>
-                                                    <a href="{{ route('adminStudentPaymentCreateOrEdit', $payment->id) }}"
+                                                    <a href="{{ route('adminStudentPaymentCreateOrEdit', ['student_id' => $student_id, 'payment_id' => $payment->id]) }}"
                                                         class="btn btn-sm btn-primary" title="Edit">
                                                         <i class="fe fe-edit"></i>
-                                                    </a>
-
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminStudentDelete', ['id' => $payment->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
-                                                        <i class="fe fe-trash-2"></i>
                                                     </a>
                                                 </td>
                                             </tr>

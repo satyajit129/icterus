@@ -287,8 +287,7 @@
 
 @section('custom_js')
     <!-- jQuery UI Datepicker -->
-    <script src="{{ asset('js/select2.full.min.js') }}"></script>
-    <script src="{{ asset('js/select2.js') }}"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script>
         $(document).ready(function() {
             const isEdit = {{ isset($salary_expense->id) ? 'true' : 'false' }};
@@ -306,10 +305,10 @@
                     return;
                 }
 
-                let daysInMonth = 31;
+                let daysInMonth = 30;
                 switch (month) {
                     case 2:
-                        daysInMonth = isLeapYear(year) ? 29 : 28;
+                        daysInMonth = isLeapYear(year) ? 30 : 30;
                         break;
                     case 4:
                     case 6:
@@ -407,6 +406,17 @@
             if (selectedEmployeeId) {
                 $('#employee_id').val(selectedEmployeeId).trigger('change');
             }
+        });
+    </script>
+
+
+    <script>
+        $(function() {
+            $(".fc-datepicker").datepicker({
+                dateFormat: "dd/mm/yy",
+                changeMonth: true,
+                changeYear: true
+            });
         });
     </script>
 

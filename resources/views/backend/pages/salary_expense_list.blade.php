@@ -66,8 +66,15 @@
                             <div class="col-md-6 col-lg-3">
                                 <div class="mb-4">
                                     <label class="form-label">Employee Name</label>
-                                    <input type="text" name="name" class="form-control" value="{{ request('name') }}"
-                                        autocomplete="off" placeholder="Enter Employee Name">
+                                        <select name="employee" class="form-control select2-show-search form-select">
+                                            <option disabled {{ request('employee') ? '' : 'selected' }}>Select Employee</option>
+                                            @foreach ($employees as $employee)
+                                                <option value="{{ $employee->id }}" {{ request('employee') == $employee->id ? 'selected' : '' }}>
+                                                    {{ $employee->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
                                 </div>
                             </div>
 

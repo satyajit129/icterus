@@ -48,7 +48,7 @@
                                             <th class="wd-15p border-bottom-0">Email</th>
                                             <th class="wd-15p border-bottom-0">Phone</th>
                                             <th class="wd-15p border-bottom-0">Courses</th>
-                                            <th class="wd-15p border-bottom-0">Total Amount</th>
+                                            <th class="wd-15p border-bottom-0">Amount</th>
                                             <th class="wd-15p border-bottom-0">Paid / Due</th>
                                             <th class="wd-15p border-bottom-0">Payment</th>
                                             <th class="wd-15p border-bottom-0">Status</th>
@@ -65,7 +65,13 @@
                                                 <td>{{ $student->phone }}</td>
                                                 <td>{{ $student->courses }}</td>
                                                 <td>{{ $student->amount }}</td>
-                                                <td>{{ $student->amount }}</td>
+                                                @php
+                                                    $paid = $student->payments->sum('amount');
+                                                    $remaining = $student->amount - $paid;
+                                                @endphp
+
+                                                <td>Paid: {{ number_format($paid, 2) }} <br> Due:
+                                                    {{ number_format($remaining, 2) }}</td>
                                                 <td>
                                                     <a href="{{ route('adminStudentPaymentList', $student->id) }}"
                                                         class="btn btn-sm btn-info" title="Payment List">
@@ -84,7 +90,7 @@
                                                 
                                                 <td>{{ \Carbon\Carbon::parse($student->enroll_date)->format('d/m/Y') }}</td>
                                                 <td>
-                                                    <a href="{{ route('adminEmployeeCreateOrEdit', $student->id) }}"
+                                                    <a href="{{ route('adminStudentCreateOrEdit', $student->id) }}"
                                                         class="btn btn-sm btn-primary" title="Edit">
                                                         <i class="fe fe-edit"></i>
                                                     </a>
@@ -93,10 +99,6 @@
                                                         data-url="{{ route('adminStudentDelete', ['id' => $student->id]) }}"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
                                                         <i class="fe fe-trash-2"></i>
-                                                    </a>
-                                                    <a href="{{ route('adminEmployeeView', $student->id) }}"
-                                                        class="btn btn-sm btn-info" title="View">
-                                                        <i class="fe fe-eye"></i>
                                                     </a>
                                                 </td>
 

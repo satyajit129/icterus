@@ -29,9 +29,9 @@ class SalaryExpenseService
             $query->where('payable_year', $request->payable_year);
         }
 
-        if ($request->filled('name')) {
+        if ($request->filled('employee')) {
             $query->whereHas('employee', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->name . '%');
+                $q->where('id',  $request->employee);
             });
         }
 
@@ -40,10 +40,10 @@ class SalaryExpenseService
                 $q->where('id_number', 'like', '%' . $request->employee_id . '%');
             });
         }
-
+        $employees = Employee::all();
         $salary_expenses = $query->paginate(20)->appends($request->all());
 
-        return view('backend.pages.salary_expense_list', compact('salary_expenses'));
+        return view('backend.pages.salary_expense_list', compact('salary_expenses','employees'));
     }
     public function renderSalaryExpenseCreateOrEditPage($id = null): View
     {

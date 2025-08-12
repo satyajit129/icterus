@@ -415,8 +415,12 @@ class AdminController extends Controller
     {
         return $this->studentService->renderStudentPaymentList($student_id);
     }
-    public function adminStudentPaymentCreateOrEdit($id): View
+    public function adminStudentPaymentCreateOrEdit($student_id, $payment_id = null): View
     {
-        return $this->student
+        return $this->studentService->renderStudentPaymentCreateOrEdit($student_id, $payment_id);
+    }
+    public function adminStudentPaymentSave(Request $request, $id= null): RedirectResponse
+    {
+        return $this->studentService->handleStudentPaymentSave($request, $id);
     }
 }
