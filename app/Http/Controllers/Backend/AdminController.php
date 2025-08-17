@@ -405,6 +405,7 @@ class AdminController extends Controller
     }
     public function adminStudentSave(Request $request, $id = null): RedirectResponse
     {
+        // dd($request, $id);
         return $this->studentService->handleStudentSave($request, $id);
     }
     public function adminStudentDelete($id): RedirectResponse

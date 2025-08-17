@@ -7,6 +7,7 @@ use App\Models\StudentPayment;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -33,6 +34,7 @@ class StudentService
                 'amount' => 'required|numeric|min:0',
                 'enroll_date' => 'required|date',
             ]);
+
             $student = $id ? Student::findOrFail($id) : new Student();
 
             $student->name = $request->name;
@@ -41,16 +43,34 @@ class StudentService
             $student->courses = $request->courses;
             $student->amount = $request->amount;
             $student->enroll_date = Carbon::createFromFormat('d-m-Y', $request->enroll_date)->format('Y-m-d');
+            $student->details = $request->details;
+            // If new student, save first to generate ID
+            if (!$id) {
+                $student->save();
+            }
+
+            // Calculate total paid
+            $student_payments = StudentPayment::where('student_id', $student->id)->sum('amount');
+
+            // Set status based on payment completion
+            if ($student_payments >= $student->amount) {
+                $student->status = 2; // fully paid
+            } else {
+                $student->status = 1; // due
+            }
 
             $student->save();
+
             return redirect()->route('adminStudentList')->with('success', 'Student saved successfully!');
-        } catch (ValidationException $th) {
+        }catch (ValidationException $th) {
+            Log::info( $th->getMessage());
             return redirect()
                 ->back()
                 ->withErrors($th->validator)
                 ->withInput()
                 ->with('error', 'Validation failed: ' . $th->getMessage());
         } catch (Exception $e) {
+            Log::info( $e->getMessage());
             return redirect()
                 ->back()
                 ->withInput()
@@ -78,51 +98,52 @@ class StudentService
     }
     public function handleStudentPaymentSave($request, $id = null): RedirectResponse
     {
+        // dd($request->date);
         try {
-        $request->validate([
-            'student_id'      => 'required|exists:students,id',
-            'trnx_method'  => 'required|string',
-            'trnx_id'         => 'required|string|max:255',
-            'amount'          => 'required|numeric|min:0',
-            'date'            => 'required|date',
-        ]);
+            $request->validate([
+                'student_id'      => 'required|exists:students,id',
+                'trnx_method'  => 'required|string',
+                'trnx_id'         => 'required|string|max:255',
+                'amount'          => 'required|numeric|min:0',
+                'date'            => 'required|date',
+            ]);
 
-        // Fetch student
-        $student_due = Student::findOrFail($request->student_id);
+            // Fetch student
+            $student_due = Student::findOrFail($request->student_id);
 
-        // Calculate total paid excluding current payment if updating
-        $total_paid = StudentPayment::where('student_id', $student_due->id)
-            ->when($id, function ($query) use ($id) {
-                $query->where('id', '!=', $id);
-            })
-            ->sum('amount');
+            // Calculate total paid excluding current payment if updating
+            $total_paid = StudentPayment::where('student_id', $student_due->id)
+                ->when($id, function ($query) use ($id) {
+                    $query->where('id', '!=', $id);
+                })
+                ->sum('amount');
 
-        $total_paid_with_new = $total_paid + $request->amount;
+            $total_paid_with_new = $total_paid + $request->amount;
 
-        // Check overpayment
-        if ($total_paid_with_new > $student_due->amount) {
+            // Check overpayment
+            if ($total_paid_with_new > $student_due->amount) {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with('error', 'Payment exceeds remaining loan balance');
+            }
+
+            // Create or update payment
+            $payment = $id ? StudentPayment::findOrFail($id) : new StudentPayment();
+            $payment->student_id   = $request->student_id;
+            $payment->trnx_method  = $request->trnx_method;
+            $payment->trnx_id      = $request->trnx_id;
+            $payment->amount       = $request->amount;
+            $payment->date         = Carbon::parse($request->date)->format('Y-m-d');
+            $payment->save();
+
+            // Update student status
+            $student_due->status = ($total_paid_with_new == $student_due->amount) ? 2 : 1;
+            $student_due->save();
+
             return redirect()
-                ->back()
-                ->withInput()
-                ->with('error', 'Payment exceeds remaining loan balance');
-        }
-
-        // Create or update payment
-        $payment = $id ? StudentPayment::findOrFail($id) : new StudentPayment();
-        $payment->student_id   = $request->student_id;
-        $payment->trnx_method  = $request->trnx_method;
-        $payment->trnx_id      = $request->trnx_id;
-        $payment->amount       = $request->amount;
-        $payment->date         = Carbon::parse($request->date)->format('Y-m-d');
-        $payment->save();
-
-        // Update student status
-        $student_due->status = ($total_paid_with_new == $student_due->amount) ? 2 : 1;
-        $student_due->save();
-
-        return redirect()
-            ->route('adminStudentList', $request->student_id)
-            ->with('success', $id ? 'Payment updated successfully!' : 'Payment created successfully!');
+                ->route('adminStudentList', $request->student_id)
+                ->with('success', $id ? 'Payment updated successfully!' : 'Payment created successfully!');
         } catch (ValidationException $th) {
             return redirect()
                 ->back()

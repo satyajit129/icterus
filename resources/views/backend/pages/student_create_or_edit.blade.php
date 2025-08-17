@@ -101,9 +101,23 @@
                                 <div class="row mb-2">
                                     <label class="col-md-4 form-label">Enroll Date <span style="color: red;">*</span></label>
                                     <div class="col-md-8">
-                                        <input type="text" class="form-control fc-datepicker" name="enroll_date"
+                                        <input type="text" 
+                                            class="form-control fc-datepicker" 
+                                            name="enroll_date"
                                             placeholder="Select enroll date"
-                                            value="{{ old('enroll_date', $student->enroll_date ?? '') }}" required>
+                                            value="{{ old('enroll_date', isset($student->enroll_date) ? \Carbon\Carbon::parse($student->enroll_date)->format('d-m-Y') : '') }}" 
+                                            required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Amount -->
+                            <div class="col-md-12">
+                                <div class="row mb-2">
+                                    <label class="col-md-4 form-label">Details </label>
+                                    <div class="col-md-8">
+                                        <textarea type="text" class="form-control" name="details" rows="5"
+                                            placeholder="Enter amount">{{ old('details', $student->details ?? '') }}</textarea>
                                     </div>
                                 </div>
                             </div>

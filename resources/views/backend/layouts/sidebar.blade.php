@@ -55,6 +55,7 @@
                 $canManageSalesStatus = $user->hasPermission('manage_sales_status');
                 $canManageExpenseCategory = $user->hasPermission('expense_category_manage');
                 $canManageLoan = $user->hasPermission('manage_loan');
+                $canManageStudent = $user->hasPermission('manage_student');
             @endphp
             <ul class="side-menu">
 
@@ -214,17 +215,20 @@
                         </li>
                     @endif
                 @endif
-                {{-- EXPENSE MANAGEMENT --}}
-                <li class="sub-category">
-                    <h3>Student Management</h3>
-                </li>
-                <li class="slide">
-                    <a class="side-menu__item has-link {{ Route::is('adminStudentList','adminStudentCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminStudentList') }}">
-                        <i class="side-menu__icon fe fe-users"></i>
-                        <span class="side-menu__label">Student List</span>
-                    </a>
-                </li>
-
+                @if ($canManageStudent)
+                    {{-- EXPENSE MANAGEMENT --}}
+                    <li class="sub-category">
+                        <h3>Student Management</h3>
+                    </li>
+                     @if ($canManageStudent)
+                    <li class="slide">
+                        <a class="side-menu__item has-link {{ Route::is('adminStudentList','adminStudentCreateOrEdit','adminStudentPaymentList', 'adminStudentPaymentCreateOrEdit') ? 'active' : '' }}" href="{{ route('adminStudentList') }}">
+                            <i class="side-menu__icon fe fe-users"></i>
+                            <span class="side-menu__label">Student List</span>
+                        </a>
+                    </li>
+                    @endif
+                @endif
                 
                 @if ($canManageAdmin || $canManagePermission || $canManageRoleAccess)
                     {{-- ADMINISTRATION & ACCESS CONTROL --}}

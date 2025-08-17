@@ -27,9 +27,6 @@
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Students Data</h3>
                     <div>
-                         <a href="" class="btn btn-primary btn-sm">
-                            <i class="fe fe-download me-2"></i>Download Data
-                        </a>
                         <a href="{{ route('adminStudentCreateOrEdit') }}">
                             <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Student</button>
                         </a>
