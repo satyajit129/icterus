@@ -5,6 +5,14 @@
 @section('custom_css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @endsection
+    @php
+        $user = auth()->user();
+        $canAddSalary = $user->hasPermission('add_salary');
+        $canEditSalary = $user->hasPermission('edit_salary');
+        $canDeleteSalary = $user->hasPermission('delete_salary');
+        $canViewSalary = $user->hasPermission('view_salary');
+        $canDownloadSalary = $user->hasPermission('download_salary');
+    @endphp
 @section('content')
 
     <div class="page-header">
@@ -32,20 +40,20 @@
                                     <select id="payable_month" name="payable_month"
                                         class="form-control select2-show-search form-select" required>
                                         <option selected disabled>Select Month</option>
-                                            @foreach ([
-                                                'January' => 1,
-                                                'February' => 2,
-                                                'March' => 3,
-                                                'April' => 4,
-                                                'May' => 5,
-                                                'June' => 6,
-                                                'July' => 7,
-                                                'August' => 8,
-                                                'September' => 9,
-                                                'October' => 10,
-                                                'November' => 11,
-                                                'December' => 12,
-                                            ] as $name => $num)
+                                        @foreach ([
+                                            'January' => 1,
+                                            'February' => 2,
+                                            'March' => 3,
+                                            'April' => 4,
+                                            'May' => 5,
+                                            'June' => 6,
+                                            'July' => 7,
+                                            'August' => 8,
+                                            'September' => 9,
+                                            'October' => 10,
+                                            'November' => 11,
+                                            'December' => 12,
+                                        ] as $name => $num)
                                             <option value="{{ $num }}"
                                                 {{ request('payable_month') == $num ? 'selected' : '' }}>{{ $name }}
                                             </option>
@@ -66,14 +74,16 @@
                             <div class="col-md-6 col-lg-3">
                                 <div class="mb-4">
                                     <label class="form-label">Employee Name</label>
-                                        <select name="employee" class="form-control select2-show-search form-select">
-                                            <option disabled {{ request('employee') ? '' : 'selected' }}>Select Employee</option>
-                                            @foreach ($employees as $employee)
-                                                <option value="{{ $employee->id }}" {{ request('employee') == $employee->id ? 'selected' : '' }}>
-                                                    {{ $employee->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                    <select name="employee" class="form-control select2-show-search form-select">
+                                        <option disabled {{ request('employee') ? '' : 'selected' }}>Select Employee
+                                        </option>
+                                        @foreach ($employees as $employee)
+                                            <option value="{{ $employee->id }}"
+                                                {{ request('employee') == $employee->id ? 'selected' : '' }}>
+                                                {{ $employee->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
 
                                 </div>
                             </div>
@@ -104,15 +114,21 @@
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Salary Expense Data</h3>
                     <div>
-                        <a href="{{ route('adminSalaryExpenseExport', request()->query()) }}"
-                            class="btn btn-sm btn-primary me-2">
-                            <i class="fe fe-download me-1"></i> Download Data
-                        </a>
-                        <a href="{{ route('adminSalaryExpenseCreateOrEdit') }}">
-                            <button type="button" class="btn btn-primary btn-sm">
-                                <i class="fe fe-plus me-2"></i>Add Salary Expense
-                            </button>
-                        </a>
+                        @if ($canDownloadSalary)
+                            <a href="{{ route('adminSalaryExpenseExport', request()->query()) }}"
+                                class="btn btn-sm btn-primary me-2">
+                                <i class="fe fe-download me-1"></i> Download Data
+                            </a>
+                        @endif
+                        
+                        @if ($canAddSalary)
+                            <a href="{{ route('adminSalaryExpenseCreateOrEdit') }}">
+                                <button type="button" class="btn btn-primary btn-sm">
+                                    <i class="fe fe-plus me-2"></i>Add Salary Expense
+                                </button>
+                            </a>
+                        @endif
+                        
                     </div>
                 </div>
 
@@ -166,21 +182,29 @@
                                                     @endif
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('adminSalaryExpenseCreateOrEdit', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
-                                                        class="btn btn-sm btn-primary">
-                                                        <i class="fe fe-edit"></i>
-                                                    </a>
-
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminSalaryExpenseDelete', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        <i class="fe fe-trash-2"></i>
-                                                    </a>
-
-                                                    <a href="{{ route('adminSalaryExpenseView', $salary_expense->id) }}"
-                                                        class="btn btn-sm btn-info">
-                                                        <i class="fe fe-eye"></i>
-                                                    </a>
+                                                    @if ($canEditSalary || $canDeleteSalary || $canViewSalary)
+                                                        @if ($canEditSalary)
+                                                            <a href="{{ route('adminSalaryExpenseCreateOrEdit', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
+                                                                class="btn btn-sm btn-primary">
+                                                                <i class="fe fe-edit"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if ($canDeleteSalary)
+                                                        <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                            data-url="{{ route('adminSalaryExpenseDelete', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
+                                                            data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                            <i class="fe fe-trash-2"></i>
+                                                        </a>
+                                                        @endif
+                                                        @if ($canViewSalary)
+                                                        <a href="{{ route('adminSalaryExpenseView', $salary_expense->id) }}"
+                                                            class="btn btn-sm btn-info">
+                                                            <i class="fe fe-eye"></i>
+                                                        </a>
+                                                        @endif
+                                                    @else
+                                                         <span class="text-muted fst-italic">No actions available</span>
+                                                    @endif
                                                 </td>
 
                                             </tr>

@@ -4,6 +4,14 @@
 
 @section('custom_css')
 @endsection
+    @php
+        $user = auth()->user();
+        $canAddIncentive = $user->hasPermission('add_incentive');
+        $canEditIncentive = $user->hasPermission('edit_incentive');
+        $canDeleteIncentive = $user->hasPermission('delete_incentive');
+        $canViewIncentive = $user->hasPermission('view_incentive');
+        $canDownloadIncentive = $user->hasPermission('download_incentive');
+    @endphp
 @section('content')
 
     <div class="page-header">
@@ -96,14 +104,19 @@
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h3 class="card-title">Incentive Expense Data</h3>
                         <div>
-                            <a href="{{ route('adminIncentiveExpenseExport', request()->query()) }}" class="btn btn-sm btn-primary me-2">
-                                <i class="fe fe-download me-1"></i> Download Data
-                            </a>
-                            <a href="{{ route('adminIncentiveExpenseCreateOrEdit') }}">
+                            @if ($canDownloadIncentive)
+                                <a href="{{ route('adminIncentiveExpenseExport', request()->query()) }}" class="btn btn-sm btn-primary me-2">
+                                    <i class="fe fe-download me-1"></i> Download Data
+                                </a>
+                            @endif
+                            @if ($canAddIncentive)
+                                <a href="{{ route('adminIncentiveExpenseCreateOrEdit') }}">
                                 <button type="button" class="btn btn-primary btn-sm">
                                     <i class="fe fe-plus me-2"></i>Add Incentive Expense
                                 </button>
                             </a>
+                            @endif
+                            
                         </div>
                     </div>
                 <div class="card-body">
@@ -141,20 +154,28 @@
                                                 <td>{{ $incentive_expense->incentive_amount }}</td>
                                                 <td>{{ $incentive_expense->payable_amount }}</td>
                                                 <td>
-                                                    <a href="{{ route('adminIncentiveExpenseCreateOrEdit', ['id' => $incentive_expense->id, 'page' => request('page')]) }}"
-                                                        class="btn btn-sm btn-primary">
-                                                        <i class="fe fe-edit"></i>
-                                                    </a>
-
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminIncentiveExpenseDelete', ['id' => $incentive_expense->id, 'page' => request('page')]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        <i class="fe fe-trash"></i>
-                                                    </a>
-
-                                                    <a href="{{ route('adminIncentiveExpenseView', $incentive_expense->id) }}"
-                                                        class="btn btn-sm btn-info">
-                                                        <i class="fe fe-eye"></i>
+                                                    @if ($canEditIncentive || $canDeleteIncentive || $canViewIncentive)
+                                                        @if ($canEditIncentive)
+                                                            <a href="{{ route('adminIncentiveExpenseCreateOrEdit', ['id' => $incentive_expense->id, 'page' => request('page')]) }}"
+                                                                class="btn btn-sm btn-primary">
+                                                                <i class="fe fe-edit"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if ($canDeleteIncentive)
+                                                            <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                                data-url="{{ route('adminIncentiveExpenseDelete', ['id' => $incentive_expense->id, 'page' => request('page')]) }}"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                                <i class="fe fe-trash"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if ($canViewIncentive)
+                                                            <a href="{{ route('adminIncentiveExpenseView', $incentive_expense->id) }}"
+                                                                class="btn btn-sm btn-info">
+                                                                <i class="fe fe-eye"></i>
+                                                        @endif
+                                                    @else
+                                                         <span class="text-muted fst-italic">No actions available</span>
+                                                    @endif
                                                     </a>
                                                 </td>
                                             </tr>
