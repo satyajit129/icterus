@@ -9,6 +9,12 @@
         }
     </style>
 @endsection
+@php
+    $user = auth()->user();
+    $canAddAdmin    =  $user->hasPermission('add_admin');
+    $canEditAdmin   =  $user->hasPermission('edit_admin');
+    $canDeleteAdmin =  $user->hasPermission('delete_admin');
+@endphp
 @section('content')
 
     <div class="page-header">
@@ -25,10 +31,13 @@
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Admin User</h3>
-                    <a href="{{ route('adminUserCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
-                            Admin User</button>
-                    </a>
+                    @if ($canAddAdmin)
+                        <a href="{{ route('adminUserCreateOrEdit') }}">
+                            <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
+                                Admin User</button>
+                        </a>
+                    @endif
+                    
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">
@@ -54,16 +63,24 @@
                                             <td>{{ $admin_user->phone ?? '' }}</td>
                                             <td>{{ $admin_user->adminRole->name ?? '' }}</td>
                                             <td>
-                                                <a href="{{ route('adminUserCreateOrEdit', $admin_user->id) }}"
+                                                @if ($canEditAdmin || $canDeleteAdmin)
+                                                 @if ($canEditAdmin)
+                                                    <a href="{{ route('adminUserCreateOrEdit', $admin_user->id) }}"
                                                         class="btn btn-sm btn-primary" title="Edit">
                                                         <i class="fe fe-edit"></i>
                                                     </a>
-
+                                                    @endif
+                                                    @if ($canDeleteAdmin)
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
                                                         data-url="{{ route('adminUserDelete', ['id' => $admin_user->id]) }}"
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
                                                         <i class="fe fe-trash-2"></i>
                                                     </a>
+                                                     @endif
+                                                @else
+                                                    <span class="text-muted fst-italic">No actions available</span>
+                                                @endif
+                                                
                                             </td>
                                         </tr>
                                         @empty

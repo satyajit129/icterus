@@ -10,6 +10,13 @@
         }
     </style>
 @endsection
+@php
+    $user = auth()->user();
+    $canAddStudent    =  $user->hasPermission('add_student');
+    $canEditStudent   =  $user->hasPermission('edit_student');
+    $canDeleteStudent =  $user->hasPermission('delete_student');
+    $canViewStudentPayment   =  $user->hasPermission('view_student_payment');
+@endphp
 @section('content')
 
     <div class="page-header">
@@ -27,9 +34,11 @@
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Students Data</h3>
                     <div>
-                        <a href="{{ route('adminStudentCreateOrEdit') }}">
-                            <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Student</button>
-                        </a>
+                        @if ($canAddStudent)
+                            <a href="{{ route('adminStudentCreateOrEdit') }}">
+                                <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Student</button>
+                            </a>
+                        @endif
                     </div>
                     
                 </div>
@@ -70,24 +79,29 @@
                                                 <td>Paid: {{ number_format($paid, 2) }} <br> Due:
                                                     {{ number_format($remaining, 2) }}</td>
                                                 <td>
-                                                    <a href="{{ route('adminStudentPaymentList', $student->id) }}"
-                                                        class="btn btn-sm btn-info" title="Payment List">
-                                                        <i class="fe fe-eye"></i>
-                                                    </a>
+                                                    @if ($canViewStudentPayment)
+                                                        <a href="{{ route('adminStudentPaymentList', $student->id) }}"
+                                                            class="btn btn-sm btn-info" title="Payment List">
+                                                            <i class="fe fe-eye"></i>
+                                                        </a>
+                                                    @else
+                                                        <span class="text-muted fst-italic">No actions</span>
+                                                    @endif
                                                 </td>
                                                 <td>
                                                     @if ($student->status == 1)
                                                         <span class="badge bg-danger badge-sm  me-1 mb-1 mt-1">Due</span>
-                                                @elseif ($student->status == 2)
-                                                    <span class="badge bg-primary badge-sm  me-1 mb-1 mt-1">Paid</span>
-                                                @else
-                                                    <span class="badge bg-secondary">Unknown</span>
-                                                @endif
+                                                    @elseif ($student->status == 2)
+                                                        <span class="badge bg-primary badge-sm  me-1 mb-1 mt-1">Paid</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">Unknown</span>
+                                                    @endif
                                                 </td>
                                                 
                                                 <td>{{ \Carbon\Carbon::parse($student->enroll_date)->format('d/m/Y') }}</td>
                                                 <td>
-                                                    <a href="{{ route('adminStudentCreateOrEdit', $student->id) }}"
+                                                    @if ($canEditStudent || $canDeleteStudent)
+                                                        <a href="{{ route('adminStudentCreateOrEdit', $student->id) }}"
                                                         class="btn btn-sm btn-primary" title="Edit">
                                                         <i class="fe fe-edit"></i>
                                                     </a>
@@ -97,6 +111,10 @@
                                                         data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
                                                         <i class="fe fe-trash-2"></i>
                                                     </a>
+                                                    @else
+                                                        <span class="text-muted fst-italic">No actions available</span>
+                                                    @endif
+                                                    
                                                 </td>
 
                                             </tr>
