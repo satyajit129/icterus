@@ -128,26 +128,26 @@
                                                 <td>{{ $office_expense->details }}</td>
                                                 <td>{{ number_format($office_expense->amount, 2) }}</td>
                                                 <td>
-                                                @if ($canEditOfficeExpense || $canDeleteOfficeExpense || $canViewOfficeExpense)
-                                                    @if ($canEditOfficeExpense)
-                                                        <a href="{{ route('adminOfficeExpenseCreateOrEdit', ['id' => $office_expense->id, 'page' => request('page')]) }}"
-                                                            class="btn btn-sm btn-primary">
-                                                            <i class="fe fe-edit"></i>
-                                                        </a>
-                                                    @endif
-                                                    @if ($canDeleteOfficeExpense)
-                                                        <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                            data-url="{{ route('adminOfficeExpenseDelete', ['id' => $office_expense->id, 'page' => request('page')]) }}"
-                                                            data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                                <i class="fe fe-trash"></i>
-                                                        </a>
-                                                     @endif
-                                                    @if ($canViewOfficeExpense)
-                                                        <a href="{{ route('adminOfficeExpenseView', $office_expense->id) }}"
-                                                            class="btn btn-sm btn-info"><i class="fe fe-eye"></i></a>
-                                                    @endif
+                                                    @if ($canEditOfficeExpense || $canDeleteOfficeExpense || $canViewOfficeExpense)
+                                                        @if ($canEditOfficeExpense)
+                                                            <a href="{{ route('adminOfficeExpenseCreateOrEdit', ['id' => $office_expense->id, 'page' => request('page')]) }}"
+                                                                class="btn btn-sm btn-primary">
+                                                                <i class="fe fe-edit"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if ($canDeleteOfficeExpense)
+                                                            <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                                data-url="{{ route('adminOfficeExpenseDelete', ['id' => $office_expense->id, 'page' => request('page')]) }}"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                                    <i class="fe fe-trash"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if ($canViewOfficeExpense)
+                                                            <a href="{{ route('adminOfficeExpenseView', $office_expense->id) }}"
+                                                                class="btn btn-sm btn-info"><i class="fe fe-eye"></i></a>
+                                                        @endif
                                                     @else
-                                                         <span class="text-muted fst-italic">No actions available</span>
+                                                            <span class="text-muted fst-italic">No actions available</span>
                                                     @endif
                                                 </td>
                                             </tr>

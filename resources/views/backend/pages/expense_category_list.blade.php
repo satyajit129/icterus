@@ -4,6 +4,12 @@
 
 @section('custom_css')
 @endsection
+@php
+    $user = auth()->user();
+    $canAddExpenseCategory    =  $user->hasPermission('add_expense_category');
+    $canEditExpenseCategory   =  $user->hasPermission('edit_expense_category');
+    $canDeleteExpenseCategory =  $user->hasPermission('delete_expense_category');
+@endphp
 @section('content')
 
     <div class="page-header">
@@ -20,9 +26,12 @@
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Expense Category Data</h3>
-                    <a href="{{ route('adminExpenseCategoryCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Expense Category</button>
-                    </a>
+                    @if ($canAddExpenseCategory)
+                        <a href="{{ route('adminExpenseCategoryCreateOrEdit') }}">
+                            <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Expense Category</button>
+                        </a>
+                    @endif
+                    
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">
@@ -42,13 +51,22 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $category->name }}</td>
                                                 <td>
-                                                    <a href="{{ route('adminExpenseCategoryCreateOrEdit', $category->id) }}"
-                                                        class="btn btn-sm btn-primary"><i class="fe fe-edit"></i></a>
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminExpenseCategoryDelete', ['id' => $category->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                        <i class="fe fe-trash"></i>
-                                                    </a>
+                                                    @if ($canEditExpenseCategory || $canDeleteExpenseCategory)
+                                                        @if ($canEditExpenseCategory)
+                                                        <a href="{{ route('adminExpenseCategoryCreateOrEdit', $category->id) }}"
+                                                            class="btn btn-sm btn-primary"><i class="fe fe-edit"></i></a>
+                                                        @endif
+
+                                                        @if ($canDeleteExpenseCategory)
+                                                        <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                            data-url="{{ route('adminExpenseCategoryDelete', ['id' => $category->id]) }}"
+                                                            data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                            <i class="fe fe-trash"></i>
+                                                        </a>
+                                                        @endif
+                                                    @else
+                                                        <span class="text-muted fst-italic">No actions available</span>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @empty
