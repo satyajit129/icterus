@@ -92,6 +92,15 @@
                                     </div>
                                 </div>
 
+                                 <!-- Cost -->
+                                <div class="row mb-4">
+                                    <label class="col-md-3 form-label">Code</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" name="code"
+                                            placeholder="Enter Code" value="{{ old('code', $asset->code ?? '') }}">
+                                    </div>
+                                </div>
+
                                 <!-- Purchase Date -->
                                 <div class="row mb-4">
                                     <label class="col-md-3 form-label">Purchase Date</label>

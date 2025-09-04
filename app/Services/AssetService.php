@@ -66,18 +66,27 @@ class AssetService
                 'description'   => 'nullable|string',
                 'category_id'   => 'required|exists:asset_categories,id',
                 'cost'          => 'required|numeric|min:0',
+                'code'          => 'nullable',
                 'purchase_date' => 'required|date',
             ]);
 
             $asset = $id ? Asset::findOrFail($id) : new Asset();
 
-            // ✅ Fill data
+            // Generate unique code if not provided
+            if ($request->filled('code')) {
+                $code = $request->code;
+            } else {
+                do {
+                    $code = 'SOL-' . str_pad(mt_rand(0, 999999), 6, '0', STR_PAD_LEFT);
+                } while (Asset::where('code', $code)->exists());
+            }
+            
             $asset->name          = $validated['name'];
             $asset->description   = $validated['description'] ?? null;
             $asset->category_id   = $validated['category_id'];
             $asset->cost          = $validated['cost'];
             $asset->purchase_date = Carbon::parse($validated['purchase_date'])->format('Y-m-d');
-
+            $asset->code            = $code;
             $asset->save();
 
             return redirect()

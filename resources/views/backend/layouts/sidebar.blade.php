@@ -75,6 +75,7 @@
                 $canManageExpenseCategory = $user->hasPermission('expense_category_manage');
                 $canManageLoan = $user->hasPermission('manage_loan');
                 $canManageStudent = $user->hasPermission('manage_student');
+                $canManageAsset = $user->hasPermission('manage_asset');
             @endphp
             <ul class="side-menu">
 
@@ -249,7 +250,8 @@
                             </a>
                         </li>
                     @endif
-                        <li class="slide">
+                    @if ($canManageAsset)
+                            <li class="slide">
                             <a class="side-menu__item has-link {{ Route::is('adminAssetCategory', 'adminAssetCategoryCreateOrEdit') ? 'active' : '' }}"
                                 href="{{ route('adminAssetCategory') }}">
                                 <i class="side-menu__icon fe fe-tag"></i>
@@ -264,7 +266,7 @@
                                 <span class="side-menu__label">Asset List</span>
                             </a>
                         </li>
-
+                    @endif
                 @endif
                 @if ($canManageStudent)
                     {{-- EXPENSE MANAGEMENT --}}

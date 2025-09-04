@@ -31,46 +31,48 @@
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered text-nowrap border-bottom">
-    <thead>
-        <tr>
-            <th class="wd-5p border-bottom-0">#</th>
-            <th class="wd-15p border-bottom-0">Asset</th>
-            <th class="wd-25p border-bottom-0">Description</th>
-            <th class="wd-15p border-bottom-0">Category</th>
-            <th class="wd-10p border-bottom-0">Cost</th>
-            <th class="wd-15p border-bottom-0">Purchase Date</th>
-            <th class="wd-15p border-bottom-0">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @forelse($assets as $key => $asset)
-            <tr>
-                <td>{{ $loop->iteration }}</td>
-                <td>{{ $asset->name }}</td>
-                <td>{{ $asset->description ?? '-' }}</td>
-                <td>{{ $asset->category->name ?? '-' }}</td>
-                <td>{{ number_format($asset->cost, 2) }}</td>
-                <td>{{ \Carbon\Carbon::parse($asset->purchase_date)->format('d-m-Y') }}</td>
-                <td>
-                    <a href="{{ route('adminAssetCreateOrEdit', $asset->id) }}"
-                        class="btn btn-sm btn-primary" title="Edit">
-                        <i class="fe fe-edit"></i>
-                    </a>
+                                    <thead>
+                                        <tr>
+                                            <th class="wd-5p border-bottom-0">#</th>
+                                            <th class="wd-15p border-bottom-0">Asset</th>
+                                            <th class="wd-25p border-bottom-0">Description</th>
+                                            <th class="wd-15p border-bottom-0">Category</th>
+                                            <th class="wd-10p border-bottom-0">Cost</th>
+                                            <th class="wd-10p border-bottom-0">Code</th>
+                                            <th class="wd-15p border-bottom-0">Purchase Date</th>
+                                            <th class="wd-15p border-bottom-0">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($assets as $key => $asset)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $asset->name }}</td>
+                                                <td>{{ $asset->description ?? '-' }}</td>
+                                                <td>{{ $asset->category->name ?? '-' }}</td>
+                                                <td>{{ number_format($asset->cost, 2) }}</td>
+                                                <td>{{ $asset->code }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($asset->purchase_date)->format('d-m-Y') }}</td>
+                                                <td>
+                                                    <a href="{{ route('adminAssetCreateOrEdit', $asset->id) }}"
+                                                        class="btn btn-sm btn-primary" title="Edit">
+                                                        <i class="fe fe-edit"></i>
+                                                    </a>
 
-                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                        data-url="{{ route('adminAssetDelete', ['id' => $asset->id]) }}"
-                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
-                        <i class="fe fe-trash-2"></i>
-                    </a>
-                </td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="7" class="text-center">No Asset Found</td>
-            </tr>
-        @endforelse
-    </tbody>
-</table>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                        data-url="{{ route('adminAssetDelete', ['id' => $asset->id]) }}"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                        <i class="fe fe-trash-2"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center">No Asset Found</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
 
                             </div>
                         </div>
@@ -100,9 +102,9 @@
 @endsection
 
 @section('custom_js')
-<script>
-        $(document).ready(function () {
-            $('.delete-btn').on('click', function () {
+    <script>
+        $(document).ready(function() {
+            $('.delete-btn').on('click', function() {
                 var deleteUrl = $(this).data('url');
                 $('#confirmDeleteBtn').attr('href', deleteUrl);
             });
