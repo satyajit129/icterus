@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Services\AssetService;
 use App\Services\CompanyService;
 use App\Services\DashboardService;
 use App\Services\DepartmentService;
@@ -33,7 +34,8 @@ class AdminController extends Controller
     protected CompanyService $companyService;
     protected RolePermisionService $rolePermisionService;
     protected LoanService $loanService;
-     protected StudentService $studentService;
+    protected StudentService $studentService;
+    protected AssetService $assetService;
 
     public function __construct(
         SettingService $settingService,
@@ -48,6 +50,7 @@ class AdminController extends Controller
         RolePermisionService $rolePermisionService,
         LoanService $loanService,
         StudentService $studentService,
+        AssetService $assetService,
     ) {
         $this->settingService = $settingService;
         $this->designationService = $designationService;
@@ -60,7 +63,8 @@ class AdminController extends Controller
         $this->companyService = $companyService;
         $this->rolePermisionService = $rolePermisionService;
         $this->loanService = $loanService;
-        $this->studentService= $studentService;
+        $this->studentService = $studentService;
+        $this->assetService = $assetService;
     }
 
     public function adminDashboard(Request $request): View
@@ -405,7 +409,6 @@ class AdminController extends Controller
     }
     public function adminStudentSave(Request $request, $id = null): RedirectResponse
     {
-        // dd($request, $id);
         return $this->studentService->handleStudentSave($request, $id);
     }
     public function adminStudentDelete($id): RedirectResponse
@@ -424,4 +427,37 @@ class AdminController extends Controller
     {
         return $this->studentService->handleStudentPaymentSave($request, $id);
     }
+    public function adminAssetCategory(): View
+    {
+        return $this->assetService->renderAssetCategory();
+    }
+    public function adminAssetCategoryCreateOrEdit($id = null): View
+    {
+        return $this->assetService->renderAssetCategoryCreateOrEdit($id);
+    }
+    public function adminAssetCategorySave(Request $request, $id= null): RedirectResponse
+    {
+        return $this->assetService->handleAssetCategorySave($request, $id);
+    }
+    public function adminAssetCategoryDelete($id): RedirectResponse
+    {
+        return $this->assetService->handleAssetCategoryDelete($id);
+    }
+    public function adminAssetList(): View
+    {
+        return $this->assetService->renderAssetList();
+    }
+    public function adminAssetCreateOrEdit($id = null): View
+    {
+        return $this->assetService->renderAssetCreateOrEdit($id);
+    }
+    public function adminAssetSave(Request $request, $id= null): RedirectResponse
+    {
+        return $this->assetService->handleAssetSave($request, $id);
+    }
+    public function adminAssetDelete($id): RedirectResponse
+    {
+        return $this->assetService->handleAssetDelete($id);
+    }
+
 }

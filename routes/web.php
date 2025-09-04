@@ -161,6 +161,17 @@ Route::prefix('admin')->group(function () {
                 Route::get('/delete/{id}',[AdminController::class,'adminStudentPaymentDelete'])->name('adminStudentPaymentDelete');
             });
         });
-
+        Route::prefix('asset')->group(function(){
+            Route::prefix('category')->group(function(){
+                Route::get('/',[AdminController::class,'adminAssetCategory'])->name('adminAssetCategory');
+                Route::get('/create-or-edit/{id?}',[AdminController::class,'adminAssetCategoryCreateOrEdit'])->name('adminAssetCategoryCreateOrEdit');
+                Route::post('/save/{id?}',[AdminController::class,'adminAssetCategorySave'])->name('adminAssetCategorySave');
+                Route::get('/delete/{id}',[AdminController::class,'adminAssetCategoryDelete'])->name('adminAssetCategoryDelete');
+            });
+            Route::get('/',[AdminController::class,'adminAssetList'])->name('adminAssetList');
+            Route::get('/create-or-edit/{id?}',[AdminController::class,'adminAssetCreateOrEdit'])->name('adminAssetCreateOrEdit');
+            Route::post('/save/{id?}',[AdminController::class,'adminAssetSave'])->name('adminAssetSave');
+            Route::get('/delete/{id}',[AdminController::class,'adminAssetDelete'])->name('adminAssetDelete');
+        });
     });
 });
