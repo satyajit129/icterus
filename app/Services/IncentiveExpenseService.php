@@ -19,32 +19,42 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 class IncentiveExpenseService
 {
     public function renderIncentiveExpense(Request $request): View
-    {
-        $query = IncentiveExpense::with('employee.designation', 'employee.department');
+{
+    $query = IncentiveExpense::with('employee.designation', 'employee.department');
 
-        if ($request->filled('payable_month')) {
-            $query->whereMonth('payable_month', $request->payable_month);
-        }
-
-        if ($request->filled('payable_year')) {
-            $query->whereYear('payable_month', $request->payable_year);
-        }
-
-        if ($request->filled('name')) {
-            $query->whereHas('employee', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->name . '%');
-            });
-        }
-
-        if ($request->filled('employee_id')) {
-            $query->whereHas('employee', function ($q) use ($request) {
-                $q->where('id_number', 'like', '%' . $request->employee_id . '%');
-            });
-        }
-
-        $incentive_expenses = $query->paginate(20)->appends($request->all());
-        return view('backend.pages.incentive_expense', compact('incentive_expenses'));
+    if ($request->filled('payable_month')) {
+        $query->whereMonth('payable_month', $request->payable_month);
     }
+
+    if ($request->filled('payable_year')) {
+        $query->whereYear('payable_month', $request->payable_year);
+    }
+
+    if ($request->filled('name')) {
+        $query->whereHas('employee', function ($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->name . '%');
+        });
+    }
+
+    if ($request->filled('employee_id')) {
+        $query->whereHas('employee', function ($q) use ($request) {
+            $q->where('id_number', 'like', '%' . $request->employee_id . '%');
+        });
+    }
+
+    // ✅ calculate sums before pagination
+    $totals = [
+        'sales_count'      => $query->sum('sales_count'),
+        'sales_amount'     => $query->sum('sales_amount'),
+        'incentive_amount' => $query->sum('incentive_amount'),
+        'payable_amount'   => $query->sum('payable_amount'),
+    ];
+
+    $incentive_expenses = $query->paginate(20)->appends($request->all());
+
+    return view('backend.pages.incentive_expense', compact('incentive_expenses', 'totals'));
+}
+
     public function renderIncentiveExpenseCreateOrEditPage($id = null): View
     {
         $incentive_expense = null;

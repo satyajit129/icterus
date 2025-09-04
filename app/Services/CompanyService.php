@@ -88,11 +88,13 @@ class CompanyService
         $company = Company::findOrFail($id);
         return view('backend.pages.company_view', compact('company'));
     }
+
     public function renderCompanyDealsList()
     {
         $company_deals = CompanyDeal::with(['companies', 'dealPayments'])->paginate(20);
         return view('backend.pages.company_deals_list', compact('company_deals'));
     }
+
     public function renderCompanyDealsCreateOrEdit($id = null): View
     {
         $company_deal = $id ? CompanyDeal::findOrFail($id) : null;
@@ -236,30 +238,32 @@ class CompanyService
     {
         $companies = Company::select('id', 'name')->get();
         $sales_statuses = SalesStatus::all();
-        $earnings = Earning::with('employee', 'companies')
-            ->when($request->filled('company_id'), function ($query) use ($request) {
-                $query->where('company_id', $request->company_id);
-            })
-            ->when($request->filled('date'), function ($query) use ($request) {
+
+        $query = Earning::with('employee', 'companies')
+            ->when($request->filled('company_id'), fn($q) => $q->where('company_id', $request->company_id))
+            ->when($request->filled('date'), function ($q) use ($request) {
                 $dates = explode(' - ', $request->date);
                 if (count($dates) === 2) {
                     $start = Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
                     $end = Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
-                    $query->whereBetween('date', [$start, $end]);
+                    $q->whereBetween('date', [$start, $end]);
                 }
             })
-            ->when($request->filled('name'), function ($query) use ($request) {
-                $query->whereHas('employee', function ($q) use ($request) {
-                    $q->where('name', 'like', '%' . $request->name . '%');
-                });
-            })
-            ->when($request->filled('sales_status'), function ($query) use ($request) {
-                $query->where('sales_status', $request->sales_status);
-            })
-            ->paginate(20)
-            ->appends($request->all());
-        return view('backend.pages.earnings', compact('earnings','companies','sales_statuses'));
+            ->when($request->filled('name'), fn($q) => $q->whereHas('employee', fn($q2) => $q2->where('name', 'like', '%' . $request->name . '%')))
+            ->when($request->filled('sales_status'), fn($q) => $q->where('sales_status', $request->sales_status));
+
+        // ✅ Calculate totals before pagination
+        $totals = [
+            'paid_amount'  => $query->sum('paid_amount'),
+            'deals_amount' => $query->sum('deals_amount'),
+            'due_amount'   => $query->sum('due_amount'),
+        ];
+
+        $earnings = $query->paginate(20)->appends($request->all());
+
+        return view('backend.pages.earnings', compact('earnings','companies','sales_statuses','totals'));
     }
+
     public function renderEarningCreateOrEdit($id = null): View
     {
         $earning = $id ? Earning::with('employee', 'companies')->findOrFail($id) : null;

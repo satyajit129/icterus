@@ -21,39 +21,40 @@ class OfficeExpenseService
 {
 
     public function renderOfficeExpense($request): View
-    {
-        $query = OfficeExpense::with('category');
+{
+    $query = OfficeExpense::with('category');
 
-        // Filter by category_id
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
-        }
-
-        // Filter by purpose (assuming partial match)
-        if ($request->filled('purpose')) {
-            $query->where('purpose', 'like', '%' . $request->purpose . '%');
-        }
-
-        // Filter by date range (assuming date stored in a column named 'date')
-        if ($request->filled('date')) {
-            // Assuming date range is in format "DD/MM/YYYY - DD/MM/YYYY"
-            $dates = explode(' - ', $request->date);
-            if (count($dates) == 2) {
-                // Convert dates to Y-m-d format
-                $startDate = Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
-                $endDate = Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
-
-                $query->whereBetween('date', [$startDate, $endDate]);
-            }
-        }
-        // Sort by date DESC (newest first)
-        $query->orderBy('date', 'desc');
-
-        $office_expenses = $query->paginate(20)->appends($request->except('page')); 
-        $expense_categories = ExpenseCategory::all();
-
-        return view('backend.pages.office_expense', compact('office_expenses', 'expense_categories'));
+    // Filter by category_id
+    if ($request->filled('category_id')) {
+        $query->where('category_id', $request->category_id);
     }
+
+    // Filter by purpose
+    if ($request->filled('purpose')) {
+        $query->where('purpose', 'like', '%' . $request->purpose . '%');
+    }
+
+    // Filter by date range
+    if ($request->filled('date')) {
+        $dates = explode(' - ', $request->date);
+        if (count($dates) == 2) {
+            $startDate = Carbon::createFromFormat('d/m/Y', trim($dates[0]))->startOfDay();
+            $endDate = Carbon::createFromFormat('d/m/Y', trim($dates[1]))->endOfDay();
+            $query->whereBetween('date', [$startDate, $endDate]);
+        }
+    }
+
+    $query->orderBy('date', 'desc');
+
+    // ✅ Calculate total amount before pagination
+    $totalAmount = $query->sum('amount');
+
+    $office_expenses = $query->paginate(20)->appends($request->except('page'));
+    $expense_categories = ExpenseCategory::all();
+
+    return view('backend.pages.office_expense', compact('office_expenses', 'expense_categories', 'totalAmount'));
+}
+
 
     public function renderOfficeExpenseCreateOrEditPage($id = null): View
     {

@@ -80,6 +80,21 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="">
+                        <h5 class="fw-bold">
+                            Total Amount: 
+                            <span class="text-success">{{ number_format($totalAmount, 2) }}</span>
+                        </h5>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">

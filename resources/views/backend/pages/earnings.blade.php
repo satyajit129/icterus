@@ -99,6 +99,32 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="">
+    <h5 class="fw-bold">Totals</h5>
+    <div class="row">
+        <div class="col-md-4">
+            <span>Paid Amount: </span>
+            <span class="text-success fw-bold">{{ number_format($totals['paid_amount'], 2) }}</span>
+        </div>
+        <div class="col-md-4">
+            <span>Deals Amount: </span>
+            <span class="text-primary fw-bold">{{ number_format($totals['deals_amount'], 2) }}</span>
+        </div>
+        <div class="col-md-4">
+            <span>Due Amount: </span>
+            <span class="text-danger fw-bold">{{ number_format($totals['due_amount'], 2) }}</span>
+        </div>
+    </div>
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">

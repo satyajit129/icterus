@@ -109,6 +109,22 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="">
+                        <h5 class="m-0">
+                            Total Payable Amount: 
+                            <span class="text-success fw-bold">
+                                {{ number_format($totalPayableAmount, 2) }}
+                            </span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
@@ -131,7 +147,6 @@
                         
                     </div>
                 </div>
-
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
