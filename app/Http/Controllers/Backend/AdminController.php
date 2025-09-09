@@ -9,6 +9,10 @@ use App\Services\DashboardService;
 use App\Services\DepartmentService;
 use App\Services\DesignationService;
 use App\Services\EmployeeService;
+use App\Services\FacebookCredentialsService;
+use App\Services\FacebookLeadgenFormService;
+use App\Services\FacebookLeadService;
+use App\Services\FacebookPageService;
 use App\Services\IncentiveExpenseService;
 use App\Services\LoanService;
 use App\Services\OfficeExpenseService;
@@ -36,6 +40,10 @@ class AdminController extends Controller
     protected LoanService $loanService;
     protected StudentService $studentService;
     protected AssetService $assetService;
+    protected FacebookCredentialsService $facebookCredentialsService;
+    protected FacebookPageService $facebookPageService;
+    protected FacebookLeadgenFormService $facebookLeadgenFormService;
+    protected FacebookLeadService $facebookLeadService;
 
     public function __construct(
         SettingService $settingService,
@@ -51,6 +59,10 @@ class AdminController extends Controller
         LoanService $loanService,
         StudentService $studentService,
         AssetService $assetService,
+        FacebookCredentialsService $facebookCredentialsService,
+        FacebookPageService $facebookPageService,
+        FacebookLeadgenFormService $facebookLeadgenFormService,
+        FacebookLeadService $facebookLeadService,
     ) {
         $this->settingService = $settingService;
         $this->designationService = $designationService;
@@ -65,6 +77,10 @@ class AdminController extends Controller
         $this->loanService = $loanService;
         $this->studentService = $studentService;
         $this->assetService = $assetService;
+        $this->facebookCredentialsService = $facebookCredentialsService;
+        $this->facebookPageService = $facebookPageService;
+        $this->facebookLeadgenFormService = $facebookLeadgenFormService;
+        $this->facebookLeadService = $facebookLeadService;
     }
 
     public function adminDashboard(Request $request): View
@@ -263,7 +279,7 @@ class AdminController extends Controller
     {
         return $this->companyService->renderadminDealsPayment($id);
     }
-    public function adminDealsPaymentCreateOrEdit(Request $request, $id= null): View
+    public function adminDealsPaymentCreateOrEdit(Request $request, $id = null): View
     {
         return $this->companyService->renderDealsPaymentCreateOrEdit($request, $id);
     }
@@ -299,7 +315,7 @@ class AdminController extends Controller
     {
         return $this->companyService->renderEarningView($id);
     }
-    public function adminEarningExport(Request $request): BinaryFileResponse    
+    public function adminEarningExport(Request $request): BinaryFileResponse
     {
         return $this->companyService->renderEarningExport($request);
     }
@@ -311,7 +327,7 @@ class AdminController extends Controller
     {
         return $this->rolePermisionService->renderPermissionCreateOrEdit($id);
     }
-    public function adminPermissionSave(Request $request, $id=null): RedirectResponse
+    public function adminPermissionSave(Request $request, $id = null): RedirectResponse
     {
         return $this->rolePermisionService->handlePermissionSave($request, $id);
     }
@@ -327,7 +343,7 @@ class AdminController extends Controller
     {
         return $this->rolePermisionService->renderRoleAccessCreateOrEdit($id);
     }
-    public function adminRoleAccessSave(Request $request, $id= null): RedirectResponse
+    public function adminRoleAccessSave(Request $request, $id = null): RedirectResponse
     {
         return $this->rolePermisionService->handleRoleAccessSave($request, $id);
     }
@@ -343,7 +359,7 @@ class AdminController extends Controller
     {
         return $this->officeExpenseService->renderSalesStatusCreateOrEdit($id);
     }
-    public function adminSalesStatusSave(Request $request, $id= null): RedirectResponse
+    public function adminSalesStatusSave(Request $request, $id = null): RedirectResponse
     {
         return $this->officeExpenseService->handleSalesStatusSave($request, $id);
     }
@@ -383,7 +399,7 @@ class AdminController extends Controller
     {
         return $this->loanService->handleLoanDelete($id);
     }
-    public function adminLoanMakePayment(Request $request, $id= null): RedirectResponse
+    public function adminLoanMakePayment(Request $request, $id = null): RedirectResponse
     {
         return $this->loanService->handleLoanMakePayment($request, $id);
     }
@@ -403,7 +419,7 @@ class AdminController extends Controller
     {
         return $this->studentService->renderStudentList();
     }
-    public function adminStudentCreateOrEdit($id= null): View
+    public function adminStudentCreateOrEdit($id = null): View
     {
         return $this->studentService->renderStudentCreateOrEdit($id);
     }
@@ -413,7 +429,7 @@ class AdminController extends Controller
     }
     public function adminStudentDelete($id): RedirectResponse
     {
-        return $this->studentService->handleStudentDelete( $id);
+        return $this->studentService->handleStudentDelete($id);
     }
     public function adminStudentPaymentList($student_id): View
     {
@@ -423,7 +439,7 @@ class AdminController extends Controller
     {
         return $this->studentService->renderStudentPaymentCreateOrEdit($student_id, $payment_id);
     }
-    public function adminStudentPaymentSave(Request $request, $id= null): RedirectResponse
+    public function adminStudentPaymentSave(Request $request, $id = null): RedirectResponse
     {
         return $this->studentService->handleStudentPaymentSave($request, $id);
     }
@@ -435,7 +451,7 @@ class AdminController extends Controller
     {
         return $this->assetService->renderAssetCategoryCreateOrEdit($id);
     }
-    public function adminAssetCategorySave(Request $request, $id= null): RedirectResponse
+    public function adminAssetCategorySave(Request $request, $id = null): RedirectResponse
     {
         return $this->assetService->handleAssetCategorySave($request, $id);
     }
@@ -451,7 +467,7 @@ class AdminController extends Controller
     {
         return $this->assetService->renderAssetCreateOrEdit($id);
     }
-    public function adminAssetSave(Request $request, $id= null): RedirectResponse
+    public function adminAssetSave(Request $request, $id = null): RedirectResponse
     {
         return $this->assetService->handleAssetSave($request, $id);
     }
@@ -460,4 +476,121 @@ class AdminController extends Controller
         return $this->assetService->handleAssetDelete($id);
     }
 
+    public function adminFacebookCredentials(): View
+    {
+        return $this->facebookCredentialsService->renderFacebookCredentialsPage();
+    }
+
+    public function adminFacebookCredentialsUpdate(Request $request): RedirectResponse
+    {
+        return $this->facebookCredentialsService->handleFacebookCredentialsUpdate($request);
+    }
+
+    public function adminFacebookPages(Request $request): View
+    {
+        return $this->facebookPageService->renderFacebookPagesPage($request);
+    }
+
+    public function adminFacebookPagesSync(): RedirectResponse
+    {
+        return $this->facebookPageService->handleSyncFromApi();
+    }
+
+    public function adminFacebookPageToggleStatus($id): RedirectResponse
+    {
+        return $this->facebookPageService->handlePageToggleStatus($id);
+    }
+
+    public function adminFacebookPageDelete($id): RedirectResponse
+    {
+        return $this->facebookPageService->handlePageDelete($id);
+    }
+
+    public function adminFacebookPageView($id): View
+    {
+        return $this->facebookPageService->renderPageView($id);
+    }
+
+    public function adminFacebookLeadgenForms(Request $request): View
+    {
+        return $this->facebookLeadgenFormService->renderLeadgenFormsPage($request);
+    }
+
+    public function adminFacebookLeadgenFormsSync(): RedirectResponse
+    {
+        return $this->facebookLeadgenFormService->handleSyncFromApi();
+    }
+
+    public function adminFacebookLeadgenFormsSyncPage($pageId): RedirectResponse
+    {
+        return $this->facebookLeadgenFormService->syncFormForSpecificPage($pageId);
+    }
+
+    public function adminFacebookLeadgenFormToggleStatus($id): RedirectResponse
+    {
+        return $this->facebookLeadgenFormService->handleFormToggleStatus($id);
+    }
+
+    public function adminFacebookLeadgenFormDelete($id): RedirectResponse
+    {
+        return $this->facebookLeadgenFormService->handleFormDelete($id);
+    }
+
+    public function adminFacebookLeadgenFormView($id): View
+    {
+        return $this->facebookLeadgenFormService->renderFormView($id);
+    }
+
+    public function adminFacebookLeads(Request $request): View
+    {
+        return $this->facebookLeadService->renderLeadsPage($request);
+    }
+
+    public function adminFacebookLeadsCollect(Request $request): RedirectResponse
+    {
+        return $this->facebookLeadService->handleCollectLeads($request);
+    }
+
+    public function adminFacebookLeadsCollectOptimized(Request $request): RedirectResponse
+    {
+        return $this->facebookLeadService->handleCollectLeadsOptimized($request);
+    }
+
+    public function adminFacebookLeadToggleStatus($id): RedirectResponse
+    {
+        return $this->facebookLeadService->handleLeadToggleStatus($id);
+    }
+
+    public function adminFacebookLeadDelete($id): RedirectResponse
+    {
+        return $this->facebookLeadService->handleLeadDelete($id);
+    }
+
+    public function adminFacebookLeadView($id): View
+    {
+        return $this->facebookLeadService->renderLeadView($id);
+    }
+
+    public function adminFacebookLeadsExport(Request $request)
+    {
+        return $this->facebookLeadService->exportLeads($request);
+    }
+
+    public function adminFacebookLeadsFormFields($formId)
+    {
+        $fieldNames = $this->facebookLeadService->getFormFieldNames($formId);
+        return response()->json($fieldNames);
+    }
+
+    public function adminFacebookLeadsFieldValues($fieldName)
+    {
+        $values = $this->facebookLeadService->getFieldValues($fieldName);
+        return response()->json($values);
+    }
+
+    public function adminFacebookLeadsFormStats($formId)
+    {
+        $stats = $this->facebookLeadService->getFormLeadStats($formId);
+        return response()->json($stats);
+    }
 }

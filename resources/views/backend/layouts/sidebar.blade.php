@@ -76,11 +76,21 @@
                 $canManageLoan = $user->hasPermission('manage_loan');
                 $canManageStudent = $user->hasPermission('manage_student');
                 $canManageAsset = $user->hasPermission('manage_asset');
+                $canManageFacebookCredentials = $user->hasPermission('manage_facebook_credentials');
+                $canManageFacebookPages = $user->hasPermission('manage_facebook_pages');
+                $canManageFacebookLeadgenForms = $user->hasPermission('manage_facebook_leadgen_forms');
+                $canManageFacebookLeads = $user->hasPermission('manage_facebook_leads');
             @endphp
             <ul class="side-menu">
 
                 {{-- DASHBOARD & SETTINGS --}}
-                @if ($canManageDashboard || $canManageSettings)
+                @if (
+                    $canManageDashboard ||
+                        $canManageSettings ||
+                        $canManageFacebookCredentials ||
+                        $canManageFacebookPages ||
+                        $canManageFacebookLeadgenForms ||
+                        $canManageFacebookLeads)
                     <li class="sub-category">
                         <h3>Dashboard & Settings</h3>
                     </li>
@@ -99,6 +109,42 @@
                                 href="{{ route('adminSettings') }}">
                                 <i class="side-menu__icon fe fe-sliders"></i>
                                 <span class="side-menu__label">Settings</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if ($canManageFacebookCredentials)
+                        <li class="slide">
+                            <a class="side-menu__item has-link {{ Route::is('adminFacebookCredentials') ? 'active' : '' }}"
+                                href="{{ route('adminFacebookCredentials') }}">
+                                <i class="side-menu__icon fe fe-facebook"></i>
+                                <span class="side-menu__label">Facebook Credentials</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if ($canManageFacebookPages)
+                        <li class="slide">
+                            <a class="side-menu__item has-link {{ Route::is('adminFacebookPages', 'adminFacebookPageView') ? 'active' : '' }}"
+                                href="{{ route('adminFacebookPages') }}">
+                                <i class="side-menu__icon fe fe-users"></i>
+                                <span class="side-menu__label">Facebook Pages</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if ($canManageFacebookLeadgenForms)
+                        <li class="slide">
+                            <a class="side-menu__item has-link {{ Route::is('adminFacebookLeadgenForms', 'adminFacebookLeadgenFormView') ? 'active' : '' }}"
+                                href="{{ route('adminFacebookLeadgenForms') }}">
+                                <i class="side-menu__icon fe fe-file-text"></i>
+                                <span class="side-menu__label">Lead Gen Forms</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if ($canManageFacebookLeads)
+                        <li class="slide">
+                            <a class="side-menu__item has-link {{ Route::is('adminFacebookLeads', 'adminFacebookLeadView') ? 'active' : '' }}"
+                                href="{{ route('adminFacebookLeads') }}">
+                                <i class="side-menu__icon fe fe-user-plus"></i>
+                                <span class="side-menu__label">Facebook Leads</span>
                             </a>
                         </li>
                     @endif
@@ -202,8 +248,8 @@
                     </li>
                     @if ($canManageExpense)
                         <li class="slide {{ $is_expense_active ? 'is-expanded' : '' }}">
-                            <a class="side-menu__item {{ $is_expense_active ? 'active' : '' }}" data-bs-toggle="slide"
-                                href="javascript:void(0)">
+                            <a class="side-menu__item {{ $is_expense_active ? 'active' : '' }}"
+                                data-bs-toggle="slide" href="javascript:void(0)">
                                 <i class="side-menu__icon fe fe-dollar-sign"></i>
                                 <span class="side-menu__label">Expenses</span>
                                 <i class="angle fe fe-chevron-right"></i>
@@ -251,7 +297,7 @@
                         </li>
                     @endif
                     @if ($canManageAsset)
-                            <li class="slide">
+                        <li class="slide">
                             <a class="side-menu__item has-link {{ Route::is('adminAssetCategory', 'adminAssetCategoryCreateOrEdit') ? 'active' : '' }}"
                                 href="{{ route('adminAssetCategory') }}">
                                 <i class="side-menu__icon fe fe-tag"></i>

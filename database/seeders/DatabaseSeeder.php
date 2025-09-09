@@ -19,5 +19,13 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        $this->call([
+            FacebookCredentialsPermissionSeeder::class,
+            FacebookCredentialsSeeder::class,
+            FacebookPagesPermissionSeeder::class,
+            FacebookLeadgenFormsPermissionSeeder::class,
+            FacebookLeadsPermissionSeeder::class,
+        ]);
     }
 }

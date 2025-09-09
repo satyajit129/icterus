@@ -45,7 +45,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/delete/{id}', [AdminController::class, 'adminEmployeeDelete'])->name('adminEmployeeDelete');
             Route::get('/data', [AdminController::class, 'adminEmployeeData'])->name('adminEmployeeData');
             Route::get('/view/{id}', [AdminController::class, 'adminEmployeeView'])->name('adminEmployeeView');
-            Route::get('/export',[AdminController::class,'adminEmployeeExport'])->name('adminEmployeeExport');
+            Route::get('/export', [AdminController::class, 'adminEmployeeExport'])->name('adminEmployeeExport');
         });
 
         Route::prefix('expense')->group(function () {
@@ -56,7 +56,7 @@ Route::prefix('admin')->group(function () {
                 Route::get('/delete/{id}', [AdminController::class, 'adminSalaryExpenseDelete'])->name('adminSalaryExpenseDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminSalaryExpenseView'])->name('adminSalaryExpenseView');
                 Route::post('/status-update', [AdminController::class, 'adminSalaryExpenseStatusUpdate'])->name('adminSalaryExpenseStatusUpdate');
-                Route::get('/export',[AdminController::class,'adminSalaryExpenseExport'])->name('adminSalaryExpenseExport');
+                Route::get('/export', [AdminController::class, 'adminSalaryExpenseExport'])->name('adminSalaryExpenseExport');
             });
             Route::prefix('incentive-expense')->group(function () {
                 Route::get('/', [AdminController::class, 'adminIncentiveExpense'])->name('adminIncentiveExpense');
@@ -64,7 +64,7 @@ Route::prefix('admin')->group(function () {
                 Route::post('/save/{id?}', [AdminController::class, 'adminIncentiveExpenseSave'])->name('adminIncentiveExpenseSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminIncentiveExpenseDelete'])->name('adminIncentiveExpenseDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminIncentiveExpenseView'])->name('adminIncentiveExpenseView');
-                Route::get('/export',[AdminController::class,'adminIncentiveExpenseExport'])->name('adminIncentiveExpenseExport');
+                Route::get('/export', [AdminController::class, 'adminIncentiveExpenseExport'])->name('adminIncentiveExpenseExport');
             });
             Route::prefix('office-expense')->group(function () {
                 Route::get('/', [AdminController::class, 'adminOfficeExpense'])->name('adminOfficeExpense');
@@ -72,24 +72,24 @@ Route::prefix('admin')->group(function () {
                 Route::post('/save/{id?}', [AdminController::class, 'adminOfficeExpenseSave'])->name('adminOfficeExpenseSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminOfficeExpenseDelete'])->name('adminOfficeExpenseDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminOfficeExpenseView'])->name('adminOfficeExpenseView');
-                Route::get('/export',[AdminController::class,'adminOfficeExpenseExport'])->name('adminOfficeExpenseExport');
+                Route::get('/export', [AdminController::class, 'adminOfficeExpenseExport'])->name('adminOfficeExpenseExport');
             });
-            Route::prefix('category')->group(function(){
-                Route::get('/',[AdminController::class,'adminExpenseCategory'])->name('adminExpenseCategory');
-                Route::get('/create-or-edit/{id?}',[AdminController::class,'adminExpenseCategoryCreateOrEdit'])->name('adminExpenseCategoryCreateOrEdit');
-                Route::post('/save/{id?}',[AdminController::class,'adminExpenseCategorySave'])->name('adminExpenseCategorySave');
-                Route::get('/delete/{id}',[AdminController::class,'adminExpenseCategoryDelete'])->name('adminExpenseCategoryDelete');
+            Route::prefix('category')->group(function () {
+                Route::get('/', [AdminController::class, 'adminExpenseCategory'])->name('adminExpenseCategory');
+                Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminExpenseCategoryCreateOrEdit'])->name('adminExpenseCategoryCreateOrEdit');
+                Route::post('/save/{id?}', [AdminController::class, 'adminExpenseCategorySave'])->name('adminExpenseCategorySave');
+                Route::get('/delete/{id}', [AdminController::class, 'adminExpenseCategoryDelete'])->name('adminExpenseCategoryDelete');
             });
-            Route::prefix('loan')->group(function(){
-                Route::get('/',[AdminController::class,'adminLoanList'])->name('adminLoanList');
-                Route::get('/create-or-edit/{id?}',[AdminController::class,'adminLoanCreateOrEdit'])->name('adminLoanCreateOrEdit');
-                Route::post('/save/{id?}',[AdminController::class,'adminLoanSave'])->name('adminLoanSave');
-                Route::get('/delete/{id}',[AdminController::class,'adminLoanDelete'])->name('adminLoanDelete');
+            Route::prefix('loan')->group(function () {
+                Route::get('/', [AdminController::class, 'adminLoanList'])->name('adminLoanList');
+                Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminLoanCreateOrEdit'])->name('adminLoanCreateOrEdit');
+                Route::post('/save/{id?}', [AdminController::class, 'adminLoanSave'])->name('adminLoanSave');
+                Route::get('/delete/{id}', [AdminController::class, 'adminLoanDelete'])->name('adminLoanDelete');
 
-                Route::post('/make-payment/{id?}',[AdminController::class,'adminLoanMakePayment'])->name('adminLoanMakePayment');
-                Route::get('/payment-details',[AdminController::class,'adminLoanPaymentDetails'])->name('adminLoanPaymentDetails');
-                Route::get('/payment-fatch',[AdminController::class,'adminLoanPaymentFetch'])->name('adminLoanPaymentFetch');
-                Route::post('/update/{id?}',[AdminController::class,'adminLoanPaymentUpdate'])->name('adminLoanPaymentUpdate');
+                Route::post('/make-payment/{id?}', [AdminController::class, 'adminLoanMakePayment'])->name('adminLoanMakePayment');
+                Route::get('/payment-details', [AdminController::class, 'adminLoanPaymentDetails'])->name('adminLoanPaymentDetails');
+                Route::get('/payment-fatch', [AdminController::class, 'adminLoanPaymentFetch'])->name('adminLoanPaymentFetch');
+                Route::post('/update/{id?}', [AdminController::class, 'adminLoanPaymentUpdate'])->name('adminLoanPaymentUpdate');
             });
         });
         Route::prefix('company')->group(function () {
@@ -105,7 +105,7 @@ Route::prefix('admin')->group(function () {
                 Route::post('/save/{id?}', [AdminController::class, 'adminCompanyDealsSave'])->name('adminCompanyDealsSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminCompanyDealsDelete'])->name('adminCompanyDealsDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminCompanyDealsView'])->name('adminCompanyDealsView');
-                Route::get('/export',[AdminController::class,'adminCompanyDealsExport'])->name('adminCompanyDealsExport');
+                Route::get('/export', [AdminController::class, 'adminCompanyDealsExport'])->name('adminCompanyDealsExport');
 
                 Route::prefix('payment')->group(function () {
                     Route::get('/list/{id}', [AdminController::class, 'adminDealsPayment'])->name('adminDealsPayment');
@@ -121,14 +121,14 @@ Route::prefix('admin')->group(function () {
                 Route::post('/save/{id?}', [AdminController::class, 'adminEarningSave'])->name('adminEarningSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminEarningDelete'])->name('adminEarningDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminEarningView'])->name('adminEarningView');
-                Route::get('/export',[AdminController::class,'adminEarningExport'])->name('adminEarningExport');
+                Route::get('/export', [AdminController::class, 'adminEarningExport'])->name('adminEarningExport');
             });
         });
-        Route::prefix('sales-status')->group(function(){
-            Route::get('/',[AdminController::class,'adminSalesStatus'])->name('adminSalesStatus');
-            Route::get('/create-or-edit/{id?}',[AdminController::class,'adminSalesStatusCreateOrEdit'])->name('adminSalesStatusCreateOrEdit');
-            Route::post('/save/{id?}',[AdminController::class,'adminSalesStatusSave'])->name('adminSalesStatusSave');
-            Route::get('/delete/{id}',[AdminController::class,'adminSalesStatusDelete'])->name('adminSalesStatusDelete');
+        Route::prefix('sales-status')->group(function () {
+            Route::get('/', [AdminController::class, 'adminSalesStatus'])->name('adminSalesStatus');
+            Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminSalesStatusCreateOrEdit'])->name('adminSalesStatusCreateOrEdit');
+            Route::post('/save/{id?}', [AdminController::class, 'adminSalesStatusSave'])->name('adminSalesStatusSave');
+            Route::get('/delete/{id}', [AdminController::class, 'adminSalesStatusDelete'])->name('adminSalesStatusDelete');
         });
         Route::prefix('admin-user')->group(function () {
             Route::get('/', [AuthController::class, 'adminUserList'])->name('adminUserList');
@@ -142,36 +142,71 @@ Route::prefix('admin')->group(function () {
             Route::post('/save/{id?}', [AdminController::class, 'adminPermissionSave'])->name('adminPermissionSave');
             Route::get('/delete/{id}', [AdminController::class, 'adminPermissionDelete'])->name('adminPermissionDelete');
         });
-        Route::prefix('role-access')->group(function(){
-            Route::get('/',[AdminController::class,'adminRoleAccess'])->name('adminRoleAccess');
-            Route::get('/create-or-edit/{id?}',[AdminController::class,'adminRoleAccessCreateOrEdit'])->name('adminRoleAccessCreateOrEdit');
-            Route::post('/save/{id?}',[AdminController::class,'adminRoleAccessSave'])->name('adminRoleAccessSave');
-            Route::get('/delete/{id}',[AdminController::class,'adminRoleAccessDelete'])->name('adminRoleAccessDelete');
+        Route::prefix('role-access')->group(function () {
+            Route::get('/', [AdminController::class, 'adminRoleAccess'])->name('adminRoleAccess');
+            Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminRoleAccessCreateOrEdit'])->name('adminRoleAccessCreateOrEdit');
+            Route::post('/save/{id?}', [AdminController::class, 'adminRoleAccessSave'])->name('adminRoleAccessSave');
+            Route::get('/delete/{id}', [AdminController::class, 'adminRoleAccessDelete'])->name('adminRoleAccessDelete');
         });
-        Route::prefix('student')->group(function(){
-            Route::get('/list',[AdminController::class,'adminStudentList'])->name('adminStudentList');
-            Route::get('/create-or-edit/{id?}',[AdminController::class,'adminStudentCreateOrEdit'])->name('adminStudentCreateOrEdit');
-            Route::post('/save/{id?}',[AdminController::class,'adminStudentSave'])->name('adminStudentSave');
-            Route::get('/delete/{id}',[AdminController::class,'adminStudentDelete'])->name('adminStudentDelete');
-            
-            Route::prefix('payment')->group(function() {
-                Route::get('/list/{id}',[AdminController::class,'adminStudentPaymentList'])->name('adminStudentPaymentList');
+        Route::prefix('student')->group(function () {
+            Route::get('/list', [AdminController::class, 'adminStudentList'])->name('adminStudentList');
+            Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminStudentCreateOrEdit'])->name('adminStudentCreateOrEdit');
+            Route::post('/save/{id?}', [AdminController::class, 'adminStudentSave'])->name('adminStudentSave');
+            Route::get('/delete/{id}', [AdminController::class, 'adminStudentDelete'])->name('adminStudentDelete');
+
+            Route::prefix('payment')->group(function () {
+                Route::get('/list/{id}', [AdminController::class, 'adminStudentPaymentList'])->name('adminStudentPaymentList');
                 Route::get('/create-or-edit/{student_id}/{payment_id?}', [AdminController::class, 'adminStudentPaymentCreateOrEdit'])->name('adminStudentPaymentCreateOrEdit');
-                Route::post('/save/{id?}',[AdminController::class,'adminStudentPaymentSave'])->name('adminStudentPaymentSave');
-                Route::get('/delete/{id}',[AdminController::class,'adminStudentPaymentDelete'])->name('adminStudentPaymentDelete');
+                Route::post('/save/{id?}', [AdminController::class, 'adminStudentPaymentSave'])->name('adminStudentPaymentSave');
+                Route::get('/delete/{id}', [AdminController::class, 'adminStudentPaymentDelete'])->name('adminStudentPaymentDelete');
             });
         });
-        Route::prefix('asset')->group(function(){
-            Route::prefix('category')->group(function(){
-                Route::get('/',[AdminController::class,'adminAssetCategory'])->name('adminAssetCategory');
-                Route::get('/create-or-edit/{id?}',[AdminController::class,'adminAssetCategoryCreateOrEdit'])->name('adminAssetCategoryCreateOrEdit');
-                Route::post('/save/{id?}',[AdminController::class,'adminAssetCategorySave'])->name('adminAssetCategorySave');
-                Route::get('/delete/{id}',[AdminController::class,'adminAssetCategoryDelete'])->name('adminAssetCategoryDelete');
+        Route::prefix('asset')->group(function () {
+            Route::prefix('category')->group(function () {
+                Route::get('/', [AdminController::class, 'adminAssetCategory'])->name('adminAssetCategory');
+                Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminAssetCategoryCreateOrEdit'])->name('adminAssetCategoryCreateOrEdit');
+                Route::post('/save/{id?}', [AdminController::class, 'adminAssetCategorySave'])->name('adminAssetCategorySave');
+                Route::get('/delete/{id}', [AdminController::class, 'adminAssetCategoryDelete'])->name('adminAssetCategoryDelete');
             });
-            Route::get('/',[AdminController::class,'adminAssetList'])->name('adminAssetList');
-            Route::get('/create-or-edit/{id?}',[AdminController::class,'adminAssetCreateOrEdit'])->name('adminAssetCreateOrEdit');
-            Route::post('/save/{id?}',[AdminController::class,'adminAssetSave'])->name('adminAssetSave');
-            Route::get('/delete/{id}',[AdminController::class,'adminAssetDelete'])->name('adminAssetDelete');
+            Route::get('/', [AdminController::class, 'adminAssetList'])->name('adminAssetList');
+            Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminAssetCreateOrEdit'])->name('adminAssetCreateOrEdit');
+            Route::post('/save/{id?}', [AdminController::class, 'adminAssetSave'])->name('adminAssetSave');
+            Route::get('/delete/{id}', [AdminController::class, 'adminAssetDelete'])->name('adminAssetDelete');
+        });
+
+        Route::prefix('facebook-credentials')->group(function () {
+            Route::get('/', [AdminController::class, 'adminFacebookCredentials'])->name('adminFacebookCredentials');
+            Route::post('/update', [AdminController::class, 'adminFacebookCredentialsUpdate'])->name('adminFacebookCredentialsUpdate');
+        });
+
+        Route::prefix('facebook-pages')->group(function () {
+            Route::get('/', [AdminController::class, 'adminFacebookPages'])->name('adminFacebookPages');
+            Route::post('/sync', [AdminController::class, 'adminFacebookPagesSync'])->name('adminFacebookPagesSync');
+            Route::get('/toggle-status/{id}', [AdminController::class, 'adminFacebookPageToggleStatus'])->name('adminFacebookPageToggleStatus');
+            Route::get('/delete/{id}', [AdminController::class, 'adminFacebookPageDelete'])->name('adminFacebookPageDelete');
+            Route::get('/view/{id}', [AdminController::class, 'adminFacebookPageView'])->name('adminFacebookPageView');
+        });
+
+        Route::prefix('facebook-leadgen-forms')->group(function () {
+            Route::get('/', [AdminController::class, 'adminFacebookLeadgenForms'])->name('adminFacebookLeadgenForms');
+            Route::post('/sync', [AdminController::class, 'adminFacebookLeadgenFormsSync'])->name('adminFacebookLeadgenFormsSync');
+            Route::post('/sync-page/{pageId}', [AdminController::class, 'adminFacebookLeadgenFormsSyncPage'])->name('adminFacebookLeadgenFormsSyncPage');
+            Route::get('/toggle-status/{id}', [AdminController::class, 'adminFacebookLeadgenFormToggleStatus'])->name('adminFacebookLeadgenFormToggleStatus');
+            Route::get('/delete/{id}', [AdminController::class, 'adminFacebookLeadgenFormDelete'])->name('adminFacebookLeadgenFormDelete');
+            Route::get('/view/{id}', [AdminController::class, 'adminFacebookLeadgenFormView'])->name('adminFacebookLeadgenFormView');
+        });
+
+        Route::prefix('facebook-leads')->group(function () {
+            Route::get('/', [AdminController::class, 'adminFacebookLeads'])->name('adminFacebookLeads');
+            Route::post('/collect', [AdminController::class, 'adminFacebookLeadsCollect'])->name('adminFacebookLeadsCollect');
+            Route::post('/collect-optimized', [AdminController::class, 'adminFacebookLeadsCollectOptimized'])->name('adminFacebookLeadsCollectOptimized');
+            Route::get('/toggle-status/{id}', [AdminController::class, 'adminFacebookLeadToggleStatus'])->name('adminFacebookLeadToggleStatus');
+            Route::get('/delete/{id}', [AdminController::class, 'adminFacebookLeadDelete'])->name('adminFacebookLeadDelete');
+            Route::get('/view/{id}', [AdminController::class, 'adminFacebookLeadView'])->name('adminFacebookLeadView');
+            Route::get('/export', [AdminController::class, 'adminFacebookLeadsExport'])->name('adminFacebookLeadsExport');
+            Route::get('/form-fields/{formId}', [AdminController::class, 'adminFacebookLeadsFormFields'])->name('adminFacebookLeadsFormFields');
+            Route::get('/field-values/{fieldName}', [AdminController::class, 'adminFacebookLeadsFieldValues'])->name('adminFacebookLeadsFieldValues');
+            Route::get('/form-stats/{formId}', [AdminController::class, 'adminFacebookLeadsFormStats'])->name('adminFacebookLeadsFormStats');
         });
     });
 });
