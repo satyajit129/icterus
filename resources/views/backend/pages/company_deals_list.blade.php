@@ -9,6 +9,16 @@
         }
     </style>
 @endsection
+
+    @php
+        $user = auth()->user();
+        $canAddCompanyDeal      =  $user->hasPermission('add_company_deal');
+        $canEditCompanyDeal     =  $user->hasPermission('edit_company_deal');
+        $canDeleteCompanyDeal   =  $user->hasPermission('delete_company_deal');
+        $canViewCompanyDeal     =  $user->hasPermission('view_company_deal');
+        $canDownloadCompanyDeal =  $user->hasPermission('download_company_deal');
+    @endphp
+
 @section('content')
 
     <div class="page-header">
@@ -25,16 +35,26 @@
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Company Deals Data</h3>
-                    <a href="{{ route('adminCompanyDealsCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
-                            Company Deals</button>
-                    </a>
+                    <div>
+                        @if ($canDownloadCompanyDeal)
+                            <a href="{{ route('adminCompanyDealsExport') }}" class="btn btn-sm btn-primary">
+                                <i class="fe fe-download me-1"></i> Download Data
+                            </a>
+                        @endif
+                        @if ($canAddCompanyDeal)
+                            <a href="{{ route('adminCompanyDealsCreateOrEdit') }}">
+                                <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
+                                    Company Deals</button>
+                            </a>
+                        @endif
+                        
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
-                            <div>
-                                <table class="table table-bordered text-nowrap border-bottom table-responsive">
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-nowrap border-bottom ">
                                     <thead>
                                         <tr>
                                             <th class="wd-15p border-bottom-0">#</th>
@@ -45,7 +65,6 @@
                                             <th class="wd-15p border-bottom-0">Total Paid</th>
                                             <th class="wd-15p border-bottom-0">Remaining Balance</th>
                                             <th class="wd-15p border-bottom-0">Contract Duration</th>
-
                                             <th class="wd-15p border-bottom-0">Payment Frequency</th>
                                             <th class="wd-15p border-bottom-0">Receive Payment</th>
                                             <th class="wd-15p border-bottom-0">Action</th>
@@ -77,21 +96,30 @@
                                                 </td>
 
                                                 <td>
-                                                    <a href="{{ route('adminCompanyDealsCreateOrEdit', ['id' => $company_deal->id, 'page' => request('page')]) }}"
-                                                    class="btn btn-sm btn-primary" title="Edit">
-                                                        <i class="fe fe-edit"></i>
-                                                    </a>
+                                                    @if ($canEditCompanyDeal || $canDeleteCompanyDeal || $canViewCompanyDeal)
+                                                    
+                                                        @if ($canEditCompanyDeal)
+                                                            <a href="{{ route('adminCompanyDealsCreateOrEdit', ['id' => $company_deal->id, 'page' => request('page')]) }}"
+                                                                class="btn btn-sm btn-primary" title="Edit"> <i class="fe fe-edit"></i>
+                                                            </a>
+                                                        @endif
 
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                    data-url="{{ route('adminCompanyDealsDelete', ['id' => $company_deal->id, 'page' => request('page')]) }}"
-                                                    data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
-                                                        <i class="fe fe-trash-2"></i>
-                                                    </a>
+                                                        @if ($canDeleteCompanyDeal)
+                                                        <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                            data-url="{{ route('adminCompanyDealsDelete', ['id' => $company_deal->id, 'page' => request('page')]) }}"
+                                                            data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete"> <i class="fe fe-trash-2"></i>
+                                                        </a>
+                                                        @endif
 
-                                                    <a href="{{ route('adminCompanyDealsView', $company_deal->id) }}"
-                                                    class="btn btn-sm btn-info" title="View">
-                                                        <i class="fe fe-eye"></i>
-                                                    </a>
+                                                        @if ($canViewCompanyDeal)
+                                                        <a href="{{ route('adminCompanyDealsView', $company_deal->id) }}"
+                                                            class="btn btn-sm btn-info" title="View"> <i class="fe fe-eye"></i>
+                                                        </a>
+                                                        @endif
+
+                                                    @else
+                                                         <span class="text-muted fst-italic">No actions available</span>
+                                                    @endif
                                                 </td>
 
                                             </tr>

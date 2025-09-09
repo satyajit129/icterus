@@ -9,6 +9,15 @@
         }
     </style>
 @endsection
+{{-- Permission --}}
+@php
+    $user = auth()->user();
+    $canAddEmployee     =  $user->hasPermission('add_employee');
+    $canEditEmployee    =  $user->hasPermission('edit_employee');
+    $canDeleteEmployee  =  $user->hasPermission('delete_employee');
+    $canViewEmployee    =  $user->hasPermission('view_employee');
+    $canDownloadEmployee=  $user->hasPermission('download_employee');
+@endphp
 @section('content')
 
     <div class="page-header">
@@ -25,10 +34,21 @@
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Employees Data</h3>
-                    <a href="{{ route('adminEmployeeCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
-                            Employee</button>
-                    </a>
+                    <div>
+                        @if ($canDownloadEmployee)
+                            <a href="{{ route('adminEmployeeExport') }}" class="btn btn-primary btn-sm">
+                                <i class="fe fe-download me-2"></i>Download Data
+                            </a>
+                        @endif
+                         
+                        @if ($canAddEmployee)
+                            <a href="{{ route('adminEmployeeCreateOrEdit') }}">
+                                <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Employee</button>
+                            </a>
+                        @endif
+                        
+                    </div>
+                    
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">
@@ -68,20 +88,29 @@
                                                 <td>{{ \Carbon\Carbon::parse($employee->joining_date)->format('d/m/Y') }}
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('adminEmployeeCreateOrEdit', $employee->id) }}"
-                                                        class="btn btn-sm btn-primary" title="Edit">
-                                                        <i class="fe fe-edit"></i>
-                                                    </a>
-
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminEmployeeDelete', ['id' => $employee->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
-                                                        <i class="fe fe-trash-2"></i>
-                                                    </a>
-                                                    <a href="{{ route('adminEmployeeView', $employee->id) }}"
-                                                        class="btn btn-sm btn-info" title="View">
-                                                        <i class="fe fe-eye"></i>
-                                                    </a>
+                                                    @if ($canEditEmployee || $canDeleteEmployee || $canViewEmployee)
+                                                        @if ($canEditEmployee)
+                                                            <a href="{{ route('adminEmployeeCreateOrEdit', $employee->id) }}"
+                                                                class="btn btn-sm btn-primary" title="Edit">
+                                                                <i class="fe fe-edit"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if ($canDeleteEmployee)
+                                                            <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                                data-url="{{ route('adminEmployeeDelete', ['id' => $employee->id]) }}"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                                <i class="fe fe-trash-2"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if ($canViewEmployee)
+                                                        <a href="{{ route('adminEmployeeView', $employee->id) }}"
+                                                            class="btn btn-sm btn-info" title="View">
+                                                            <i class="fe fe-eye"></i>
+                                                        </a>
+                                                        @endif
+                                                    @else
+                                                         <span class="text-muted fst-italic">No actions available</span>
+                                                    @endif
                                                 </td>
 
                                             </tr>

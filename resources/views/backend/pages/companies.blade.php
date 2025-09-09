@@ -5,6 +5,14 @@
 @section('custom_css')
 @endsection
 
+{{-- Permission --}}
+@php
+    $user = auth()->user();
+    $canAddCompany      =  $user->hasPermission('add_company');
+    $canEditCompany     =  $user->hasPermission('edit_company');
+    $canDeleteCompany   =  $user->hasPermission('delete_company');
+    $canViewCompany     =  $user->hasPermission('view_company');
+@endphp
 
 @section('content')
     <div class="page-header">
@@ -21,10 +29,13 @@
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Company Data</h3>
-                    <a href="{{ route('adminCompanyCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
-                            Company</button>
-                    </a>
+                    @if ($canAddCompany)
+                        <a href="{{ route('adminCompanyCreateOrEdit') }}">
+                            <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
+                                Company</button>
+                        </a>
+                    @endif
+                    
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">
@@ -53,19 +64,28 @@
                                                 <td>{{ $company_list->ceo_name }}</td>
                                                 <td>{{ $company_list->address }}</td>
                                                 <td>
-                                                    <a href="{{ route('adminCompanyCreateOrEdit', $company_list->id) }}"
-                                                        class="btn btn-sm btn-primary" title="Edit">
-                                                        <i class="fe fe-edit"></i>
-                                                    </a>
-
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminCompanyDelete', ['id' => $company_list->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
-                                                        <i class="fe fe-trash-2"></i>
-                                                    </a>
-                                                    <a href="{{ route('adminCompanyView', $company_list->id) }}" class="btn btn-sm btn-info" title="View">
-                                                        <i class="fe fe-eye"></i>
-                                                    </a>
+                                                    @if ($canEditCompany || $canDeleteCompany || $canViewCompany)
+                                                        @if ($canEditCompany)
+                                                            <a href="{{ route('adminCompanyCreateOrEdit', $company_list->id) }}"
+                                                                class="btn btn-sm btn-primary" title="Edit">
+                                                                <i class="fe fe-edit"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if ($canDeleteCompany)
+                                                        <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                            data-url="{{ route('adminCompanyDelete', ['id' => $company_list->id]) }}"
+                                                            data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                            <i class="fe fe-trash-2"></i>
+                                                        </a>
+                                                        @endif
+                                                        @if ($canViewCompany)
+                                                            <a href="{{ route('adminCompanyView', $company_list->id) }}" class="btn btn-sm btn-info" title="View">
+                                                                <i class="fe fe-eye"></i>
+                                                            </a>
+                                                        @endif
+                                                    @else
+                                                         <span class="text-muted fst-italic">No actions available</span>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @empty

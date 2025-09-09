@@ -45,6 +45,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/delete/{id}', [AdminController::class, 'adminEmployeeDelete'])->name('adminEmployeeDelete');
             Route::get('/data', [AdminController::class, 'adminEmployeeData'])->name('adminEmployeeData');
             Route::get('/view/{id}', [AdminController::class, 'adminEmployeeView'])->name('adminEmployeeView');
+            Route::get('/export',[AdminController::class,'adminEmployeeExport'])->name('adminEmployeeExport');
         });
 
         Route::prefix('expense')->group(function () {
@@ -55,6 +56,7 @@ Route::prefix('admin')->group(function () {
                 Route::get('/delete/{id}', [AdminController::class, 'adminSalaryExpenseDelete'])->name('adminSalaryExpenseDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminSalaryExpenseView'])->name('adminSalaryExpenseView');
                 Route::post('/status-update', [AdminController::class, 'adminSalaryExpenseStatusUpdate'])->name('adminSalaryExpenseStatusUpdate');
+                Route::get('/export',[AdminController::class,'adminSalaryExpenseExport'])->name('adminSalaryExpenseExport');
             });
             Route::prefix('incentive-expense')->group(function () {
                 Route::get('/', [AdminController::class, 'adminIncentiveExpense'])->name('adminIncentiveExpense');
@@ -62,6 +64,7 @@ Route::prefix('admin')->group(function () {
                 Route::post('/save/{id?}', [AdminController::class, 'adminIncentiveExpenseSave'])->name('adminIncentiveExpenseSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminIncentiveExpenseDelete'])->name('adminIncentiveExpenseDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminIncentiveExpenseView'])->name('adminIncentiveExpenseView');
+                Route::get('/export',[AdminController::class,'adminIncentiveExpenseExport'])->name('adminIncentiveExpenseExport');
             });
             Route::prefix('office-expense')->group(function () {
                 Route::get('/', [AdminController::class, 'adminOfficeExpense'])->name('adminOfficeExpense');
@@ -69,6 +72,7 @@ Route::prefix('admin')->group(function () {
                 Route::post('/save/{id?}', [AdminController::class, 'adminOfficeExpenseSave'])->name('adminOfficeExpenseSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminOfficeExpenseDelete'])->name('adminOfficeExpenseDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminOfficeExpenseView'])->name('adminOfficeExpenseView');
+                Route::get('/export',[AdminController::class,'adminOfficeExpenseExport'])->name('adminOfficeExpenseExport');
             });
             Route::prefix('category')->group(function(){
                 Route::get('/',[AdminController::class,'adminExpenseCategory'])->name('adminExpenseCategory');
@@ -95,12 +99,13 @@ Route::prefix('admin')->group(function () {
             Route::get('/delete/{id}', [AdminController::class, 'adminCompanyDelete'])->name('adminCompanyDelete');
             Route::get('/view/{id}', [AdminController::class, 'adminCompanyView'])->name('adminCompanyView');
 
-            Route::prefix('/deals')->group(function () {
+            Route::prefix('deals')->group(function () {
                 Route::get('/', [AdminController::class, 'adminCompanyDealsList'])->name('adminCompanyDealsList');
                 Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminCompanyDealsCreateOrEdit'])->name('adminCompanyDealsCreateOrEdit');
                 Route::post('/save/{id?}', [AdminController::class, 'adminCompanyDealsSave'])->name('adminCompanyDealsSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminCompanyDealsDelete'])->name('adminCompanyDealsDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminCompanyDealsView'])->name('adminCompanyDealsView');
+                Route::get('/export',[AdminController::class,'adminCompanyDealsExport'])->name('adminCompanyDealsExport');
 
                 Route::prefix('payment')->group(function () {
                     Route::get('/list/{id}', [AdminController::class, 'adminDealsPayment'])->name('adminDealsPayment');
@@ -116,15 +121,16 @@ Route::prefix('admin')->group(function () {
                 Route::post('/save/{id?}', [AdminController::class, 'adminEarningSave'])->name('adminEarningSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminEarningDelete'])->name('adminEarningDelete');
                 Route::get('/view/{id}', [AdminController::class, 'adminEarningView'])->name('adminEarningView');
+                Route::get('/export',[AdminController::class,'adminEarningExport'])->name('adminEarningExport');
             });
         });
-        Route::prefix('/sales-status')->group(function(){
+        Route::prefix('sales-status')->group(function(){
             Route::get('/',[AdminController::class,'adminSalesStatus'])->name('adminSalesStatus');
             Route::get('/create-or-edit/{id?}',[AdminController::class,'adminSalesStatusCreateOrEdit'])->name('adminSalesStatusCreateOrEdit');
             Route::post('/save/{id?}',[AdminController::class,'adminSalesStatusSave'])->name('adminSalesStatusSave');
             Route::get('/delete/{id}',[AdminController::class,'adminSalesStatusDelete'])->name('adminSalesStatusDelete');
         });
-        Route::prefix('/admin-user')->group(function () {
+        Route::prefix('admin-user')->group(function () {
             Route::get('/', [AuthController::class, 'adminUserList'])->name('adminUserList');
             Route::get('/create-or-edit/{id?}', [AuthController::class, 'adminUserCreateOrEdit'])->name('adminUserCreateOrEdit');
             Route::post('/save/{id?}', [AuthController::class, 'adminUserSave'])->name('adminUserSave');
@@ -141,6 +147,31 @@ Route::prefix('admin')->group(function () {
             Route::get('/create-or-edit/{id?}',[AdminController::class,'adminRoleAccessCreateOrEdit'])->name('adminRoleAccessCreateOrEdit');
             Route::post('/save/{id?}',[AdminController::class,'adminRoleAccessSave'])->name('adminRoleAccessSave');
             Route::get('/delete/{id}',[AdminController::class,'adminRoleAccessDelete'])->name('adminRoleAccessDelete');
+        });
+        Route::prefix('student')->group(function(){
+            Route::get('/list',[AdminController::class,'adminStudentList'])->name('adminStudentList');
+            Route::get('/create-or-edit/{id?}',[AdminController::class,'adminStudentCreateOrEdit'])->name('adminStudentCreateOrEdit');
+            Route::post('/save/{id?}',[AdminController::class,'adminStudentSave'])->name('adminStudentSave');
+            Route::get('/delete/{id}',[AdminController::class,'adminStudentDelete'])->name('adminStudentDelete');
+            
+            Route::prefix('payment')->group(function() {
+                Route::get('/list/{id}',[AdminController::class,'adminStudentPaymentList'])->name('adminStudentPaymentList');
+                Route::get('/create-or-edit/{student_id}/{payment_id?}', [AdminController::class, 'adminStudentPaymentCreateOrEdit'])->name('adminStudentPaymentCreateOrEdit');
+                Route::post('/save/{id?}',[AdminController::class,'adminStudentPaymentSave'])->name('adminStudentPaymentSave');
+                Route::get('/delete/{id}',[AdminController::class,'adminStudentPaymentDelete'])->name('adminStudentPaymentDelete');
+            });
+        });
+        Route::prefix('asset')->group(function(){
+            Route::prefix('category')->group(function(){
+                Route::get('/',[AdminController::class,'adminAssetCategory'])->name('adminAssetCategory');
+                Route::get('/create-or-edit/{id?}',[AdminController::class,'adminAssetCategoryCreateOrEdit'])->name('adminAssetCategoryCreateOrEdit');
+                Route::post('/save/{id?}',[AdminController::class,'adminAssetCategorySave'])->name('adminAssetCategorySave');
+                Route::get('/delete/{id}',[AdminController::class,'adminAssetCategoryDelete'])->name('adminAssetCategoryDelete');
+            });
+            Route::get('/',[AdminController::class,'adminAssetList'])->name('adminAssetList');
+            Route::get('/create-or-edit/{id?}',[AdminController::class,'adminAssetCreateOrEdit'])->name('adminAssetCreateOrEdit');
+            Route::post('/save/{id?}',[AdminController::class,'adminAssetSave'])->name('adminAssetSave');
+            Route::get('/delete/{id}',[AdminController::class,'adminAssetDelete'])->name('adminAssetDelete');
         });
     });
 });

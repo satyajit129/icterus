@@ -4,14 +4,16 @@
 
 @section('custom_css')
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <style>
-        .table td {
-            vertical-align: middle !important;
-        }
-    </style>
 @endsection
+@php
+    $user = auth()->user();
+    $canAddLoan    =  $user->hasPermission('add_loan');
+    $canEditLoan   =  $user->hasPermission('edit_loan');
+    $canDeleteLoan =  $user->hasPermission('delete_loan');
+    $canViewLoanDetails   =  $user->hasPermission('view_loan_details');
+    $canAddLoanPayment =  $user->hasPermission('add_loan_payment');
+@endphp
 @section('content')
-
     <div class="page-header">
         <h1 class="page-title">Loan List</h1>
         <div>
@@ -26,10 +28,13 @@
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Loan List</h3>
-                    <a href="{{ route('adminLoanCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add New
-                            Loan</button>
-                    </a>
+                    @if ($canAddLoan)
+                        <a href="{{ route('adminLoanCreateOrEdit') }}">
+                            <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add New
+                                Loan</button>
+                        </a>
+                    @endif
+                    
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">
@@ -67,21 +72,31 @@
 
                                                 <td>{{ \Carbon\Carbon::parse($loan->date)->format('d/m/Y') }}</td>
                                                 <td>
-                                                    <a href="javascript:void(0)"
-                                                        class="btn btn-sm btn-info view-payments-btn"
-                                                        data-loan-id="{{ $loan->id }}" title="View Payment">
-                                                        <i class="fe fe-eye"></i>
-                                                    </a>
+                                                    @if ($canViewLoanDetails)
+                                                        <a href="javascript:void(0)"
+                                                            class="btn btn-sm btn-info view-payments-btn"
+                                                            data-loan-id="{{ $loan->id }}" title="View Payment">
+                                                            <i class="fe fe-eye"></i>
+                                                        </a>
+                                                    @else
+                                                        <span class="text-muted fst-italic">No actions</span>
+                                                    @endif
+                                                    
                                                 </td>
 
                                                 <td>
-                                                    <a href="javascript:void(0);"
-                                                        class="btn btn-sm btn-info add-payment-btn" title="Add payment"
-                                                        data-bs-toggle="modal" data-bs-target="#paymentModal"
-                                                        data-loan-id="{{ $loan->id }}"
-                                                        data-employee-name="{{ $loan->employee->name }}">
-                                                        <i class="fe fe-plus"></i>
-                                                    </a>
+                                                    @if ($canViewLoanDetails)
+                                                        <a href="javascript:void(0);"
+                                                            class="btn btn-sm btn-info add-payment-btn" title="Add payment"
+                                                            data-bs-toggle="modal" data-bs-target="#paymentModal"
+                                                            data-loan-id="{{ $loan->id }}"
+                                                            data-employee-name="{{ $loan->employee->name }}">
+                                                            <i class="fe fe-plus"></i>
+                                                        </a>
+                                                    @else
+                                                        <span class="text-muted fst-italic">No actions</span>
+                                                    @endif
+                                                    
                                                 </td>
 
                                                 <td>
@@ -95,16 +110,23 @@
                                                 </td>
 
                                                 <td>
-                                                    <a href="{{ route('adminLoanCreateOrEdit', $loan->id) }}"
-                                                        class="btn btn-sm btn-primary" title="Edit">
-                                                        <i class="fe fe-edit"></i>
-                                                    </a>
-
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminLoanDelete', ['id' => $loan->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
-                                                        <i class="fe fe-trash-2"></i>
-                                                    </a>
+                                                    @if ($canEditLoan || $canDeleteLoan)
+                                                        @if ($canEditLoan)
+                                                            <a href="{{ route('adminLoanCreateOrEdit', $loan->id) }}"
+                                                                class="btn btn-sm btn-primary" title="Edit">
+                                                                <i class="fe fe-edit"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if ($canDeleteLoan)
+                                                            <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                                data-url="{{ route('adminLoanDelete', ['id' => $loan->id]) }}"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                                <i class="fe fe-trash-2"></i>
+                                                            </a>
+                                                        @endif
+                                                    @else
+                                                        <span class="text-muted fst-italic">No actions available</span>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @empty

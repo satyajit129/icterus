@@ -5,6 +5,14 @@
 @section('custom_css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @endsection
+    @php
+        $user = auth()->user();
+        $canAddSalary = $user->hasPermission('add_salary');
+        $canEditSalary = $user->hasPermission('edit_salary');
+        $canDeleteSalary = $user->hasPermission('delete_salary');
+        $canViewSalary = $user->hasPermission('view_salary');
+        $canDownloadSalary = $user->hasPermission('download_salary');
+    @endphp
 @section('content')
 
     <div class="page-header">
@@ -26,7 +34,6 @@
                     <form action="{{ route('adminSalaryExpense') }}" method="GET">
                         @csrf
                         <div class="row">
-                            {{-- First Row --}}
                             <div class="col-md-6 col-lg-3">
                                 <div class="mb-4">
                                     <label class="form-label">Month</label>
@@ -34,20 +41,22 @@
                                         class="form-control select2-show-search form-select" required>
                                         <option selected disabled>Select Month</option>
                                         @foreach ([
-                                                'January' => 1,
-                                                'February' => 2,
-                                                'March' => 3,
-                                                'April' => 4,
-                                                'May' => 5,
-                                                'June' => 6,
-                                                'July' => 7,
-                                                'August' => 8,
-                                                'September' => 9,
-                                                'October' => 10,
-                                                'November' => 11,
-                                                'December' => 12,
-                                            ] as $name => $num)
-                                            <option value="{{ $num }}" {{ request('payable_month') == $num ? 'selected' : '' }}>{{ $name }}</option>
+                                            'January' => 1,
+                                            'February' => 2,
+                                            'March' => 3,
+                                            'April' => 4,
+                                            'May' => 5,
+                                            'June' => 6,
+                                            'July' => 7,
+                                            'August' => 8,
+                                            'September' => 9,
+                                            'October' => 10,
+                                            'November' => 11,
+                                            'December' => 12,
+                                        ] as $name => $num)
+                                            <option value="{{ $num }}"
+                                                {{ request('payable_month') == $num ? 'selected' : '' }}>{{ $name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -65,8 +74,17 @@
                             <div class="col-md-6 col-lg-3">
                                 <div class="mb-4">
                                     <label class="form-label">Employee Name</label>
-                                    <input type="text" name="name" class="form-control" value="{{ request('name') }}"
-                                        autocomplete="off" placeholder="Enter Employee Name">
+                                    <select name="employee" class="form-control select2-show-search form-select">
+                                        <option disabled {{ request('employee') ? '' : 'selected' }}>Select Employee
+                                        </option>
+                                        @foreach ($employees as $employee)
+                                            <option value="{{ $employee->id }}"
+                                                {{ request('employee') == $employee->id ? 'selected' : '' }}>
+                                                {{ $employee->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
                                 </div>
                             </div>
 
@@ -91,20 +109,49 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="">
+                        <h5 class="m-0">
+                            Total Payable Amount: 
+                            <span class="text-success fw-bold">
+                                {{ number_format($totalPayableAmount, 2) }}
+                            </span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Salary Expense Data</h3>
-                    <a href="{{ route('adminSalaryExpenseCreateOrEdit') }}">
-                        <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Salary
-                            Expense</button>
-                    </a>
+                    <div>
+                        @if ($canDownloadSalary)
+                            <a href="{{ route('adminSalaryExpenseExport', request()->query()) }}"
+                                class="btn btn-sm btn-primary me-2">
+                                <i class="fe fe-download me-1"></i> Download Data
+                            </a>
+                        @endif
+                        
+                        @if ($canAddSalary)
+                            <a href="{{ route('adminSalaryExpenseCreateOrEdit') }}">
+                                <button type="button" class="btn btn-primary btn-sm">
+                                    <i class="fe fe-plus me-2"></i>Add Salary Expense
+                                </button>
+                            </a>
+                        @endif
+                        
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
-                            <div >
-                                <table class="table table-bordered text-nowrap border-bottom table-responsive">
+                            <div class="table-responsive">
+                                <table class="table table-bordered text-nowrap border-bottom">
                                     <thead>
                                         <tr>
                                             <th class="wd-15p border-bottom-0">#</th>
@@ -141,8 +188,7 @@
                                                     @if ($salary_expense->salary_status)
                                                         <button type="button"
                                                             class="btn btn-sm {{ $salary_expense->salary_status->badgeClass() }} open-status-modal"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#salaryStatusModal"
+                                                            data-bs-toggle="modal" data-bs-target="#salaryStatusModal"
                                                             data-id="{{ $salary_expense->id }}"
                                                             data-name="{{ $salary_expense->employee->name }}">
                                                             <i class="{{ $salary_expense->salary_status->icon() }}"></i>
@@ -150,23 +196,31 @@
                                                         </button>
                                                     @endif
                                                 </td>
-                                               <td>
-                                                <a href="{{ route('adminSalaryExpenseCreateOrEdit', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
-                                                class="btn btn-sm btn-primary">
-                                                <i class="fe fe-edit"></i>
-                                                </a>
-
-                                                <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                data-url="{{ route('adminSalaryExpenseDelete', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
-                                                data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                <i class="fe fe-trash-2"></i>
-                                                </a>
-
-                                                <a href="{{ route('adminSalaryExpenseView', $salary_expense->id) }}"
-                                                class="btn btn-sm btn-info">
-                                                <i class="fe fe-eye"></i>
-                                                </a>
-                                            </td>
+                                                <td>
+                                                    @if ($canEditSalary || $canDeleteSalary || $canViewSalary)
+                                                        @if ($canEditSalary)
+                                                            <a href="{{ route('adminSalaryExpenseCreateOrEdit', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
+                                                                class="btn btn-sm btn-primary">
+                                                                <i class="fe fe-edit"></i>
+                                                            </a>
+                                                        @endif
+                                                        @if ($canDeleteSalary)
+                                                        <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                            data-url="{{ route('adminSalaryExpenseDelete', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
+                                                            data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                            <i class="fe fe-trash-2"></i>
+                                                        </a>
+                                                        @endif
+                                                        @if ($canViewSalary)
+                                                        <a href="{{ route('adminSalaryExpenseView', $salary_expense->id) }}"
+                                                            class="btn btn-sm btn-info">
+                                                            <i class="fe fe-eye"></i>
+                                                        </a>
+                                                        @endif
+                                                    @else
+                                                         <span class="text-muted fst-italic">No actions available</span>
+                                                    @endif
+                                                </td>
 
                                             </tr>
                                         @empty
@@ -204,38 +258,41 @@
     </div>
 
     <!-- Salary Status Modal -->
-<div class="modal effect-scale" id="salaryStatusModal" tabindex="-1" aria-labelledby="salaryStatusModalLabel" aria-hidden="true">
-    <div class="modal-dialog ">
-        <form method="POST" action="{{ route('adminSalaryExpenseStatusUpdate') }}">
-            @csrf
-            <input type="hidden" name="salary_expense_id" id="salaryExpenseId">
+    <div class="modal effect-scale" id="salaryStatusModal" tabindex="-1" aria-labelledby="salaryStatusModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog ">
+            <form method="POST" action="{{ route('adminSalaryExpenseStatusUpdate') }}">
+                @csrf
+                <input type="hidden" name="salary_expense_id" id="salaryExpenseId">
 
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Change Salary Status</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-
-                <div class="modal-body">
-                    <p id="modalEmployeeName" class="mb-3"></p>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="status" value="1" id="approveOption">
-                        <label class="form-check-label" for="approveOption">Approve</label>
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Change Salary Status</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="status" value="2" id="disapproveOption">
-                        <label class="form-check-label" for="disapproveOption">Disapprove</label>
+
+                    <div class="modal-body">
+                        <p id="modalEmployeeName" class="mb-3"></p>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" value="1"
+                                id="approveOption">
+                            <label class="form-check-label" for="approveOption">Approve</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" value="2"
+                                id="disapproveOption">
+                            <label class="form-check-label" for="disapproveOption">Disapprove</label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Update Status</button>
                     </div>
                 </div>
-
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Update Status</button>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 
 
 @endsection
@@ -256,7 +313,7 @@
     </script>
 
     <script>
-        $(document).on('click', '.open-status-modal', function () {
+        $(document).on('click', '.open-status-modal', function() {
             const id = $(this).data('id');
             const name = $(this).data('name');
 

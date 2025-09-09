@@ -124,6 +124,7 @@ class AuthService
                 'email' => 'required|email|unique:users,email,' . $id,
                 'phone' => 'nullable|string|max:20|unique:users,phone,' . $id,
                 'admin_role_id' => 'required|exists:roles,id',
+                'password' => $id ? 'nullable|min:6' : 'required|min:6',
             ]);
             $user = $id ? User::findOrFail($id) : new User();
             $user->name = $request->name;
@@ -131,9 +132,11 @@ class AuthService
             $user->phone = $request->phone;
             $user->role = UserRole::ADMIN;
             $user->admin_role_id = $request->admin_role_id;
-            if (!$id) {
-                $user->password = Hash::make('123456');
+
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
             }
+
             $user->save();
             return redirect()->route('adminUserList')->with('success', $id ? 'Admin Updated Successfully!' : 'Admin Created Successfully!');
         } catch (ValidationException $th) {

@@ -3,6 +3,7 @@
 
 namespace App\Services;
 
+use App\Exports\SalaryExpenseExport;
 use App\Models\Employee;
 use App\Models\SalaryExpense;
 use Exception;
@@ -10,38 +11,47 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class SalaryExpenseService
 {
     public function renderSalaryExpenseList(Request $request): View
-    {
-        $query = SalaryExpense::with('employee.designation', 'employee.department');
+{
+    $query = SalaryExpense::with('employee.designation', 'employee.department');
 
-        // Apply filters if present
-        if ($request->filled('payable_month')) {
-            $query->where('payable_month', $request->payable_month);
-        }
-
-        if ($request->filled('payable_year')) {
-            $query->where('payable_year', $request->payable_year);
-        }
-
-        if ($request->filled('name')) {
-            $query->whereHas('employee', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->name . '%');
-            });
-        }
-
-        if ($request->filled('employee_id')) {
-            $query->whereHas('employee', function ($q) use ($request) {
-                $q->where('id_number', 'like', '%' . $request->employee_id . '%');
-            });
-        }
-
-        $salary_expenses = $query->paginate(20)->appends($request->all());
-
-        return view('backend.pages.salary_expense_list', compact('salary_expenses'));
+    // Apply filters if present
+    if ($request->filled('payable_month')) {
+        $query->where('payable_month', $request->payable_month);
     }
+
+    if ($request->filled('payable_year')) {
+        $query->where('payable_year', $request->payable_year);
+    }
+
+    if ($request->filled('employee')) {
+        $query->whereHas('employee', function ($q) use ($request) {
+            $q->where('id',  $request->employee);
+        });
+    }
+
+    if ($request->filled('employee_id')) {
+        $query->whereHas('employee', function ($q) use ($request) {
+            $q->where('id_number', 'like', '%' . $request->employee_id . '%');
+        });
+    }
+
+    $employees = Employee::all();
+
+    // ✅ Calculate total payable amount for all matched results (before pagination)
+    $totalPayableAmount = $query->sum('payable_amount');
+
+    // Then paginate
+    $salary_expenses = $query->paginate(20)->appends($request->all());
+
+    return view('backend.pages.salary_expense_list', compact('salary_expenses', 'employees', 'totalPayableAmount'));
+}
+
     public function renderSalaryExpenseCreateOrEditPage($id = null): View
     {
         $employees = Employee::where('status', 1)->get();
@@ -84,7 +94,6 @@ class SalaryExpenseService
             return redirect()
                 ->route('adminSalaryExpense', ['page' => request('page', 1)])
                 ->with('success', 'Salary Expense ' . ($id ? 'updated' : 'created') . ' successfully.');
-
         } catch (ValidationException $th) {
             return redirect()
                 ->back()
@@ -144,5 +153,10 @@ class SalaryExpenseService
                 ->withInput()
                 ->with('error', 'Failed: ' . $e->getMessage());
         }
+    }
+    public function renderSalaryExpenseExport($request): BinaryFileResponse
+    {
+        $data = $request->only(['payable_month', 'payable_year', 'name', 'employee_id']);
+        return Excel::download(new SalaryExpenseExport($data), 'salary_expense.xlsx');
     }
 }

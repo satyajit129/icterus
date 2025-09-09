@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Services\AssetService;
 use App\Services\CompanyService;
 use App\Services\DashboardService;
 use App\Services\DepartmentService;
@@ -14,9 +15,11 @@ use App\Services\OfficeExpenseService;
 use App\Services\RolePermisionService;
 use App\Services\SalaryExpenseService;
 use App\Services\SettingService;
+use App\Services\StudentService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class AdminController extends Controller
 {
@@ -31,6 +34,8 @@ class AdminController extends Controller
     protected CompanyService $companyService;
     protected RolePermisionService $rolePermisionService;
     protected LoanService $loanService;
+    protected StudentService $studentService;
+    protected AssetService $assetService;
 
     public function __construct(
         SettingService $settingService,
@@ -44,6 +49,8 @@ class AdminController extends Controller
         CompanyService $companyService,
         RolePermisionService $rolePermisionService,
         LoanService $loanService,
+        StudentService $studentService,
+        AssetService $assetService,
     ) {
         $this->settingService = $settingService;
         $this->designationService = $designationService;
@@ -56,6 +63,8 @@ class AdminController extends Controller
         $this->companyService = $companyService;
         $this->rolePermisionService = $rolePermisionService;
         $this->loanService = $loanService;
+        $this->studentService = $studentService;
+        $this->assetService = $assetService;
     }
 
     public function adminDashboard(Request $request): View
@@ -126,6 +135,10 @@ class AdminController extends Controller
     {
         return $this->employeeService->seeEmployeeData($id);
     }
+    public function adminEmployeeExport(): BinaryFileResponse
+    {
+        return $this->employeeService->renderEmployeeExport();
+    }
     public function adminSalaryExpense(Request $request): View
     {
         return $this->salaryExpenseService->renderSalaryExpenseList($request);
@@ -150,6 +163,10 @@ class AdminController extends Controller
     {
         return $this->salaryExpenseService->handleSalaryExpenseStatusUpdate($request);
     }
+    public function adminSalaryExpenseExport(Request $request): BinaryFileResponse
+    {
+        return $this->salaryExpenseService->renderSalaryExpenseExport($request);
+    }
     public function adminIncentiveExpense(Request $request): View
     {
         return $this->incentiveExpenseService->renderIncentiveExpense($request);
@@ -170,6 +187,10 @@ class AdminController extends Controller
     {
         return $this->incentiveExpenseService->renderIncentiveExpenseView($id);
     }
+    public function adminIncentiveExpenseExport(Request $request): BinaryFileResponse
+    {
+        return $this->incentiveExpenseService->renderIncentiveExpenseExport($request);
+    }
     public function adminOfficeExpense(Request $request): View
     {
         return $this->officeExpenseService->renderOfficeExpense($request);
@@ -189,6 +210,10 @@ class AdminController extends Controller
     public function adminOfficeExpenseView($id): View
     {
         return $this->officeExpenseService->renderOfficeExpenseView($id);
+    }
+    public function adminOfficeExpenseExport(Request $request): BinaryFileResponse
+    {
+        return $this->officeExpenseService->renderOfficeExpenseExport($request);
     }
     public function adminCompanyList(): View
     {
@@ -230,6 +255,10 @@ class AdminController extends Controller
     {
         return $this->companyService->renderCompanyDealsView($id);
     }
+    public function adminCompanyDealsExport(): BinaryFileResponse
+    {
+        return $this->companyService->renderCompanyDealsExport();
+    }
     public function adminDealsPayment($id): View
     {
         return $this->companyService->renderadminDealsPayment($id);
@@ -269,6 +298,10 @@ class AdminController extends Controller
     public function adminEarningView($id): View
     {
         return $this->companyService->renderEarningView($id);
+    }
+    public function adminEarningExport(Request $request): BinaryFileResponse    
+    {
+        return $this->companyService->renderEarningExport($request);
     }
     public function adminPermission(): View
     {
@@ -365,6 +398,66 @@ class AdminController extends Controller
     public function adminLoanPaymentUpdate(Request $request): RedirectResponse
     {
         return $this->loanService->handleLoanPaymentUpdate($request);
+    }
+    public function AdminStudentList(): View
+    {
+        return $this->studentService->renderStudentList();
+    }
+    public function adminStudentCreateOrEdit($id= null): View
+    {
+        return $this->studentService->renderStudentCreateOrEdit($id);
+    }
+    public function adminStudentSave(Request $request, $id = null): RedirectResponse
+    {
+        return $this->studentService->handleStudentSave($request, $id);
+    }
+    public function adminStudentDelete($id): RedirectResponse
+    {
+        return $this->studentService->handleStudentDelete( $id);
+    }
+    public function adminStudentPaymentList($student_id): View
+    {
+        return $this->studentService->renderStudentPaymentList($student_id);
+    }
+    public function adminStudentPaymentCreateOrEdit($student_id, $payment_id = null): View
+    {
+        return $this->studentService->renderStudentPaymentCreateOrEdit($student_id, $payment_id);
+    }
+    public function adminStudentPaymentSave(Request $request, $id= null): RedirectResponse
+    {
+        return $this->studentService->handleStudentPaymentSave($request, $id);
+    }
+    public function adminAssetCategory(): View
+    {
+        return $this->assetService->renderAssetCategory();
+    }
+    public function adminAssetCategoryCreateOrEdit($id = null): View
+    {
+        return $this->assetService->renderAssetCategoryCreateOrEdit($id);
+    }
+    public function adminAssetCategorySave(Request $request, $id= null): RedirectResponse
+    {
+        return $this->assetService->handleAssetCategorySave($request, $id);
+    }
+    public function adminAssetCategoryDelete($id): RedirectResponse
+    {
+        return $this->assetService->handleAssetCategoryDelete($id);
+    }
+    public function adminAssetList(): View
+    {
+        return $this->assetService->renderAssetList();
+    }
+    public function adminAssetCreateOrEdit($id = null): View
+    {
+        return $this->assetService->renderAssetCreateOrEdit($id);
+    }
+    public function adminAssetSave(Request $request, $id= null): RedirectResponse
+    {
+        return $this->assetService->handleAssetSave($request, $id);
+    }
+    public function adminAssetDelete($id): RedirectResponse
+    {
+        return $this->assetService->handleAssetDelete($id);
     }
 
 }

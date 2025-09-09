@@ -34,7 +34,7 @@
 
                                 {{-- Name --}}
                                 <div class="row mb-4">
-                                    <label class="col-md-3 form-label">Name</label>
+                                    <label class="col-md-3 form-label">Name<span style="color: red;">*</span></label>
                                     <div class="col-md-9">
                                         <input type="text" class="form-control" name="name" placeholder="Enter Name"
                                             value="{{ old('name', $admin_user->name ?? '') }}">
@@ -43,10 +43,10 @@
 
                                 {{-- Email --}}
                                 <div class="row mb-4">
-                                    <label class="col-md-3 form-label">Email</label>
+                                    <label class="col-md-3 form-label">Email<span style="color: red;">*</span></label>
                                     <div class="col-md-9">
                                         <input type="email" class="form-control" name="email" placeholder="Enter Email"
-                                            value="{{ old('email', $admin_user->email ?? '') }}">
+                                            value="{{ old('email', $admin_user->email ?? '') }}" autocomplete="off">
                                     </div>
                                 </div>
 
@@ -58,10 +58,18 @@
                                             value="{{ old('phone', $admin_user->phone ?? '') }}">
                                     </div>
                                 </div>
+                                 {{-- Password --}}
+                                <div class="row mb-4">
+                                    <label class="col-md-3 form-label">Password</label>
+                                    <div class="col-md-9">
+                                        <input type="password" class="form-control" name="password" placeholder="Enter password" autocomplete="off">
+                                    </div>
+                                </div>
+
 
                                 {{-- Admin Role --}}
                                 <div class="row mb-4">
-                                    <label class="col-md-3 form-label">Admin Role</label>
+                                    <label class="col-md-3 form-label">Admin Role<span style="color: red;">*</span></label>
                                     <div class="col-md-9">
                                         <select name="admin_role_id" class="form-control">
                                             <option value="">-- Select Role --</option>
