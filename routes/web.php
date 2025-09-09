@@ -10,6 +10,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/login', [AuthController::class, 'adminLogin'])->name('adminLogin');
 
 Route::prefix('admin')->group(function () {
     Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);

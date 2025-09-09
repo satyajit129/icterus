@@ -106,6 +106,7 @@ class FacebookLeadService
             // Build API URL
             $apiUrl = rtrim($credentials->api_url, '/');
             $accessToken = $form->facebookPage->access_token;
+            $userAccessToken = $credentials->user_access_token;
 
             // Build query parameters
             $params = [
@@ -113,9 +114,40 @@ class FacebookLeadService
                 'limit' => 100
             ];
 
+            // Add date filtering using Facebook Lead Ads API format
             if ($startDate && $endDate) {
-                $params['since'] = $startDate->timestamp;
-                $params['until'] = $endDate->timestamp;
+                // Convert to Unix timestamps properly
+                $startTimestamp = $startDate->timestamp;
+                $endTimestamp = $endDate->timestamp;
+
+                // Try sending filtering as JSON string (Facebook API might expect this format)
+                $filteringArray = [
+                    [
+                        'field'    => 'time_created',
+                        'operator' => 'GREATER_THAN_OR_EQUAL',
+                        'value'    => $startTimestamp,
+                    ],
+                    [
+                        'field'    => 'time_created',
+                        'operator' => 'LESS_THAN_OR_EQUAL',
+                        'value'    => $endTimestamp,
+                    ]
+                ];
+
+                $params['filtering'] = json_encode($filteringArray);
+
+                // Log the filtering parameters for debugging
+                Log::info("Date filtering applied", [
+                    'start_date' => $startDate->toDateTimeString(),
+                    'end_date' => $endDate->toDateTimeString(),
+                    'start_timestamp' => $startTimestamp,
+                    'end_timestamp' => $endTimestamp,
+                    'expected_timestamp' => 1756802594, // Reference timestamp
+                    'carbon_timezone' => $startDate->timezone->getName(),
+                    'carbon_offset' => $startDate->offset,
+                    'filtering_array' => $filteringArray,
+                    'filtering_json' => $params['filtering']
+                ]);
             }
 
             $totalCollected = 0;
@@ -124,39 +156,137 @@ class FacebookLeadService
             $errorMessages = [];
             $nextPageUrl = null;
             $pageCount = 0;
+            $tokenRefreshed = false;
+            $consecutiveTokenErrors = 0;
+            $maxConsecutiveTokenErrors = 3;
 
             do {
                 $pageCount++;
                 $url = $nextPageUrl ?: $apiUrl . '/' . $formId . '/leads';
 
                 try {
+                    // Log the request details for debugging
+                    Log::info("Making Facebook API request", [
+                        'url' => $url,
+                        'params' => $params,
+                        'page_count' => $pageCount
+                    ]);
+
                     $response = Http::timeout(30)->get($url, $params);
 
                     if (!$response->successful()) {
                         $errorData = $response->json();
                         $errorMessage = $errorData['error']['message'] ?? 'Unknown API error';
+                        $errorCode = $errorData['error']['code'] ?? 'Unknown';
+                        $errorType = $errorData['error']['type'] ?? 'Unknown';
 
-                        // Log the error but continue with next page if available
-                        Log::warning("Facebook API Error on page {$pageCount}: {$errorMessage}");
-                        $errorMessages[] = "Page {$pageCount}: {$errorMessage}";
+                        // Log detailed error information
+                        Log::warning("Facebook API Error on page {$pageCount}: {$errorMessage}", [
+                            'error_code' => $errorCode,
+                            'error_type' => $errorType,
+                            'response_status' => $response->status(),
+                            'response_body' => $response->body(),
+                            'request_url' => $url,
+                            'request_params' => $params
+                        ]);
+
+                        $errorMessages[] = "Page {$pageCount}: {$errorMessage} (Code: {$errorCode})";
                         $totalErrors++;
 
-                        // If it's an access token error, break the loop
-                        if (strpos($errorMessage, 'access token') !== false) {
-                            break;
+                        // Check for rate limit errors
+                        if (strpos($errorMessage, 'Application request limit reached') !== false) {
+                            Log::warning("Facebook rate limit reached. Waiting 60 seconds before retry...");
+                            sleep(60); // Wait 1 minute for rate limit to reset
+                            continue; // Retry the same page
                         }
 
-                        // Continue to next page if available (preserve token)
-                        $nextPageUrl = isset($errorData['paging']['next']) ? $errorData['paging']['next'] : null;
-                        if ($nextPageUrl && strpos($nextPageUrl, 'access_token=') === false) {
-                            $separator = (parse_url($nextPageUrl, PHP_URL_QUERY) ? '&' : '?');
-                            $nextPageUrl .= $separator . 'access_token=' . urlencode($accessToken);
+                        // If it's an access token error, try to refresh the token
+                        if (strpos($errorMessage, 'access token') !== false) {
+                            $consecutiveTokenErrors++;
+
+                            // Safety check to prevent infinite loops
+                            if ($consecutiveTokenErrors > $maxConsecutiveTokenErrors) {
+                                Log::error("Too many consecutive token errors ({$consecutiveTokenErrors}). Stopping collection to prevent infinite loop.");
+                                $errorMessages[] = "Stopped due to consecutive token errors";
+                                break;
+                            }
+
+                            Log::info("Attempting to refresh page access token for form {$formId} (attempt {$consecutiveTokenErrors})");
+
+                            // Try to get a fresh page access token
+                            $newPageToken = $this->refreshPageAccessToken($form->page_id, $userAccessToken, $apiUrl);
+
+                            if ($newPageToken) {
+                                // Update the page token in database
+                                $form->facebookPage->update(['access_token' => $newPageToken]);
+                                $accessToken = $newPageToken;
+                                $params['access_token'] = $accessToken;
+                                $tokenRefreshed = true;
+
+                                Log::info("Page access token refreshed successfully");
+
+                                // If this is a pagination URL, update it with the new token
+                                if ($nextPageUrl) {
+                                    $nextPageUrl = $this->updatePaginationUrlWithToken($nextPageUrl, $accessToken);
+                                }
+
+                                // Retry the same request with new token
+                                $response = Http::timeout(30)->get($url, $params);
+
+                                if ($response->successful()) {
+                                    // Reset consecutive error counter on success
+                                    $consecutiveTokenErrors = 0;
+                                    // Continue processing the response
+                                    $errorMessages = array_slice($errorMessages, 0, -1); // Remove the last error
+                                    $totalErrors--;
+                                } else {
+                                    // If still failing, try with user access token as fallback
+                                    Log::info("Trying with user access token as fallback");
+                                    $params['access_token'] = $userAccessToken;
+                                    if ($nextPageUrl) {
+                                        $nextPageUrl = $this->updatePaginationUrlWithToken($nextPageUrl, $userAccessToken);
+                                    }
+                                    $response = Http::timeout(30)->get($url, $params);
+
+                                    if ($response->successful()) {
+                                        $consecutiveTokenErrors = 0;
+                                    } else {
+                                        Log::error("Both page and user access tokens failed");
+                                        break;
+                                    }
+                                }
+                            } else {
+                                // If token refresh failed, try with user access token as fallback
+                                Log::info("Token refresh failed, trying with user access token as fallback");
+                                $params['access_token'] = $userAccessToken;
+                                if ($nextPageUrl) {
+                                    $nextPageUrl = $this->updatePaginationUrlWithToken($nextPageUrl, $userAccessToken);
+                                }
+                                $response = Http::timeout(30)->get($url, $params);
+
+                                if ($response->successful()) {
+                                    $consecutiveTokenErrors = 0;
+                                } else {
+                                    Log::error("User access token also failed");
+                                    break;
+                                }
+                            }
+                        } else {
+                            // For other errors, continue to next page if available
+                            $nextPageUrl = isset($errorData['paging']['next']) ? $errorData['paging']['next'] : null;
+                            if ($nextPageUrl && strpos($nextPageUrl, 'access_token=') === false) {
+                                $separator = (parse_url($nextPageUrl, PHP_URL_QUERY) ? '&' : '?');
+                                $nextPageUrl .= $separator . 'access_token=' . urlencode($accessToken);
+                            }
+                            $params = [];
+                            continue;
                         }
-                        $params = [];
-                        continue;
                     }
 
                     $data = $response->json();
+
+                    // Reset consecutive error counter on successful response
+                    $consecutiveTokenErrors = 0;
 
                     if (!isset($data['data']) || !is_array($data['data'])) {
                         Log::warning("Invalid response format on page {$pageCount}");
@@ -207,27 +337,54 @@ class FacebookLeadService
                         }
                     }
 
-                    // Check for next page (preserve token)
-                    $nextPageUrl = $data['paging']['next'] ?? null;
-                    if ($nextPageUrl && strpos($nextPageUrl, 'access_token=') === false) {
-                        $separator = (parse_url($nextPageUrl, PHP_URL_QUERY) ? '&' : '?');
-                        $nextPageUrl .= $separator . 'access_token=' . urlencode($accessToken);
-                    }
-                    $params = []; // Clear params for next page URL
+                    // Check for next page using pagination cursors
+                    $nextPageUrl = null;
+                    if (isset($data['paging']['cursors']['after'])) {
+                        // Use pagination cursors instead of full URL to avoid token issues
+                        $nextPageUrl = $apiUrl . '/' . $formId . '/leads';
+                        $params = [
+                            'access_token' => $accessToken,
+                            'limit' => 100,
+                            'after' => $data['paging']['cursors']['after']
+                        ];
 
+                        // Add date filters using Facebook Lead Ads API format
+                        if ($startDate && $endDate) {
+                            $params['filtering'] = [
+                                [
+                                    'field'    => 'time_created',
+                                    'operator' => 'GREATER_THAN_OR_EQUAL',
+                                    'value'    => $startDate->timestamp,
+                                ],
+                                [
+                                    'field'    => 'time_created',
+                                    'operator' => 'LESS_THAN_OR_EQUAL',
+                                    'value'    => $endDate->timestamp,
+                                ]
+                            ];
+                        }
+                    }
                 } catch (Exception $pageException) {
                     // Log page error but continue if possible
                     Log::warning("Error processing page {$pageCount}: " . $pageException->getMessage());
                     $errorMessages[] = "Page {$pageCount}: " . $pageException->getMessage();
                     $totalErrors++;
 
-                    // Try to continue with next page if available (preserve token)
-                    $nextPageUrl = isset($data['paging']['next']) ? $data['paging']['next'] : null;
-                    if ($nextPageUrl && strpos($nextPageUrl, 'access_token=') === false) {
-                        $separator = (parse_url($nextPageUrl, PHP_URL_QUERY) ? '&' : '?');
-                        $nextPageUrl .= $separator . 'access_token=' . urlencode($accessToken);
+                    // Try to continue with next page using pagination cursors
+                    $nextPageUrl = null;
+                    if (isset($data['paging']['cursors']['after'])) {
+                        $nextPageUrl = $apiUrl . '/' . $formId . '/leads';
+                        $params = [
+                            'access_token' => $accessToken,
+                            'limit' => 100,
+                            'after' => $data['paging']['cursors']['after']
+                        ];
+
+                        if ($startDate && $endDate) {
+                            $params['since'] = $startDate->timestamp;
+                            $params['until'] = $endDate->timestamp;
+                        }
                     }
-                    $params = [];
                 }
             } while ($nextPageUrl);
 
@@ -452,6 +609,7 @@ class FacebookLeadService
             // Build API URL
             $apiUrl = rtrim($credentials->api_url, '/');
             $accessToken = $form->facebookPage->access_token;
+            $userAccessToken = $credentials->user_access_token;
 
             // Build query parameters with optimized settings
             $params = [
@@ -459,9 +617,20 @@ class FacebookLeadService
                 'limit' => 100 // Facebook's maximum per request
             ];
 
+            // Add date filtering using Facebook Lead Ads API format
             if ($startDate && $endDate) {
-                $params['since'] = $startDate->timestamp;
-                $params['until'] = $endDate->timestamp;
+                $params['filtering'] = [
+                    [
+                        'field'    => 'time_created',
+                        'operator' => 'GREATER_THAN_OR_EQUAL',
+                        'value'    => $startDate->timestamp,
+                    ],
+                    [
+                        'field'    => 'time_created',
+                        'operator' => 'LESS_THAN_OR_EQUAL',
+                        'value'    => $endDate->timestamp,
+                    ]
+                ];
             }
 
             // Set PHP settings for large datasets
@@ -476,6 +645,9 @@ class FacebookLeadService
             $pageCount = 0;
             $maxPages = config('facebook_leads.collection.max_pages', 100);
             $batchSize = config('facebook_leads.collection.batch_size', 50);
+            $tokenRefreshed = false;
+            $consecutiveTokenErrors = 0;
+            $maxConsecutiveTokenErrors = 3;
 
             do {
                 $pageCount++;
@@ -496,28 +668,116 @@ class FacebookLeadService
                     if (!$response->successful()) {
                         $errorData = $response->json();
                         $errorMessage = $errorData['error']['message'] ?? 'Unknown API error';
+                        $errorCode = $errorData['error']['code'] ?? 'Unknown';
+                        $errorType = $errorData['error']['type'] ?? 'Unknown';
 
-                        // Log the error but continue with next page if available
-                        Log::warning("Facebook API Error on page {$pageCount}: {$errorMessage}");
-                        $errorMessages[] = "Page {$pageCount}: {$errorMessage}";
+                        // Log detailed error information
+                        Log::warning("Facebook API Error on page {$pageCount}: {$errorMessage}", [
+                            'error_code' => $errorCode,
+                            'error_type' => $errorType,
+                            'response_status' => $response->status(),
+                            'response_body' => $response->body(),
+                            'request_url' => $url,
+                            'request_params' => $params
+                        ]);
+
+                        $errorMessages[] = "Page {$pageCount}: {$errorMessage} (Code: {$errorCode})";
                         $totalErrors++;
 
-                        // If it's an access token error, break the loop
-                        if (strpos($errorMessage, 'access token') !== false) {
-                            break;
+                        // Check for rate limit errors
+                        if (strpos($errorMessage, 'Application request limit reached') !== false) {
+                            Log::warning("Facebook rate limit reached. Waiting 60 seconds before retry...");
+                            sleep(60); // Wait 1 minute for rate limit to reset
+                            continue; // Retry the same page
                         }
 
-                        // Continue to next page if available (preserve token)
-                        $nextPageUrl = isset($errorData['paging']['next']) ? $errorData['paging']['next'] : null;
-                        if ($nextPageUrl && strpos($nextPageUrl, 'access_token=') === false) {
-                            $separator = (parse_url($nextPageUrl, PHP_URL_QUERY) ? '&' : '?');
-                            $nextPageUrl .= $separator . 'access_token=' . urlencode($accessToken);
+                        // If it's an access token error, try to refresh the token
+                        if (strpos($errorMessage, 'access token') !== false) {
+                            $consecutiveTokenErrors++;
+
+                            // Safety check to prevent infinite loops
+                            if ($consecutiveTokenErrors > $maxConsecutiveTokenErrors) {
+                                Log::error("Too many consecutive token errors ({$consecutiveTokenErrors}). Stopping collection to prevent infinite loop.");
+                                $errorMessages[] = "Stopped due to consecutive token errors";
+                                break;
+                            }
+
+                            Log::info("Attempting to refresh page access token for form {$formId} (attempt {$consecutiveTokenErrors})");
+
+                            // Try to get a fresh page access token
+                            $newPageToken = $this->refreshPageAccessToken($form->page_id, $userAccessToken, $apiUrl);
+
+                            if ($newPageToken) {
+                                // Update the page token in database
+                                $form->facebookPage->update(['access_token' => $newPageToken]);
+                                $accessToken = $newPageToken;
+                                $params['access_token'] = $accessToken;
+                                $tokenRefreshed = true;
+
+                                Log::info("Page access token refreshed successfully");
+
+                                // If this is a pagination URL, update it with the new token
+                                if ($nextPageUrl) {
+                                    $nextPageUrl = $this->updatePaginationUrlWithToken($nextPageUrl, $accessToken);
+                                }
+
+                                // Retry the same request with new token
+                                $response = Http::timeout(config('facebook_leads.collection.api_timeout', 120))->get($url, $params);
+
+                                if ($response->successful()) {
+                                    // Reset consecutive error counter on success
+                                    $consecutiveTokenErrors = 0;
+                                    // Continue processing the response
+                                    $errorMessages = array_slice($errorMessages, 0, -1); // Remove the last error
+                                    $totalErrors--;
+                                } else {
+                                    // If still failing, try with user access token as fallback
+                                    Log::info("Trying with user access token as fallback");
+                                    $params['access_token'] = $userAccessToken;
+                                    if ($nextPageUrl) {
+                                        $nextPageUrl = $this->updatePaginationUrlWithToken($nextPageUrl, $userAccessToken);
+                                    }
+                                    $response = Http::timeout(config('facebook_leads.collection.api_timeout', 120))->get($url, $params);
+
+                                    if ($response->successful()) {
+                                        $consecutiveTokenErrors = 0;
+                                    } else {
+                                        Log::error("Both page and user access tokens failed");
+                                        break;
+                                    }
+                                }
+                            } else {
+                                // If token refresh failed, try with user access token as fallback
+                                Log::info("Token refresh failed, trying with user access token as fallback");
+                                $params['access_token'] = $userAccessToken;
+                                if ($nextPageUrl) {
+                                    $nextPageUrl = $this->updatePaginationUrlWithToken($nextPageUrl, $userAccessToken);
+                                }
+                                $response = Http::timeout(config('facebook_leads.collection.api_timeout', 120))->get($url, $params);
+
+                                if ($response->successful()) {
+                                    $consecutiveTokenErrors = 0;
+                                } else {
+                                    Log::error("User access token also failed");
+                                    break;
+                                }
+                            }
+                        } else {
+                            // For other errors, continue to next page if available
+                            $nextPageUrl = isset($errorData['paging']['next']) ? $errorData['paging']['next'] : null;
+                            if ($nextPageUrl && strpos($nextPageUrl, 'access_token=') === false) {
+                                $separator = (parse_url($nextPageUrl, PHP_URL_QUERY) ? '&' : '?');
+                                $nextPageUrl .= $separator . 'access_token=' . urlencode($accessToken);
+                            }
+                            $params = [];
+                            continue;
                         }
-                        $params = [];
-                        continue;
                     }
 
                     $data = $response->json();
+
+                    // Reset consecutive error counter on successful response
+                    $consecutiveTokenErrors = 0;
 
                     if (!isset($data['data']) || !is_array($data['data'])) {
                         Log::warning("Invalid response format on page {$pageCount}");
@@ -591,13 +851,33 @@ class FacebookLeadService
                         }
                     }
 
-                    // Check for next page (preserve token)
-                    $nextPageUrl = $data['paging']['next'] ?? null;
-                    if ($nextPageUrl && strpos($nextPageUrl, 'access_token=') === false) {
-                        $separator = (parse_url($nextPageUrl, PHP_URL_QUERY) ? '&' : '?');
-                        $nextPageUrl .= $separator . 'access_token=' . urlencode($accessToken);
+                    // Check for next page using pagination cursors
+                    $nextPageUrl = null;
+                    if (isset($data['paging']['cursors']['after'])) {
+                        // Use pagination cursors instead of full URL to avoid token issues
+                        $nextPageUrl = $apiUrl . '/' . $formId . '/leads';
+                        $params = [
+                            'access_token' => $accessToken,
+                            'limit' => 100,
+                            'after' => $data['paging']['cursors']['after']
+                        ];
+
+                        // Add date filters using Facebook Lead Ads API format
+                        if ($startDate && $endDate) {
+                            $params['filtering'] = [
+                                [
+                                    'field'    => 'time_created',
+                                    'operator' => 'GREATER_THAN_OR_EQUAL',
+                                    'value'    => $startDate->timestamp,
+                                ],
+                                [
+                                    'field'    => 'time_created',
+                                    'operator' => 'LESS_THAN_OR_EQUAL',
+                                    'value'    => $endDate->timestamp,
+                                ]
+                            ];
+                        }
                     }
-                    $params = []; // Clear params for next page URL
 
                     // Add small delay to avoid rate limiting
                     if ($nextPageUrl) {
@@ -609,13 +889,21 @@ class FacebookLeadService
                     $errorMessages[] = "Page {$pageCount}: " . $pageException->getMessage();
                     $totalErrors++;
 
-                    // Try to continue with next page if available (preserve token)
-                    $nextPageUrl = isset($data['paging']['next']) ? $data['paging']['next'] : null;
-                    if ($nextPageUrl && strpos($nextPageUrl, 'access_token=') === false) {
-                        $separator = (parse_url($nextPageUrl, PHP_URL_QUERY) ? '&' : '?');
-                        $nextPageUrl .= $separator . 'access_token=' . urlencode($accessToken);
+                    // Try to continue with next page using pagination cursors
+                    $nextPageUrl = null;
+                    if (isset($data['paging']['cursors']['after'])) {
+                        $nextPageUrl = $apiUrl . '/' . $formId . '/leads';
+                        $params = [
+                            'access_token' => $accessToken,
+                            'limit' => 100,
+                            'after' => $data['paging']['cursors']['after']
+                        ];
+
+                        if ($startDate && $endDate) {
+                            $params['since'] = $startDate->timestamp;
+                            $params['until'] = $endDate->timestamp;
+                        }
                     }
-                    $params = [];
                 }
             } while ($nextPageUrl);
 
@@ -644,6 +932,67 @@ class FacebookLeadService
         } catch (Exception $e) {
             Log::error('Facebook Leads Collection Error: ' . $e->getMessage());
             return redirect()->back()->with('error', 'An error occurred while collecting leads: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Refresh page access token using user access token
+     */
+    private function refreshPageAccessToken($pageId, $userAccessToken, $apiUrl): ?string
+    {
+        try {
+            // Get fresh page access token from Facebook API
+            $response = Http::timeout(30)->get($apiUrl . '/' . $pageId, [
+                'access_token' => $userAccessToken,
+                'fields' => 'access_token'
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                return $data['access_token'] ?? null;
+            }
+
+            Log::warning("Failed to refresh page access token: " . $response->body());
+            return null;
+        } catch (Exception $e) {
+            Log::error("Error refreshing page access token: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Update pagination URL with new access token
+     */
+    private function updatePaginationUrlWithToken($url, $accessToken): string
+    {
+        // Remove existing access_token parameter if present
+        $parsedUrl = parse_url($url);
+        $query = [];
+
+        if (isset($parsedUrl['query'])) {
+            parse_str($parsedUrl['query'], $query);
+        }
+
+        // Update or add access_token
+        $query['access_token'] = $accessToken;
+
+        // Rebuild URL
+        $newQuery = http_build_query($query);
+        $separator = isset($parsedUrl['query']) ? '?' : '?';
+
+        return $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'] . $separator . $newQuery;
+    }
+
+    /**
+     * Check if pagination URL has valid token by making a test request
+     */
+    private function isPaginationUrlValid($url): bool
+    {
+        try {
+            $response = Http::timeout(10)->get($url);
+            return $response->successful();
+        } catch (Exception $e) {
+            return false;
         }
     }
 }
