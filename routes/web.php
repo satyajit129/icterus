@@ -209,5 +209,24 @@ Route::prefix('admin')->group(function () {
             Route::get('/field-values/{fieldName}', [AdminController::class, 'adminFacebookLeadsFieldValues'])->name('adminFacebookLeadsFieldValues');
             Route::get('/form-stats/{formId}', [AdminController::class, 'adminFacebookLeadsFormStats'])->name('adminFacebookLeadsFormStats');
         });
+
+        // Facebook Ads Management Routes
+        Route::prefix('facebook-ads')->group(function () {
+            Route::get('/', [App\Http\Controllers\Backend\FacebookAdsController::class, 'index'])->name('adminFacebookAds');
+            Route::post('/sync', [App\Http\Controllers\Backend\FacebookAdsController::class, 'sync'])->name('adminFacebookAdsSync');
+            Route::get('/toggle-status/{id}', [App\Http\Controllers\Backend\FacebookAdsController::class, 'toggleStatus'])->name('adminFacebookAdToggleStatus');
+            Route::get('/delete/{id}', [App\Http\Controllers\Backend\FacebookAdsController::class, 'destroy'])->name('adminFacebookAdDelete');
+            Route::get('/view/{id}', [App\Http\Controllers\Backend\FacebookAdsController::class, 'show'])->name('adminFacebookAdView');
+            Route::get('/stats', [App\Http\Controllers\Backend\FacebookAdsController::class, 'stats'])->name('adminFacebookAdsStats');
+            Route::get('/test-connection', [App\Http\Controllers\Backend\FacebookAdsController::class, 'testConnection'])->name('adminFacebookAdsTestConnection');
+        });
+
+        // Facebook Ad Accounts Routes
+        Route::prefix('facebook-ad-accounts')->group(function () {
+            Route::get('/', [App\Http\Controllers\Backend\FacebookAdAccountsController::class, 'index'])->name('adminFacebookAdAccounts');
+            Route::post('/sync', [App\Http\Controllers\Backend\FacebookAdAccountsController::class, 'sync'])->name('adminFacebookAdAccountsSync');
+            Route::get('/toggle/{id}', [App\Http\Controllers\Backend\FacebookAdAccountsController::class, 'toggle'])->name('adminFacebookAdAccountToggle');
+            Route::get('/delete/{id}', [App\Http\Controllers\Backend\FacebookAdAccountsController::class, 'destroy'])->name('adminFacebookAdAccountDelete');
+        });
     });
 });

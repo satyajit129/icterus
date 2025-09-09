@@ -118,7 +118,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            {{-- <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Start Date</label>
                                     <input type="date" name="start_date" class="form-control"
@@ -131,7 +131,7 @@
                                     <input type="date" name="end_date" class="form-control"
                                         value="{{ old('end_date') }}">
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-md-2">
                                 <div class="mb-3">
                                     <label class="form-label">&nbsp;</label>
@@ -140,7 +140,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            {{-- <div class="col-md-2">
                                 <div class="mb-3">
                                     <label class="form-label">&nbsp;</label>
                                     <button type="button" class="btn btn-success collect-btn w-100"
@@ -148,7 +148,7 @@
                                         <i class="fe fe-rocket me-2"></i>Collect All (Optimized)
                                     </button>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="row">
                             <div class="col-md-12">

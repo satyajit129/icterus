@@ -114,39 +114,27 @@ class FacebookLeadService
                 'limit' => 100
             ];
 
-            // Add date filtering using Facebook Lead Ads API format
+            // Add date filtering using traditional since/until parameters
             if ($startDate && $endDate) {
-                // Convert to Unix timestamps properly
-                $startTimestamp = $startDate->timestamp;
-                $endTimestamp = $endDate->timestamp;
+                // Convert to UTC timestamps for Facebook API
+                $startTimestamp = $startDate->utc()->timestamp;
+                $endTimestamp = $endDate->utc()->timestamp;
 
-                // Try sending filtering as JSON string (Facebook API might expect this format)
-                $filteringArray = [
-                    [
-                        'field'    => 'time_created',
-                        'operator' => 'GREATER_THAN_OR_EQUAL',
-                        'value'    => $startTimestamp,
-                    ],
-                    [
-                        'field'    => 'time_created',
-                        'operator' => 'LESS_THAN_OR_EQUAL',
-                        'value'    => $endTimestamp,
-                    ]
-                ];
-
-                $params['filtering'] = json_encode($filteringArray);
+                // Use traditional since/until parameters instead of filtering
+                $params['since'] = $startTimestamp;
+                $params['until'] = $endTimestamp;
 
                 // Log the filtering parameters for debugging
-                Log::info("Date filtering applied", [
+                Log::info("Date filtering applied (since/until)", [
                     'start_date' => $startDate->toDateTimeString(),
                     'end_date' => $endDate->toDateTimeString(),
-                    'start_timestamp' => $startTimestamp,
-                    'end_timestamp' => $endTimestamp,
+                    'start_timestamp_utc' => $startTimestamp,
+                    'end_timestamp_utc' => $endTimestamp,
                     'expected_timestamp' => 1756802594, // Reference timestamp
                     'carbon_timezone' => $startDate->timezone->getName(),
                     'carbon_offset' => $startDate->offset,
-                    'filtering_array' => $filteringArray,
-                    'filtering_json' => $params['filtering']
+                    'since_param' => $params['since'],
+                    'until_param' => $params['until']
                 ]);
             }
 
@@ -348,20 +336,10 @@ class FacebookLeadService
                             'after' => $data['paging']['cursors']['after']
                         ];
 
-                        // Add date filters using Facebook Lead Ads API format
+                        // Add date filters using traditional since/until parameters
                         if ($startDate && $endDate) {
-                            $params['filtering'] = [
-                                [
-                                    'field'    => 'time_created',
-                                    'operator' => 'GREATER_THAN_OR_EQUAL',
-                                    'value'    => $startDate->timestamp,
-                                ],
-                                [
-                                    'field'    => 'time_created',
-                                    'operator' => 'LESS_THAN_OR_EQUAL',
-                                    'value'    => $endDate->timestamp,
-                                ]
-                            ];
+                            $params['since'] = $startDate->utc()->timestamp;
+                            $params['until'] = $endDate->utc()->timestamp;
                         }
                     }
                 } catch (Exception $pageException) {
@@ -862,20 +840,10 @@ class FacebookLeadService
                             'after' => $data['paging']['cursors']['after']
                         ];
 
-                        // Add date filters using Facebook Lead Ads API format
+                        // Add date filters using traditional since/until parameters
                         if ($startDate && $endDate) {
-                            $params['filtering'] = [
-                                [
-                                    'field'    => 'time_created',
-                                    'operator' => 'GREATER_THAN_OR_EQUAL',
-                                    'value'    => $startDate->timestamp,
-                                ],
-                                [
-                                    'field'    => 'time_created',
-                                    'operator' => 'LESS_THAN_OR_EQUAL',
-                                    'value'    => $endDate->timestamp,
-                                ]
-                            ];
+                            $params['since'] = $startDate->utc()->timestamp;
+                            $params['until'] = $endDate->utc()->timestamp;
                         }
                     }
 

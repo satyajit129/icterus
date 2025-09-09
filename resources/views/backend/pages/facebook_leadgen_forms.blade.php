@@ -124,13 +124,13 @@
                         </div>
                         <div class="d-flex gap-2">
                             @if ($pages->count() > 0)
-                                <form action="{{ route('adminFacebookLeadgenFormsSync') }}" method="POST" id="syncAllForm"
+                                {{-- <form action="{{ route('adminFacebookLeadgenFormsSync') }}" method="POST" id="syncAllForm"
                                     class="d-inline">
                                     @csrf
                                     <button type="submit" class="btn btn-primary sync-btn" id="syncAllBtn">
                                         <i class="fe fe-refresh-cw me-2"></i>Sync All Pages
                                     </button>
-                                </form>
+                                </form> --}}
 
                                 <div class="dropdown">
                                     <button class="btn btn-success dropdown-toggle" type="button" id="syncPageDropdown"

@@ -20,8 +20,8 @@ class FacebookCredentialsSeeder extends Seeder
                 'app_secret' => '',
                 'agency_id' => '',
                 'user_access_token' => '',
-                'api_url' => 'https://graph.facebook.com/v18.0/',
-                'version' => 'v18.0',
+                'api_url' => 'https://graph.facebook.com/v23.0/',
+                'version' => 'v23.0',
                 'created_at' => now(),
                 'updated_at' => now(),
             ]
