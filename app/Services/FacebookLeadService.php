@@ -77,7 +77,12 @@ class FacebookLeadService
             ->sort()
             ->values();
 
-        return view('backend.pages.facebook_leads', compact('leads', 'forms', 'pages', 'fieldNames'));
+        // Calculate summary statistics
+        $totalLeads = FacebookLead::count();
+        $assignedLeads = FacebookLead::whereHas('leadAssignment')->count();
+        $unassignedLeads = $totalLeads - $assignedLeads;
+
+        return view('backend.pages.facebook_leads', compact('leads', 'forms', 'pages', 'fieldNames', 'totalLeads', 'assignedLeads', 'unassignedLeads'));
     }
 
     public function handleCollectLeads(Request $request): RedirectResponse

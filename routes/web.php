@@ -228,5 +228,13 @@ Route::prefix('admin')->group(function () {
             Route::get('/toggle/{id}', [App\Http\Controllers\Backend\FacebookAdAccountsController::class, 'toggle'])->name('adminFacebookAdAccountToggle');
             Route::get('/delete/{id}', [App\Http\Controllers\Backend\FacebookAdAccountsController::class, 'destroy'])->name('adminFacebookAdAccountDelete');
         });
+
+        // Assign Leads Routes
+        Route::prefix('assign-leads')->group(function () {
+            Route::get('/', [App\Http\Controllers\Backend\AssignLeadsController::class, 'index'])->name('adminAssignLeads');
+            Route::post('/bulk-assign', [App\Http\Controllers\Backend\AssignLeadsController::class, 'bulkAssign'])->name('adminAssignLeadsBulk');
+            Route::post('/individual-assign', [App\Http\Controllers\Backend\AssignLeadsController::class, 'individualAssign'])->name('adminAssignLeadsIndividual');
+            Route::post('/unassign', [App\Http\Controllers\Backend\AssignLeadsController::class, 'unassign'])->name('adminAssignLeadsUnassign');
+        });
     });
 });

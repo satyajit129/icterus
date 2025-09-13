@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Carbon\Carbon;
 
 class FacebookLead extends Model
@@ -26,6 +27,11 @@ class FacebookLead extends Model
     public function facebookPage(): BelongsTo
     {
         return $this->belongsTo(FacebookPage::class, 'page_id', 'page_id');
+    }
+
+    public function leadAssignment(): HasOne
+    {
+        return $this->hasOne(LeadAssignment::class, 'lead_id', 'id');
     }
 
     public function scopeByForm($query, $formId)

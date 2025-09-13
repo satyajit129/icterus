@@ -81,6 +81,7 @@
                 $canManageFacebookLeadgenForms = $user->hasPermission('manage_facebook_leadgen_forms');
                 $canManageFacebookLeads = $user->hasPermission('manage_facebook_leads');
                 $canManageFacebookAdAccounts = $user->hasPermission('manage_facebook_ad_accounts');
+                $canAssignLeads = $user->hasPermission('assign_leads');
             @endphp
             <ul class="side-menu">
 
@@ -92,7 +93,8 @@
                         $canManageFacebookPages ||
                         $canManageFacebookLeadgenForms ||
                         $canManageFacebookLeads ||
-                        $canManageFacebookAdAccounts)
+                        $canManageFacebookAdAccounts ||
+                        $canAssignLeads)
                     <li class="sub-category">
                         <h3>Dashboard & Settings</h3>
                     </li>
@@ -148,14 +150,24 @@
                                 <i class="side-menu__icon fe fe-user-plus"></i>
                                 <span class="side-menu__label">Facebook Leads</span>
                             </a>
+
                         </li>
                     @endif
-                    @if ($canManageFacebookAdAccounts)
+                    {{-- @if ($canManageFacebookAdAccounts)
                         <li class="slide">
                             <a class="side-menu__item has-link {{ Route::is('adminFacebookAdAccounts') ? 'active' : '' }}"
                                 href="{{ route('adminFacebookAdAccounts') }}">
                                 <i class="side-menu__icon fe fe-briefcase"></i>
                                 <span class="side-menu__label">Facebook Ad Accounts</span>
+                            </a>
+                        </li>
+                    @endif --}}
+                    @if ($canAssignLeads)
+                        <li class="slide">
+                            <a class="side-menu__item has-link {{ Route::is('adminAssignLeads') ? 'active' : '' }}"
+                                href="{{ route('adminAssignLeads') }}">
+                                <i class="side-menu__icon fe fe-user-check"></i>
+                                <span class="side-menu__label">Assign Leads</span>
                             </a>
                         </li>
                     @endif

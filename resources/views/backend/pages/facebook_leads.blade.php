@@ -71,10 +71,70 @@
             border-radius: 0.375rem;
             padding: 0.75rem;
         }
+
+        /* Full page loader styles */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .page-loader.show {
+            display: flex !important;
+        }
+
+        .loader-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            width: 90%;
+        }
+
+        .loader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .loader-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #333;
+            margin: 0;
+        }
+
+        .loader-subtext {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0.5rem 0 0;
+        }
     </style>
 @endsection
 
 @section('content')
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <p class="loader-text">Collecting Leads...</p>
+            <p class="loader-subtext">Please wait while we fetch all leads from Facebook</p>
+        </div>
+    </div>
+
     <div class="page-header">
         <h1 class="page-title">Facebook Leads</h1>
         <div>
@@ -82,6 +142,55 @@
                 <li class="breadcrumb-item"><a href="{{ route('adminDashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item active">Facebook Leads</li>
             </ol>
+        </div>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="card bg-gradient-primary text-dark">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">
+                        <i class="fe fe-bar-chart-2 me-2 text-dark"></i>Lead Assignment Summary
+                    </h5>
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="border-end border-light">
+                                <h2 class="text-dark mb-1">{{ number_format($totalLeads) }}</h2>
+                                <small class="text-dark-50">Total Leads</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="border-end border-light">
+                                <h2 class="text-success mb-1">{{ number_format($assignedLeads) }}</h2>
+                                <small class="text-dark-50">Leads Assigned</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div>
+                                <h2 class="text-warning mb-1">{{ number_format($unassignedLeads) }}</h2>
+                                <small class="text-dark-50">Leads Not Assigned Yet</small>
+                            </div>
+                        </div>
+                    </div>
+                    @if ($totalLeads > 0)
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-success" role="progressbar"
+                                        style="width: {{ ($assignedLeads / $totalLeads) * 100 }}%"
+                                        aria-valuenow="{{ $assignedLeads }}" aria-valuemin="0"
+                                        aria-valuemax="{{ $totalLeads }}">
+                                    </div>
+                                </div>
+                                <small class="text-white-50 mt-1 d-block">
+                                    {{ number_format(($assignedLeads / $totalLeads) * 100, 1) }}% of leads are assigned
+                                </small>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 
@@ -118,37 +227,15 @@
                                     </select>
                                 </div>
                             </div>
-                            {{-- <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label class="form-label">Start Date</label>
-                                    <input type="date" name="start_date" class="form-control"
-                                        value="{{ old('start_date') }}">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="mb-3">
-                                    <label class="form-label">End Date</label>
-                                    <input type="date" name="end_date" class="form-control"
-                                        value="{{ old('end_date') }}">
-                                </div>
-                            </div> --}}
                             <div class="col-md-2">
                                 <div class="mb-3">
                                     <label class="form-label">&nbsp;</label>
-                                    <button type="submit" class="btn btn-primary collect-btn w-100" id="collectBtn">
+                                    <button type="button" class="btn btn-primary collect-btn w-100" id="collectBtn"
+                                        onclick="handleCollectLeads();">
                                         <i class="fe fe-download me-2"></i>Collect Leads
                                     </button>
                                 </div>
                             </div>
-                            {{-- <div class="col-md-2">
-                                <div class="mb-3">
-                                    <label class="form-label">&nbsp;</label>
-                                    <button type="button" class="btn btn-success collect-btn w-100"
-                                        id="collectOptimizedBtn">
-                                        <i class="fe fe-rocket me-2"></i>Collect All (Optimized)
-                                    </button>
-                                </div>
-                            </div> --}}
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -156,7 +243,6 @@
                                     <i class="fe fe-info me-2"></i>
                                     <strong>Note:</strong> Leave date fields empty to collect all leads from the selected
                                     form.
-                                    Date range will collect leads created within the specified period.
                                 </div>
                             </div>
                         </div>
@@ -430,6 +516,9 @@
 @section('custom_js')
     <script>
         $(document).ready(function() {
+            // Hide loader on page load (in case of refresh or navigation)
+            $('#pageLoader').removeClass('show');
+
             // Initialize Select2 for form selection
             $('#formSelect').select2({
                 placeholder: 'Choose a form...',
@@ -437,13 +526,6 @@
                 width: '100%'
             });
 
-            // Handle collect button loading state
-            $('#collectLeadsForm').on('submit', function() {
-                const collectBtn = $('#collectBtn');
-                collectBtn.addClass('loading');
-                collectBtn.prop('disabled', true);
-                collectBtn.html('<i class="fe fe-download me-2"></i>Collecting...');
-            });
 
             // Handle optimized collection button
             $('#collectOptimizedBtn').on('click', function(e) {
@@ -548,5 +630,33 @@
                 // Form is already submitted, no need to do anything
             @endif
         });
+
+        // Global function for collect leads
+        window.handleCollectLeads = function() {
+            // Validate form
+            const formId = document.getElementById('formSelect').value;
+            if (!formId) {
+                if (typeof toastr !== 'undefined') {
+                    toastr.error('Please select a form first');
+                } else {
+                    alert('Please select a form first');
+                }
+                return;
+            }
+
+            const collectBtn = document.getElementById('collectBtn');
+            collectBtn.classList.add('loading');
+            collectBtn.disabled = true;
+            collectBtn.innerHTML = '<i class="fe fe-download me-2"></i>Collecting...';
+
+            // Show full page loader immediately
+            const pageLoader = document.getElementById('pageLoader');
+            pageLoader.classList.add('show');
+
+            // Add a small delay to ensure loader is visible, then submit
+            setTimeout(function() {
+                document.getElementById('collectLeadsForm').submit();
+            }, 100);
+        };
     </script>
 @endsection
