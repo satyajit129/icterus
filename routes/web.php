@@ -227,5 +227,12 @@ Route::prefix('admin')->group(function () {
             Route::post('/individual-assign', [AssignLeadsController::class, 'individualAssign'])->name('adminAssignLeadsIndividual');
             Route::post('/unassign', [AssignLeadsController::class, 'unassign'])->name('adminAssignLeadsUnassign');
         });
+
+        Route::prefix('lead')->group(function(){
+            Route::get('/',[AssignLeadsController::class,'leadList'])->name('leadList');
+            Route::get('/view/{id?}',[AssignLeadsController::class,'leadView'])->name('leadView');
+            Route::get('/edit/{id?}',[AssignLeadsController::class,'leadEdit'])->name('leadEdit');
+            Route::post('/save/{id?}',[AssignLeadsController::class,'leadSave'])->name('leadSave');
+        });
     });
 });

@@ -12,8 +12,11 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class AssignLeadsController extends Controller
 {
@@ -204,7 +207,7 @@ class AssignLeadsController extends Controller
                 // Update existing assignment
                 $existingAssignment->update([
                     'assigned_to' => $request->assigned_to,
-                    'assigned_by' => auth()->id(),
+                    'assigned_by' => Auth::id(),
                     'notes' => $request->notes,
                     'assigned_at' => now()
                 ]);
@@ -214,7 +217,7 @@ class AssignLeadsController extends Controller
                 LeadAssignment::create([
                     'lead_id' => $request->lead_id,
                     'assigned_to' => $request->assigned_to,
-                    'assigned_by' => auth()->id(),
+                    'assigned_by' => Auth::id(),
                     'assignment_type' => 'individual',
                     'notes' => $request->notes,
                     'assigned_at' => now()
@@ -295,7 +298,7 @@ class AssignLeadsController extends Controller
             $assignments[] = [
                 'lead_id' => $leadId,
                 'assigned_to' => $userId,
-                'assigned_by' => auth()->id(),
+                'assigned_by' => Auth::id(),
                 'assignment_type' => $assignmentType,
                 'assigned_at' => $now,
                 'created_at' => $now,
@@ -320,26 +323,20 @@ class AssignLeadsController extends Controller
         $assignments = [];
         $now = now();
         $leadIndex = 0;
-
         foreach ($studentAdvisors as $advisorId) {
             $leadsForThisAdvisor = $leadsPerAdvisor;
-
-            // Distribute remaining leads to first few advisors
             if ($remainingLeads > 0) {
                 $leadsForThisAdvisor++;
                 $remainingLeads--;
             }
-
             for ($i = 0; $i < $leadsForThisAdvisor && $leadIndex < $totalLeads; $i++) {
                 $leadId = $leadIds[$leadIndex];
-
-                // Remove existing assignment if any
                 LeadAssignment::where('lead_id', $leadId)->delete();
 
                 $assignments[] = [
                     'lead_id' => $leadId,
                     'assigned_to' => $advisorId,
-                    'assigned_by' => auth()->id(),
+                    'assigned_by' => Auth::id(),
                     'assignment_type' => $assignmentType,
                     'assigned_at' => $now,
                     'created_at' => $now,
@@ -351,8 +348,60 @@ class AssignLeadsController extends Controller
         }
 
         LeadAssignment::insert($assignments);
-
-        // Mark leads as processed
         FacebookLead::whereIn('id', $leadIds)->update(['is_processed' => true]);
     }
+
+    public function leadList(Request $request)
+    {
+        $query = FacebookLead::with(['facebookLeadgenForm', 'facebookPage', 'leadAssignment.assignedTo'])
+            ->whereHas('leadAssignment', function ($q) {
+                $q->where('assigned_to', Auth::id());
+            });
+
+        $leads = $query->orderBy('created_time', 'desc')
+            ->paginate(20)
+            ->appends($request->all());
+
+        return view('backend.pages.lead_list', compact('leads'));
+    }
+    public function leadView($id)
+    {
+        $lead = FacebookLead::with(['facebookLeadgenForm', 'facebookPage'])->findOrFail($id);
+        return view('backend.pages.lead_view', compact('lead'));
+    }
+    public function leadEdit($id)
+    {
+        $lead = FacebookLead::findorfail($id);
+        return view('backend.pages.lead_edit', compact('lead'));
+    }
+public function leadSave(Request $request, $id = null)
+{
+    try {
+        $validated = $request->validate([
+            'expression' => 'required',
+            'comment'    => 'nullable',
+        ]);
+
+        // Convert checkbox into 1 or 0
+        $followup = $request->has('followup') ? 1 : 0;
+
+        // Update or create lead
+        $lead = FacebookLead::updateOrCreate(
+            ['id' => $id],
+            [
+                'expression' => $validated['expression'],
+                'comment'    => $validated['comment'] ?? null,
+                'followup'   => $followup, // 1 or 0
+            ]
+        );
+
+        return redirect()->route('leadList')->with('success', 'Lead saved successfully!');
+    } catch (Throwable $e) {
+        Log::error('Lead save error: ' . $e->getMessage());
+
+        return redirect()->back()->with('error', $e->getMessage())->withInput();
+    }
+}
+
+
 }

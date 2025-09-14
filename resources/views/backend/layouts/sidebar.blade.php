@@ -82,6 +82,7 @@
                 $canManageFacebookLeads = $user->hasPermission('manage_facebook_leads');
                 $canManageFacebookAdAccounts = $user->hasPermission('manage_facebook_ad_accounts');
                 $canAssignLeads = $user->hasPermission('assign_leads');
+                $canSeeLeadList = $user->hasPermission('lead_list');
             @endphp
             <ul class="side-menu">
 
@@ -94,7 +95,8 @@
                         $canManageFacebookLeadgenForms ||
                         $canManageFacebookLeads ||
                         $canManageFacebookAdAccounts ||
-                        $canAssignLeads)
+                        $canAssignLeads ||
+                        $canSeeLeadList)
                     <li class="sub-category">
                         <h3>Dashboard & Settings</h3>
                     </li>
@@ -168,6 +170,15 @@
                                 href="{{ route('adminAssignLeads') }}">
                                 <i class="side-menu__icon fe fe-user-check"></i>
                                 <span class="side-menu__label">Assign Leads</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if ($canManageDashboard)
+                        <li class="slide">
+                            <a class="side-menu__item has-link {{ Route::is('leadList','leadView') ? 'active' : '' }}"
+                                href="{{ route('leadList') }}">
+                                <i class="side-menu__icon fe fe-user-check"></i>
+                                <span class="side-menu__label">Leads</span>
                             </a>
                         </li>
                     @endif
