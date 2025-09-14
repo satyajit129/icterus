@@ -189,7 +189,7 @@
                             <div class="col-md-2">
                                 <div class="mb-3">
                                     <label class="form-label">Page</label>
-                                    <select name="page_id" class="form-control">
+                                    <select name="page_id" class="form-control select2-show-search form-select">
                                         <option value="">All Pages</option>
                                         @foreach ($pages as $page)
                                             <option value="{{ $page->page_id }}"

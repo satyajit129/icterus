@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Backend\AdminController;
+use App\Http\Controllers\Backend\AssignLeadsController;
 use App\Http\Controllers\Backend\AuthController;
+use App\Http\Controllers\Backend\FacebookAdAccountsController;
 use App\Http\Middleware\AdminProtectedRoute;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\Group;
@@ -210,31 +212,20 @@ Route::prefix('admin')->group(function () {
             Route::get('/form-stats/{formId}', [AdminController::class, 'adminFacebookLeadsFormStats'])->name('adminFacebookLeadsFormStats');
         });
 
-        // Facebook Ads Management Routes
-        Route::prefix('facebook-ads')->group(function () {
-            Route::get('/', [App\Http\Controllers\Backend\FacebookAdsController::class, 'index'])->name('adminFacebookAds');
-            Route::post('/sync', [App\Http\Controllers\Backend\FacebookAdsController::class, 'sync'])->name('adminFacebookAdsSync');
-            Route::get('/toggle-status/{id}', [App\Http\Controllers\Backend\FacebookAdsController::class, 'toggleStatus'])->name('adminFacebookAdToggleStatus');
-            Route::get('/delete/{id}', [App\Http\Controllers\Backend\FacebookAdsController::class, 'destroy'])->name('adminFacebookAdDelete');
-            Route::get('/view/{id}', [App\Http\Controllers\Backend\FacebookAdsController::class, 'show'])->name('adminFacebookAdView');
-            Route::get('/stats', [App\Http\Controllers\Backend\FacebookAdsController::class, 'stats'])->name('adminFacebookAdsStats');
-            Route::get('/test-connection', [App\Http\Controllers\Backend\FacebookAdsController::class, 'testConnection'])->name('adminFacebookAdsTestConnection');
-        });
-
         // Facebook Ad Accounts Routes
         Route::prefix('facebook-ad-accounts')->group(function () {
-            Route::get('/', [App\Http\Controllers\Backend\FacebookAdAccountsController::class, 'index'])->name('adminFacebookAdAccounts');
-            Route::post('/sync', [App\Http\Controllers\Backend\FacebookAdAccountsController::class, 'sync'])->name('adminFacebookAdAccountsSync');
-            Route::get('/toggle/{id}', [App\Http\Controllers\Backend\FacebookAdAccountsController::class, 'toggle'])->name('adminFacebookAdAccountToggle');
-            Route::get('/delete/{id}', [App\Http\Controllers\Backend\FacebookAdAccountsController::class, 'destroy'])->name('adminFacebookAdAccountDelete');
+            Route::get('/', [FacebookAdAccountsController::class, 'index'])->name('adminFacebookAdAccounts');
+            Route::post('/sync', [FacebookAdAccountsController::class, 'sync'])->name('adminFacebookAdAccountsSync');
+            Route::get('/toggle/{id}', [FacebookAdAccountsController::class, 'toggle'])->name('adminFacebookAdAccountToggle');
+            Route::get('/delete/{id}', [FacebookAdAccountsController::class, 'destroy'])->name('adminFacebookAdAccountDelete');
         });
 
         // Assign Leads Routes
         Route::prefix('assign-leads')->group(function () {
-            Route::get('/', [App\Http\Controllers\Backend\AssignLeadsController::class, 'index'])->name('adminAssignLeads');
-            Route::post('/bulk-assign', [App\Http\Controllers\Backend\AssignLeadsController::class, 'bulkAssign'])->name('adminAssignLeadsBulk');
-            Route::post('/individual-assign', [App\Http\Controllers\Backend\AssignLeadsController::class, 'individualAssign'])->name('adminAssignLeadsIndividual');
-            Route::post('/unassign', [App\Http\Controllers\Backend\AssignLeadsController::class, 'unassign'])->name('adminAssignLeadsUnassign');
+            Route::get('/', [AssignLeadsController::class, 'index'])->name('adminAssignLeads');
+            Route::post('/bulk-assign', [AssignLeadsController::class, 'bulkAssign'])->name('adminAssignLeadsBulk');
+            Route::post('/individual-assign', [AssignLeadsController::class, 'individualAssign'])->name('adminAssignLeadsIndividual');
+            Route::post('/unassign', [AssignLeadsController::class, 'unassign'])->name('adminAssignLeadsUnassign');
         });
     });
 });

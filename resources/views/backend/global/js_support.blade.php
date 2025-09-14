@@ -10,6 +10,9 @@
 <script src="{{ asset('js/sidemenu.js') }}"></script>
 <script src="{{ asset('js/sticky.js') }}"></script>
 
+<script src="{{ asset('js/select2.full.min.js') }}"></script>
+<script src="{{ asset('js/select2.js') }}"></script>
+
 <script>
     $(document).ready(function () {
         @if(session('success'))

@@ -8,11 +8,11 @@
 
 @php
     $user = auth()->user();
-    $canAddCompanyEarning     =  $user->hasPermission('add_company_earning');
-    $canEditCompanyEarning    =  $user->hasPermission('edit_company_earning');
-    $canDeleteCompanyEarning  =  $user->hasPermission('delete_company_earning');
-    $canViewCompanyEarning    =  $user->hasPermission('view_company_earning');
-    $canDownloadCompanyEarning=  $user->hasPermission('download_company_earning');
+    $canAddCompanyEarning = $user->hasPermission('add_company_earning');
+    $canEditCompanyEarning = $user->hasPermission('edit_company_earning');
+    $canDeleteCompanyEarning = $user->hasPermission('delete_company_earning');
+    $canViewCompanyEarning = $user->hasPermission('view_company_earning');
+    $canDownloadCompanyEarning = $user->hasPermission('download_company_earning');
 @endphp
 
 @section('content')
@@ -66,9 +66,8 @@
                             <div class="col-md-6 col-lg-3">
                                 <div class="mb-4">
                                     <label class="form-label">Employee Name</label>
-                                    <input type="text" name="name" class="form-control"
-                                        value="{{ request('name') }}" autocomplete="off"
-                                        placeholder="Enter Employee Name">
+                                    <input type="text" name="name" class="form-control" value="{{ request('name') }}"
+                                        autocomplete="off" placeholder="Enter Employee Name">
                                 </div>
                             </div>
 
@@ -103,22 +102,22 @@
             <div class="card">
                 <div class="card-body">
                     <div class="">
-    <h5 class="fw-bold">Totals</h5>
-    <div class="row">
-        <div class="col-md-4">
-            <span>Paid Amount: </span>
-            <span class="text-success fw-bold">{{ number_format($totals['paid_amount'], 2) }}</span>
-        </div>
-        <div class="col-md-4">
-            <span>Deals Amount: </span>
-            <span class="text-primary fw-bold">{{ number_format($totals['deals_amount'], 2) }}</span>
-        </div>
-        <div class="col-md-4">
-            <span>Due Amount: </span>
-            <span class="text-danger fw-bold">{{ number_format($totals['due_amount'], 2) }}</span>
-        </div>
-    </div>
-</div>
+                        <h5 class="fw-bold">Totals</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <span>Paid Amount: </span>
+                                <span class="text-success fw-bold">{{ number_format($totals['paid_amount'], 2) }}</span>
+                            </div>
+                            <div class="col-md-4">
+                                <span>Deals Amount: </span>
+                                <span class="text-primary fw-bold">{{ number_format($totals['deals_amount'], 2) }}</span>
+                            </div>
+                            <div class="col-md-4">
+                                <span>Due Amount: </span>
+                                <span class="text-danger fw-bold">{{ number_format($totals['due_amount'], 2) }}</span>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -142,7 +141,7 @@
                                 </button>
                             </a>
                         @endif
-                        
+
                     </div>
                 </div>
                 <div class="card-body">
@@ -189,17 +188,19 @@
                                                 <td>{{ $earning->details }}</td>
                                                 <td>
                                                     @if ($canEditCompanyEarning || $canDeleteCompanyEarning || $canViewCompanyEarning)
-                                                    
                                                         @if ($canEditCompanyEarning)
                                                             <a href="{{ route('adminEarningCreateOrEdit', ['id' => $earning->id, 'page' => request('page')]) }}"
-                                                                class="btn btn-sm btn-primary" title="Edit"> <i class="fe fe-edit"></i>
+                                                                class="btn btn-sm btn-primary" title="Edit"> <i
+                                                                    class="fe fe-edit"></i>
                                                             </a>
                                                         @endif
 
                                                         @if ($canDeleteCompanyEarning)
-                                                            <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                            <a href="javascript:void(0);"
+                                                                class="btn btn-sm btn-danger delete-btn"
                                                                 data-url="{{ route('adminEarningDelete', ['id' => $earning->id, 'page' => request('page')]) }}"
-                                                                data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                                title="Delete">
                                                                 <i class="fe fe-trash-2"></i>
                                                             </a>
                                                         @endif
@@ -210,9 +211,8 @@
                                                                 <i class="fe fe-eye"></i>
                                                             </a>
                                                         @endif
-
                                                     @else
-                                                         <span class="text-muted fst-italic">No actions available</span>
+                                                        <span class="text-muted fst-italic">No actions available</span>
                                                     @endif
                                                 </td>
 

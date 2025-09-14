@@ -114,7 +114,7 @@
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Category</label>
-                                    <select name="category" class="form-control">
+                                    <select name="category" class="form-control select2-show-search form-select">
                                         <option value="">All Categories</option>
                                         @foreach ($categories as $category)
                                             <option value="{{ $category }}"
@@ -210,13 +210,13 @@
                                                     class="text-muted">{{ $page->created_at->format('M d, Y H:i') }}</small>
                                             </td>
                                             <td>
-                                                <div class="btn-group" role="group">
+                                                <div class="btn-group" role="group" style="gap: 5px;">
                                                     <a href="{{ route('adminFacebookPageView', $page->id) }}"
-                                                        class="btn btn-sm btn-info" title="View Details">
+                                                        class="btn btn-sm btn-info mr-1" title="View Details">
                                                         <i class="fe fe-eye"></i>
                                                     </a>
                                                     <a href="{{ route('adminFacebookPageToggleStatus', $page->id) }}"
-                                                        class="btn btn-sm {{ $page->is_active ? 'btn-warning' : 'btn-success' }}"
+                                                        class="btn mr-1 btn-sm {{ $page->is_active ? 'btn-warning' : 'btn-success' }}"
                                                         title="{{ $page->is_active ? 'Deactivate' : 'Activate' }}"
                                                         onclick="return confirm('Are you sure you want to {{ $page->is_active ? 'deactivate' : 'activate' }} this page?')">
                                                         <i class="fe fe-{{ $page->is_active ? 'pause' : 'play' }}"></i>
@@ -253,6 +253,7 @@
 @endsection
 
 @section('custom_js')
+
     <script>
         $(document).ready(function() {
             // Handle sync button loading state
