@@ -299,10 +299,10 @@
                 <div class="card-body">
                     <form method="GET" action="{{ route('adminFacebookLeads') }}">
                         <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Form</label>
-                                    <select name="form_id" class="form-control">
+                                    <select name="form_id" class="form-control select2-show-search form-select">
                                         <option value="">All Forms</option>
                                         @foreach ($forms as $form)
                                             <option value="{{ $form->form_id }}"
@@ -313,10 +313,10 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Page</label>
-                                    <select name="page_id" class="form-control">
+                                    <select name="page_id" class="form-control select2-show-search form-select">
                                         <option value="">All Pages</option>
                                         @foreach ($pages as $page)
                                             <option value="{{ $page->page_id }}"
@@ -327,28 +327,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="mb-3">
-                                    <label class="form-label">Field Name</label>
-                                    <select name="field_name" id="fieldNameSelect" class="form-control">
-                                        <option value="">Select Field</option>
-                                        @foreach ($fieldNames as $fieldName)
-                                            <option value="{{ $fieldName }}"
-                                                {{ request('field_name') == $fieldName ? 'selected' : '' }}>
-                                                {{ $fieldName }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="mb-3">
-                                    <label class="form-label">Field Value</label>
-                                    <input type="text" name="field_value" class="form-control"
-                                        value="{{ request('field_value') }}" placeholder="Enter field value">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Status</label>
                                     <select name="is_processed" class="form-control">
@@ -360,7 +339,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Search</label>
                                     <input type="text" name="search" class="form-control"
@@ -369,33 +348,31 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Date Range</label>
-                                    <div class="date-range-picker">
                                         <div class="row">
                                             <div class="col-6">
                                                 <input type="date" name="start_date"
-                                                    class="form-control form-control-sm"
+                                                    class="form-control "
                                                     value="{{ request('start_date') }}" placeholder="Start Date">
                                             </div>
                                             <div class="col-6">
                                                 <input type="date" name="end_date"
-                                                    class="form-control form-control-sm"
+                                                    class="form-control "
                                                     value="{{ request('end_date') }}" placeholder="End Date">
                                             </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-9">
+                            <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">&nbsp;</label>
                                     <div class="d-flex gap-2">
-                                        <button type="submit" class="btn btn-primary">Filter</button>
-                                        <a href="{{ route('adminFacebookLeads') }}" class="btn btn-secondary">Reset</a>
+                                        <button type="submit" class="btn btn-primary" style="width: 100%;">Filter</button>
+                                        <a href="{{ route('adminFacebookLeads') }}" class="btn btn-secondary" style="width: 100%;">Reset</a>
                                         <a href="{{ route('adminFacebookLeadsExport', request()->query()) }}"
-                                            class="btn btn-success">
+                                            class="btn btn-success" style="width: 100%;">
                                             <i class="fe fe-download me-1"></i>Export CSV
                                         </a>
                                     </div>
@@ -470,7 +447,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <div class="btn-group" role="group">
+                                                <div class="btn-group" role="group" style="gap: 5px;">
                                                     <a href="{{ route('adminFacebookLeadView', $lead->id) }}"
                                                         class="btn btn-sm btn-info" title="View Details">
                                                         <i class="fe fe-eye"></i>

@@ -37,16 +37,12 @@
             z-index: 10;
         }
 
-        .copy-btn:hover {
-            color: #495057;
-        }
-
         .copy-btn.copied {
             color: #28a745;
         }
 
         .password-toggle .copy-btn {
-            right: 50px;
+            right: 40px;
         }
     </style>
 @endsection
@@ -140,7 +136,7 @@
                                         <input type="password" name="user_access_token" id="user_access_token"
                                             class="form-control"
                                             value="{{ old('user_access_token', $facebookCredential->user_access_token) }}"
-                                            placeholder="Enter User Access Token">
+                                            placeholder="Enter User Access Token" style="padding: 0.475rem 4.75rem 0.475rem 0.75rem">
                                         <button type="button" class="copy-btn"
                                             onclick="copyToClipboard('user_access_token')" title="Copy User Access Token">
                                             <i class="fe fe-copy"></i>

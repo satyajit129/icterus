@@ -147,10 +147,10 @@
                 <div class="card-body">
                     <form method="GET" action="{{ route('adminAssignLeads') }}">
                         <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Form</label>
-                                    <select name="form_id" class="form-control">
+                                    <select name="form_id" class="form-control select2-show-search form-select">
                                         <option value="">All Forms</option>
                                         @foreach ($forms as $form)
                                             <option value="{{ $form->form_id }}"
@@ -161,10 +161,10 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Page</label>
-                                    <select name="page_id" class="form-control">
+                                    <select name="page_id" class="form-control select2-show-search form-select">
                                         <option value="">All Pages</option>
                                         @foreach ($pages as $page)
                                             <option value="{{ $page->page_id }}"
@@ -175,10 +175,10 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Location</label>
-                                    <select name="location" class="form-control">
+                                    <select name="location" class="form-control select2-show-search form-select">
                                         <option value="">All Locations</option>
                                         @foreach ($locations as $location)
                                             <option value="{{ $location }}"
@@ -189,28 +189,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <div class="mb-3">
-                                    <label class="form-label">Field Name</label>
-                                    <select name="field_name" id="fieldNameSelect" class="form-control">
-                                        <option value="">Select Field</option>
-                                        @foreach ($fieldNames as $fieldName)
-                                            <option value="{{ $fieldName }}"
-                                                {{ request('field_name') == $fieldName ? 'selected' : '' }}>
-                                                {{ $fieldName }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="mb-3">
-                                    <label class="form-label">Field Value</label>
-                                    <input type="text" name="field_value" class="form-control"
-                                        value="{{ request('field_value') }}" placeholder="Enter field value">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
+                            <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Assignment Status</label>
                                     <select name="assignment_status" class="form-control">
@@ -229,19 +208,19 @@
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Date Range</label>
-                                    <div class="date-range-picker">
+                                   
                                         <div class="row">
                                             <div class="col-6">
-                                                <input type="date" name="start_date" class="form-control form-control-sm"
+                                                <input type="date" name="start_date" class="form-control"
                                                     value="{{ request('start_date') }}" placeholder="Start Date">
                                             </div>
                                             <div class="col-6">
                                                 <input type="date" name="end_date"
-                                                    class="form-control form-control-sm"
+                                                    class="form-control"
                                                     value="{{ request('end_date') }}" placeholder="End Date">
                                             </div>
                                         </div>
-                                    </div>
+                                  
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -267,8 +246,8 @@
                                 <div class="mb-3">
                                     <label class="form-label">&nbsp;</label>
                                     <div class="d-flex gap-2">
-                                        <button type="submit" class="btn btn-primary">Filter</button>
-                                        <a href="{{ route('adminAssignLeads') }}" class="btn btn-secondary">Reset</a>
+                                        <button type="submit" class="btn btn-primary" style="width: 100%;">Filter</button>
+                                        <a href="{{ route('adminAssignLeads') }}" class="btn btn-secondary" style="width: 100%;">Reset</a>
                                     </div>
                                 </div>
                             </div>
@@ -288,7 +267,7 @@
                     <div class="col-md-4">
                         <div class="mb-3">
                             <label class="form-label">Select Student Advisor</label>
-                            <select id="bulkAssignTo" class="form-control">
+                            <select id="bulkAssignTo" class="form-control select2-show-search form-select">
                                 <option value="">Choose Student Advisor (Optional)</option>
                                 @foreach ($studentAdvisors as $advisor)
                                     <option value="{{ $advisor->id }}">{{ $advisor->name }} ({{ $advisor->email }})
@@ -300,25 +279,25 @@
                     <div class="col-md-4">
                         <div class="mb-3">
                             <label class="form-label">Assignment Type</label>
-                            <select id="assignmentType" class="form-control">
+                            <select id="assignmentType" class="form-control select2-show-search form-select">
                                 <option value="bulk">Bulk Assignment</option>
                                 <option value="individual">Individual Assignment</option>
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <d style="width: 100%;"iv class="col-md-4">
                         <div class="mb-3">
                             <label class="form-label">&nbsp;</label>
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-success" id="bulkAssignBtn" disabled>
+                                <button type="button" class="btn btn-success" id="bulkAssignBtn" disabled style="width: 100%;">
                                     <i class="fe fe-user-plus me-2"></i>Assign Selected Leads
                                 </button>
-                                <button type="button" class="btn btn-warning" id="unassignBtn" disabled>
+                                <button type="button" class="btn btn-warning" id="unassignBtn" disabled style="width: 100%;">
                                     <i class="fe fe-user-minus me-2"></i>Unassign Selected
                                 </button>
                             </div>
                         </div>
-                    </div>
+                    </d>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -354,8 +333,8 @@
                             <table class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        <th width="50">
-                                            <input type="checkbox" id="selectAllCheckbox" class="form-check-input">
+                                        <th>
+                                            <input type="checkbox" id="selectAllCheckbox" class="form-check">
                                         </th>
                                         <th>Lead ID</th>
                                         <th>Name</th>
@@ -373,7 +352,7 @@
                                     @foreach ($leads as $lead)
                                         <tr>
                                             <td>
-                                                <input type="checkbox" class="form-check-input lead-checkbox"
+                                                <input type="checkbox" class="form-check lead-checkbox"
                                                     value="{{ $lead->id }}" data-lead-id="{{ $lead->id }}">
                                             </td>
                                             <td>
