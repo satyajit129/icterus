@@ -84,6 +84,7 @@
                 $canManageFacebookAdAccounts = $user->hasPermission('manage_facebook_ad_accounts');
                 $canAssignLeads = $user->hasPermission('assign_leads');
                 $canSeeLeadList = $user->hasPermission('lead_list');
+                $canManageProductOrder = $user->hasPermission('manage_order');
             @endphp
             <ul class="side-menu">
 
@@ -365,7 +366,7 @@
                     @endif
                 @endif
 
-                @if ($canManageProduct)
+                @if ($canManageProduct || $canManageProductOrder)
                     {{-- PRODUCT MANAGEMENT --}}
                     <li class="sub-category">
                         <h3>Product Management</h3>
@@ -378,6 +379,8 @@
                                 <span class="side-menu__label">Products</span>
                             </a>
                         </li>
+                    @endif
+                    @if ($canManageProductOrder)
                         <li class="slide">
                             <a class="side-menu__item has-link {{ Route::is('adminOrderList', 'adminOrderView') ? 'active' : '' }}"
                                 href="{{ route('adminOrderList') }}">
