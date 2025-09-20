@@ -4,6 +4,7 @@ use App\Http\Controllers\Backend\AdminController;
 use App\Http\Controllers\Backend\AssignLeadsController;
 use App\Http\Controllers\Backend\AuthController;
 use App\Http\Controllers\Backend\FacebookAdAccountsController;
+use App\Http\Controllers\Backend\ProductController;
 use App\Http\Middleware\AdminProtectedRoute;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\Group;
@@ -175,6 +176,17 @@ Route::prefix('admin')->group(function () {
             Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminAssetCreateOrEdit'])->name('adminAssetCreateOrEdit');
             Route::post('/save/{id?}', [AdminController::class, 'adminAssetSave'])->name('adminAssetSave');
             Route::get('/delete/{id}', [AdminController::class, 'adminAssetDelete'])->name('adminAssetDelete');
+        });
+
+        Route::prefix('product')->group(function () {
+            Route::get('/', [ProductController::class, 'adminProductList'])->name('adminProductList');
+            Route::get('/create-or-edit/{id?}', [ProductController::class, 'adminProductCreateOrEdit'])->name('adminProductCreateOrEdit');
+            Route::post('/save/{id?}', [ProductController::class, 'adminProductSave'])->name('adminProductSave');
+            Route::get('/delete/{id}', [ProductController::class, 'adminProductDelete'])->name('adminProductDelete');
+            Route::get('/view/{id}', [ProductController::class, 'adminProductView'])->name('adminProductView');
+            Route::get('/export', [ProductController::class, 'adminProductExport'])->name('adminProductExport');
+            Route::post('/delete-image/{id}', [ProductController::class, 'adminProductDeleteImage'])->name('adminProductDeleteImage');
+            Route::get('/toggle-status/{id}', [ProductController::class, 'adminProductToggleStatus'])->name('adminProductToggleStatus');
         });
 
         Route::prefix('facebook-credentials')->group(function () {

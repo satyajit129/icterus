@@ -26,23 +26,25 @@
                                 <div class="mb-4">
                                     <label class="form-label">Select Month</label>
                                     <select id="payable_month" name="payable_month"
-                                            class="form-control select2-show-search form-select" required>
+                                        class="form-control select2-show-search form-select" required>
                                         <option value="">Select Month</option>
                                         @foreach ([
-                                            'January' => 1,
-                                            'February' => 2,
-                                            'March' => 3,
-                                            'April' => 4,
-                                            'May' => 5,
-                                            'June' => 6,
-                                            'July' => 7,
-                                            'August' => 8,
-                                            'September' => 9,
-                                            'October' => 10,
-                                            'November' => 11,
-                                            'December' => 12,
-                                        ] as $name => $num)
-                                           <option value="{{ $num }}" {{ request('payable_month') == $num ? 'selected' : '' }}>{{ $name }}</option>
+            'January' => 1,
+            'February' => 2,
+            'March' => 3,
+            'April' => 4,
+            'May' => 5,
+            'June' => 6,
+            'July' => 7,
+            'August' => 8,
+            'September' => 9,
+            'October' => 10,
+            'November' => 11,
+            'December' => 12,
+        ] as $name => $num)
+                                            <option value="{{ $num }}"
+                                                {{ request('payable_month') == $num ? 'selected' : '' }}>{{ $name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -50,8 +52,9 @@
                             <div class="col-md-6 col-lg-6">
                                 <div class="mb-4">
                                     <label class="form-label">Select Year</label>
-                                    <input type="number" name="payable_year" id="payable_year" class="form-control" 
-                                        placeholder="Enter year (e.g. 2025)" required value="{{ request('payable_year', date('Y')) }}">
+                                    <input type="number" name="payable_year" id="payable_year" class="form-control"
+                                        placeholder="Enter year (e.g. 2025)" required
+                                        value="{{ request('payable_year', date('Y')) }}">
                                 </div>
                             </div>
                         </div>
@@ -91,7 +94,7 @@
                             <div class="d-flex">
                                 <div class="mt-2">
                                     <i class="fe fe-dollar-sign me-1"></i> Total Earn
-                                    <h2 class="mb-0 number-font">{{ $total_earning }}</h2>
+                                    <h2 class="mb-0 number-font">৳{{ number_format($total_earning, 2) }}</h2>
                                 </div>
                                 <div class="ms-auto">
                                     <div class="chart-wrapper mt-1">
@@ -109,7 +112,7 @@
                             <div class="d-flex">
                                 <div class="mt-2">
                                     <i class="fe fe-dollar-sign me-1"></i> Total Cost
-                                    <h2 class="mb-0 number-font">{{ $total_cost }}</h2>
+                                    <h2 class="mb-0 number-font">৳{{ number_format($total_cost, 2) }}</h2>
                                 </div>
                                 <div class="ms-auto">
                                     <div class="chart-wrapper mt-1">
@@ -129,11 +132,11 @@
                                     @if ($net_profit_or_loss >= 0)
                                         <i class="fe fe-trending-up text-success me-1"></i> Net Profit
                                         <h2 class="mb-0 number-font text-success">
-                                            ${{ number_format($net_profit_or_loss, 2) }}</h2>
+                                            ৳{{ number_format($net_profit_or_loss, 2) }}</h2>
                                     @else
                                         <i class="fe fe-trending-down text-danger me-1"></i> Net Loss
                                         <h2 class="mb-0 number-font text-danger">
-                                            ${{ number_format(abs($net_profit_or_loss), 2) }}</h2>
+                                            ৳{{ number_format(abs($net_profit_or_loss), 2) }}</h2>
                                     @endif
                                 </div>
                                 <div class="ms-auto">

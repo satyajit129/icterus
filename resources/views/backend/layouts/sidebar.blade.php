@@ -76,6 +76,7 @@
                 $canManageLoan = $user->hasPermission('manage_loan');
                 $canManageStudent = $user->hasPermission('manage_student');
                 $canManageAsset = $user->hasPermission('manage_asset');
+                $canManageProduct = $user->hasPermission('manage_product');
                 $canManageFacebookCredentials = $user->hasPermission('manage_facebook_credentials');
                 $canManageFacebookPages = $user->hasPermission('manage_facebook_pages');
                 $canManageFacebookLeadgenForms = $user->hasPermission('manage_facebook_leadgen_forms');
@@ -175,7 +176,7 @@
                     @endif
                     @if ($canManageDashboard)
                         <li class="slide">
-                            <a class="side-menu__item has-link {{ Route::is('leadList','leadView') ? 'active' : '' }}"
+                            <a class="side-menu__item has-link {{ Route::is('leadList', 'leadView') ? 'active' : '' }}"
                                 href="{{ route('leadList') }}">
                                 <i class="side-menu__icon fe fe-user-check"></i>
                                 <span class="side-menu__label">Leads</span>
@@ -359,6 +360,22 @@
                                 href="{{ route('adminStudentList') }}">
                                 <i class="side-menu__icon fe fe-users"></i>
                                 <span class="side-menu__label">Student List</span>
+                            </a>
+                        </li>
+                    @endif
+                @endif
+
+                @if ($canManageProduct)
+                    {{-- PRODUCT MANAGEMENT --}}
+                    <li class="sub-category">
+                        <h3>Product Management</h3>
+                    </li>
+                    @if ($canManageProduct)
+                        <li class="slide">
+                            <a class="side-menu__item has-link {{ Route::is('adminProductList', 'adminProductCreateOrEdit', 'adminProductView') ? 'active' : '' }}"
+                                href="{{ route('adminProductList') }}">
+                                <i class="side-menu__icon fe fe-package"></i>
+                                <span class="side-menu__label">Products</span>
                             </a>
                         </li>
                     @endif
