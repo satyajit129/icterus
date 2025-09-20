@@ -95,6 +95,47 @@ class AdminController extends Controller
     {
         return $this->settingService->handleSettingsUpdate($request);
     }
+
+    public function adminSettingsTestEmail(Request $request)
+    {
+        $request->validate([
+            'test_email' => 'required|email|max:255'
+        ]);
+
+        try {
+            $emailService = new \App\Services\EmailService();
+            $settings = \App\Models\Setting::first();
+
+            if (!$settings) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Settings not found. Please configure settings first.'
+                ], 400);
+            }
+
+            $emailSent = $emailService->testEmailConfiguration($request->test_email);
+
+            if ($emailSent) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Test email sent successfully!'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to send test email. Please check your email configuration.'
+                ], 500);
+            }
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Test email error: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send test email: ' . $e->getMessage()
+            ], 500);
+        }
+    }
     public function adminDesignation(): View
     {
         return $this->designationService->renderDesignationPage();

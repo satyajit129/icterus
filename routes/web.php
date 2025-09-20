@@ -9,9 +9,13 @@ use App\Http\Middleware\AdminProtectedRoute;
 use Illuminate\Support\Facades\Route;
 use PHPUnit\Framework\Attributes\Group;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [App\Http\Controllers\PublicController::class, 'landingPage'])->name('landing');
+Route::get('/products', [App\Http\Controllers\PublicController::class, 'products'])->name('public.products');
+Route::get('/product/{slug}', [App\Http\Controllers\PublicController::class, 'productDetails'])->name('public.product.details');
+Route::get('/order/{encryptedId}', [App\Http\Controllers\PublicController::class, 'orderPage'])->name('public.order.page');
+Route::post('/order', [App\Http\Controllers\PublicController::class, 'placeOrder'])->name('public.order');
+Route::post('/order/verify-payment', [App\Http\Controllers\PublicController::class, 'verifyPayment'])->name('public.order.verify');
+Route::get('/order-success/{order}', [App\Http\Controllers\PublicController::class, 'orderSuccess'])->name('public.order.success');
 
 Route::get('/login', [AuthController::class, 'adminLogin'])->name('adminLogin');
 
@@ -27,6 +31,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/logout', [AuthController::class, 'adminLogout'])->name('adminLogout');
         Route::get('/settings', [AdminController::class, 'adminSettings'])->name('adminSettings');
         Route::post('/settings-update', [AdminController::class, 'adminSettingsUpdate'])->name('adminSettingsUpdate');
+        Route::post('/settings/test-email', [AdminController::class, 'adminSettingsTestEmail'])->name('adminSettingsTestEmail');
         Route::get('/logout', [AuthController::class, 'adminLogout'])->name('adminLogout');
 
         Route::prefix('designation')->group(function () {
@@ -178,16 +183,23 @@ Route::prefix('admin')->group(function () {
             Route::get('/delete/{id}', [AdminController::class, 'adminAssetDelete'])->name('adminAssetDelete');
         });
 
-        Route::prefix('product')->group(function () {
-            Route::get('/', [ProductController::class, 'adminProductList'])->name('adminProductList');
-            Route::get('/create-or-edit/{id?}', [ProductController::class, 'adminProductCreateOrEdit'])->name('adminProductCreateOrEdit');
-            Route::post('/save/{id?}', [ProductController::class, 'adminProductSave'])->name('adminProductSave');
-            Route::get('/delete/{id}', [ProductController::class, 'adminProductDelete'])->name('adminProductDelete');
-            Route::get('/view/{id}', [ProductController::class, 'adminProductView'])->name('adminProductView');
-            Route::get('/export', [ProductController::class, 'adminProductExport'])->name('adminProductExport');
-            Route::post('/delete-image/{id}', [ProductController::class, 'adminProductDeleteImage'])->name('adminProductDeleteImage');
-            Route::get('/toggle-status/{id}', [ProductController::class, 'adminProductToggleStatus'])->name('adminProductToggleStatus');
-        });
+            Route::prefix('product')->group(function () {
+                Route::get('/', [ProductController::class, 'adminProductList'])->name('adminProductList');
+                Route::get('/create-or-edit/{id?}', [ProductController::class, 'adminProductCreateOrEdit'])->name('adminProductCreateOrEdit');
+                Route::post('/save/{id?}', [ProductController::class, 'adminProductSave'])->name('adminProductSave');
+                Route::get('/delete/{id}', [ProductController::class, 'adminProductDelete'])->name('adminProductDelete');
+                Route::get('/view/{id}', [ProductController::class, 'adminProductView'])->name('adminProductView');
+                Route::get('/export', [ProductController::class, 'adminProductExport'])->name('adminProductExport');
+                Route::post('/delete-image/{id}', [ProductController::class, 'adminProductDeleteImage'])->name('adminProductDeleteImage');
+                Route::get('/toggle-status/{id}', [ProductController::class, 'adminProductToggleStatus'])->name('adminProductToggleStatus');
+            });
+
+            Route::prefix('order')->group(function () {
+                Route::get('/', [App\Http\Controllers\Backend\OrderController::class, 'adminOrderList'])->name('adminOrderList');
+                Route::get('/view/{id}', [App\Http\Controllers\Backend\OrderController::class, 'adminOrderView'])->name('adminOrderView');
+                Route::post('/update-status/{id}', [App\Http\Controllers\Backend\OrderController::class, 'adminOrderUpdateStatus'])->name('adminOrderUpdateStatus');
+                Route::get('/export', [App\Http\Controllers\Backend\OrderController::class, 'adminOrderExport'])->name('adminOrderExport');
+            });
 
         Route::prefix('facebook-credentials')->group(function () {
             Route::get('/', [AdminController::class, 'adminFacebookCredentials'])->name('adminFacebookCredentials');

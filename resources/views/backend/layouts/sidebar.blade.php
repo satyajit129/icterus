@@ -378,6 +378,13 @@
                                 <span class="side-menu__label">Products</span>
                             </a>
                         </li>
+                        <li class="slide">
+                            <a class="side-menu__item has-link {{ Route::is('adminOrderList', 'adminOrderView') ? 'active' : '' }}"
+                                href="{{ route('adminOrderList') }}">
+                                <i class="side-menu__icon fe fe-shopping-cart"></i>
+                                <span class="side-menu__label">Orders</span>
+                            </a>
+                        </li>
                     @endif
                 @endif
 
