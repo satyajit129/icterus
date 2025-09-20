@@ -478,9 +478,9 @@
                                     required>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="customer_whatsapp" class="form-label">WhatsApp Number *</label>
+                                <label for="customer_whatsapp" class="form-label">WhatsApp Number</label>
                                 <input type="tel" class="form-control" id="customer_whatsapp"
-                                    name="customer_whatsapp" required>
+                                    name="customer_whatsapp">
                             </div>
                         </div>
 
@@ -815,10 +815,6 @@
 
             if (!customerMobile || customerMobile.trim() === '') {
                 errors.push('Mobile Number is required');
-            }
-
-            if (!customerWhatsapp || customerWhatsapp.trim() === '') {
-                errors.push('WhatsApp Number is required');
             }
 
             if (!transactionId || transactionId.trim() === '') {
