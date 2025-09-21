@@ -88,6 +88,85 @@
         </div>
     </div>
 
+    <!-- Order Totals Summary -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="avatar bg-warning text-white rounded">
+                                <i class="fe fe-clock"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-0">Pending Orders</h6>
+                            <h4 class="mb-0 text-warning">৳{{ number_format($totalPendingAmount, 2) }}</h4>
+                            <small class="text-muted">{{ $orders->where('payment_status', 'pending')->count() }}
+                                orders</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="avatar bg-success text-white rounded">
+                                <i class="fe fe-check-circle"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-0">Completed Orders</h6>
+                            <h4 class="mb-0 text-success">৳{{ number_format($totalCompletedAmount, 2) }}</h4>
+                            <small class="text-muted">{{ $orders->where('payment_status', 'completed')->count() }}
+                                orders</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="avatar bg-danger text-white rounded">
+                                <i class="fe fe-x-circle"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-0">Failed Orders</h6>
+                            <h4 class="mb-0 text-danger">৳{{ number_format($totalFailedAmount, 2) }}</h4>
+                            <small class="text-muted">{{ $orders->where('payment_status', 'failed')->count() }}
+                                orders</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="avatar bg-primary text-white rounded">
+                                <i class="fe fe-dollar-sign"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="mb-0">Total Amount</h6>
+                            <h4 class="mb-0 text-primary">৳{{ number_format($totalAmount, 2) }}</h4>
+                            <small class="text-muted">{{ $orders->total() }} total orders</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -170,7 +249,8 @@
                                                 @endif
                                                 <div>
                                                     <div class="fw-bold">{{ $order->product->name ?? 'N/A' }}</div>
-                                                    <small class="text-muted">{{ $order->product->category ?? '' }}</small>
+                                                    <small
+                                                        class="text-muted">{{ $order->product->category ?? '' }}</small>
                                                 </div>
                                             </div>
                                         </td>
@@ -362,6 +442,57 @@
             background-color: #28a745 !important;
             color: white !important;
             border-color: #28a745 !important;
+        }
+
+        /* Order Totals Cards */
+        .avatar {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .text-warning {
+            color: #ffc107 !important;
+        }
+
+        .text-success {
+            color: #28a745 !important;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+
+        .text-primary {
+            color: #007bff !important;
+        }
+
+        .bg-warning {
+            background-color: #ffc107 !important;
+        }
+
+        .bg-success {
+            background-color: #28a745 !important;
+        }
+
+        .bg-danger {
+            background-color: #dc3545 !important;
+        }
+
+        .bg-primary {
+            background-color: #007bff !important;
         }
     </style>
 @endpush

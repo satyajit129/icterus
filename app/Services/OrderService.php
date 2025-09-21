@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Earning;
+use App\Models\Employee;
 use App\Exports\OrderExport;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -51,9 +53,16 @@ class OrderService
             $query->whereDate('created_at', '<=', $request->date_to);
         }
 
+        // Calculate totals based on current filters
+        $totalPendingAmount = (clone $query)->where('payment_status', 'pending')->sum('amount');
+        $totalCompletedAmount = (clone $query)->where('payment_status', 'completed')->sum('amount');
+        $totalFailedAmount = (clone $query)->where('payment_status', 'failed')->sum('amount');
+        $totalCancelledAmount = (clone $query)->where('payment_status', 'cancelled')->sum('amount');
+        $totalAmount = (clone $query)->sum('amount');
+
         $orders = $query->orderBy('created_at', 'desc')->paginate(20);
 
-        return view('backend.pages.orders', compact('orders'));
+        return view('backend.pages.orders', compact('orders', 'totalPendingAmount', 'totalCompletedAmount', 'totalFailedAmount', 'totalCancelledAmount', 'totalAmount'));
     }
 
     public function renderOrderView($id): View
@@ -84,6 +93,9 @@ class OrderService
 
             // Send email if order is approved (status changed to completed)
             if ($oldStatus !== 'completed' && $request->payment_status === 'completed') {
+                // Create earning record when order is approved
+                $this->createEarningFromOrder($order, $request->notes);
+
                 $emailSent = $this->emailService->sendOrderApprovalEmail($order);
 
                 if ($emailSent) {
@@ -106,7 +118,7 @@ class OrderService
 
             // Add email notification info if order was approved
             if ($oldStatus !== 'completed' && $request->payment_status === 'completed') {
-                $message .= " Approval email has been sent to the customer.";
+                $message .= " Approval email has been sent to the customer and earning record has been created.";
             }
 
             return redirect()->back()->with('success', $message);
@@ -152,5 +164,58 @@ class OrderService
         $orders = $query->orderBy('created_at', 'desc')->get();
 
         return Excel::download(new OrderExport($orders), 'orders_' . date('Y-m-d_H-i-s') . '.xlsx');
+    }
+
+    /**
+     * Create earning record from approved order
+     */
+    private function createEarningFromOrder(Order $order, string $notes = null): void
+    {
+        try {
+            // Find employee by ID number (you can modify this logic as needed)
+            $employeeIdNumber = 'S-15770'; // Default employee ID number - modify as needed
+            $employee = Employee::where('id_number', $employeeIdNumber)->first();
+
+            if (!$employee) {
+                Log::warning('Employee not found for earning record', [
+                    'order_id' => $order->id,
+                    'employee_id_number' => $employeeIdNumber
+                ]);
+                // Continue with null employee_id if not found
+            }
+
+            Earning::create([
+                'company_id' => 4, // Always 4 as specified
+                'date' => $order->created_at->format('Y-m-d'), // Order created_at date
+                'employee_id' => $employee ? $employee->id : null, // Employee ID from lookup or null
+                'payment_method' => 'Bkash', // Always Bkash as specified
+                'phone_number' => $order->customer_mobile, // Order mobile number
+                'paid_amount' => $order->amount, // Order amount
+                'trnx_id' => $order->bkash_transaction_id, // Order transaction ID
+                'sales_status' => 1, // Always 1 as specified
+                'customer_number' => $order->customer_whatsapp, // Order WhatsApp number
+                'deals_amount' => $order->amount, // Order amount
+                'due_amount' => 0, // Always 0 as specified
+                'product_name' => $order->product->name ?? 'N/A', // Order product name
+                'details' => $notes ?? 'Order approved: ' . $order->order_number, // Approval notes
+            ]);
+
+            Log::info('Earning record created from approved order', [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'amount' => $order->amount,
+                'transaction_id' => $order->bkash_transaction_id,
+                'employee_id' => $employee ? $employee->id : null,
+                'employee_id_number' => $employeeIdNumber
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to create earning record from order', [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
     }
 }
