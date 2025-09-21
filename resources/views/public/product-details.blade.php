@@ -15,6 +15,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
+    <!-- Facebook Pixel -->
+    @include('components.facebook-pixel')
+
+    <!-- Google Tag Manager -->
+    @include('components.google-tag-manager')
+
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -564,7 +570,27 @@
 
                         <div class="product-actions">
                             <a href="{{ route('public.order.page', \App\Services\EncryptionService::encryptProductId($product->id)) }}"
-                                class="btn btn-order">
+                                class="btn btn-order"
+                                onclick="
+                                    FacebookPixel.trackAddToCart({
+                                        content_ids: ['{{ $product->id }}'],
+                                        content_type: 'product',
+                                        content_name: '{{ $product->name }}',
+                                        content_category: '{{ $product->category }}',
+                                        value: {{ $product->final_price }},
+                                        currency: 'BDT',
+                                        num_items: 1
+                                    });
+                                    GoogleTagManager.trackAddToCart({
+                                        item_id: '{{ $product->id }}',
+                                        item_name: '{{ $product->name }}',
+                                        item_category: '{{ $product->category }}',
+                                        item_brand: '{{ $settings->website_name ?? 'Unknown' }}',
+                                        price: {{ $product->final_price }},
+                                        value: {{ $product->final_price }},
+                                        quantity: 1
+                                    });
+                                ">
                                 <i class="fas fa-shopping-cart me-2"></i>Order Now
                             </a>
                         </div>
@@ -674,6 +700,28 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // Track ViewContent when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            FacebookPixel.trackViewContent({
+                content_ids: ['{{ $product->id }}'],
+                content_type: 'product',
+                content_name: '{{ $product->name }}',
+                content_category: '{{ $product->category }}',
+                value: {{ $product->final_price }},
+                currency: 'BDT'
+            });
+
+            GoogleTagManager.trackViewItem({
+                item_id: '{{ $product->id }}',
+                item_name: '{{ $product->name }}',
+                item_category: '{{ $product->category }}',
+                item_brand: '{{ $settings->website_name ?? 'Unknown' }}',
+                price: {{ $product->final_price }},
+                value: {{ $product->final_price }},
+                quantity: 1
+            });
+        });
+
         // Change main image
         function changeMainImage(src) {
             document.getElementById('mainImage').src = src;

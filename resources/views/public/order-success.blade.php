@@ -17,6 +17,12 @@
     <!-- Animate.css -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
 
+    <!-- Facebook Pixel -->
+    @include('components.facebook-pixel')
+
+    <!-- Google Tag Manager -->
+    @include('components.google-tag-manager')
+
     <style>
         :root {
             --primary-color: #667eea;
@@ -1087,6 +1093,32 @@
         // Create confetti on page load
         document.addEventListener('DOMContentLoaded', function() {
             createConfetti();
+
+            // Track Purchase event
+            FacebookPixel.trackPurchase({
+                content_ids: ['{{ $order->product->id }}'],
+                content_type: 'product',
+                content_name: '{{ $order->product->name }}',
+                content_category: '{{ $order->product->category }}',
+                value: {{ $order->amount }},
+                currency: 'BDT',
+                num_items: 1
+            });
+
+            // Track GTM purchase event
+            GoogleTagManager.trackPurchase({
+                transaction_id: '{{ $order->order_number }}',
+                currency: 'BDT',
+                value: {{ $order->amount }},
+                items: [{
+                    item_id: '{{ $order->product->id }}',
+                    item_name: '{{ $order->product->name }}',
+                    item_category: '{{ $order->product->category }}',
+                    item_brand: '{{ $settings->website_name ?? 'Unknown' }}',
+                    price: {{ $order->amount }},
+                    quantity: 1
+                }]
+            });
 
             // Add some interactive effects
             const successCard = document.querySelector('.success-card');

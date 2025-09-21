@@ -49,6 +49,14 @@ class SettingService
                 'mail_encryption' => 'nullable|string|in:tls,ssl',
                 'mail_from_address' => 'nullable|email|max:255',
                 'mail_from_name' => 'nullable|string|max:255',
+                'facebook_pixel_id' => 'nullable|string|max:50',
+                'facebook_pixel_enabled' => 'nullable|boolean',
+                'facebook_pixel_events' => 'nullable|array',
+                'gtm_id' => 'nullable|string|max:50',
+                'gtm_enabled' => 'nullable|boolean',
+                'gtm_events' => 'nullable|array',
+                'gtm_custom_dimensions' => 'nullable|string|max:1000',
+                'gtm_ecommerce_settings' => 'nullable|string|max:1000',
                 'logo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
                 'favicon' => 'nullable|image|mimes:ico,jpg,jpeg,png|max:1024',
             ]);
@@ -92,6 +100,14 @@ class SettingService
             $settings->mail_encryption = $request->mail_encryption;
             $settings->mail_from_address = $request->mail_from_address;
             $settings->mail_from_name = $request->mail_from_name;
+            $settings->facebook_pixel_id = $request->facebook_pixel_id;
+            $settings->facebook_pixel_enabled = $request->has('facebook_pixel_enabled') ? true : false;
+            $settings->facebook_pixel_events = $request->facebook_pixel_events ? json_encode($request->facebook_pixel_events) : null;
+            $settings->gtm_id = $request->gtm_id;
+            $settings->gtm_enabled = $request->has('gtm_enabled') ? true : false;
+            $settings->gtm_events = $request->gtm_events ? json_encode($request->gtm_events) : null;
+            $settings->gtm_custom_dimensions = $request->gtm_custom_dimensions;
+            $settings->gtm_ecommerce_settings = $request->gtm_ecommerce_settings;
 
             $settings->save();
 

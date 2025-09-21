@@ -16,6 +16,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
+    <!-- Facebook Pixel -->
+    @include('components.facebook-pixel')
+
+    <!-- Google Tag Manager -->
+    @include('components.google-tag-manager')
+
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -403,7 +409,16 @@
                 <p class="hero-subtitle">
                     {{ $settings->hero_subtitle ?? 'Premium quality items at unbeatable prices. Shop with confidence and enjoy fast delivery.' }}
                 </p>
-                <a href="{{ route('public.products') }}" class="btn-hero">
+                <a href="{{ route('public.products') }}" class="btn-hero"
+                    onclick="
+                       FacebookPixel.trackSearch({
+                           search_string: 'browse_products',
+                           content_category: 'all_products'
+                       });
+                       GoogleTagManager.trackSearch({
+                           search_term: 'browse_products'
+                       });
+                   ">
                     <i class="fas fa-shopping-cart me-2"></i>Shop Now
                 </a>
             </div>
@@ -458,7 +473,26 @@
 
                                     <div class="product-actions">
                                         <a href="{{ route('public.product.details', $product->slug) }}"
-                                            class="btn-view">
+                                            class="btn-view"
+                                            onclick="
+                                                FacebookPixel.trackViewContent({
+                                                    content_ids: ['{{ $product->id }}'],
+                                                    content_type: 'product',
+                                                    content_name: '{{ $product->name }}',
+                                                    content_category: '{{ $product->category }}',
+                                                    value: {{ $product->final_price }},
+                                                    currency: 'BDT'
+                                                });
+                                                GoogleTagManager.trackViewItem({
+                                                    item_id: '{{ $product->id }}',
+                                                    item_name: '{{ $product->name }}',
+                                                    item_category: '{{ $product->category }}',
+                                                    item_brand: '{{ $settings->website_name ?? 'Unknown' }}',
+                                                    price: {{ $product->final_price }},
+                                                    value: {{ $product->final_price }},
+                                                    quantity: 1
+                                                });
+                                            ">
                                             <i class="fas fa-eye me-1"></i>View Details
                                         </a>
                                     </div>
@@ -469,7 +503,16 @@
                 </div>
 
                 <div class="text-center mt-5">
-                    <a href="{{ route('public.products') }}" class="btn-hero">
+                    <a href="{{ route('public.products') }}" class="btn-hero"
+                        onclick="
+                           FacebookPixel.trackSearch({
+                               search_string: 'view_all_products',
+                               content_category: 'all_products'
+                           });
+                           GoogleTagManager.trackSearch({
+                               search_term: 'view_all_products'
+                           });
+                       ">
                         <i class="fas fa-th-large me-2"></i>View All Products
                     </a>
                 </div>

@@ -15,6 +15,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
+    <!-- Facebook Pixel -->
+    @include('components.facebook-pixel')
+
+    <!-- Google Tag Manager -->
+    @include('components.google-tag-manager')
+
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -711,6 +717,28 @@
     <script>
         let orderId = null;
 
+        // Track ViewContent when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            FacebookPixel.trackViewContent({
+                content_ids: ['{{ $product->id }}'],
+                content_type: 'product',
+                content_name: '{{ $product->name }}',
+                content_category: '{{ $product->category }}',
+                value: {{ $product->final_price }},
+                currency: 'BDT'
+            });
+
+            GoogleTagManager.trackViewItem({
+                item_id: '{{ $product->id }}',
+                item_name: '{{ $product->name }}',
+                item_category: '{{ $product->category }}',
+                item_brand: '{{ $settings->website_name ?? 'Unknown' }}',
+                price: {{ $product->final_price }},
+                value: {{ $product->final_price }},
+                quantity: 1
+            });
+        });
+
         // Initialize toastr options
         $(document).ready(function() {
             toastr.options = {
@@ -863,6 +891,31 @@
         // Form submission
         document.getElementById('orderForm').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            // Track InitiateCheckout event
+            FacebookPixel.trackInitiateCheckout({
+                content_ids: ['{{ $product->id }}'],
+                content_type: 'product',
+                content_name: '{{ $product->name }}',
+                content_category: '{{ $product->category }}',
+                value: {{ $product->final_price }},
+                currency: 'BDT',
+                num_items: 1
+            });
+
+            // Track GTM begin_checkout event
+            GoogleTagManager.trackBeginCheckout({
+                currency: 'BDT',
+                value: {{ $product->final_price }},
+                items: [{
+                    item_id: '{{ $product->id }}',
+                    item_name: '{{ $product->name }}',
+                    item_category: '{{ $product->category }}',
+                    item_brand: '{{ $settings->website_name ?? 'Unknown' }}',
+                    price: {{ $product->final_price }},
+                    quantity: 1
+                }]
+            });
 
             // Get form data
             const formData = new FormData(this);

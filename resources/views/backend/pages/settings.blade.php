@@ -185,6 +185,238 @@
                                     </div>
                                 </div>
 
+                                <!-- Facebook Pixel Settings -->
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <h5 class="text-primary mb-3">Facebook Pixel Settings</h5>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-md-3 form-label">Enable Facebook Pixel</label>
+                                    <div class="col-md-9">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="facebook_pixel_enabled"
+                                                value="1"
+                                                {{ old('facebook_pixel_enabled', $settings->facebook_pixel_enabled ?? false) ? 'checked' : '' }}>
+                                            <label class="form-check-label">
+                                                Enable Facebook Pixel tracking
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-md-3 form-label">Facebook Pixel ID</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" name="facebook_pixel_id"
+                                            placeholder="Facebook Pixel ID (e.g., 123456789012345)"
+                                            value="{{ old('facebook_pixel_id', $settings->facebook_pixel_id ?? '') }}">
+                                        <small class="form-text text-muted">
+                                            Enter your Facebook Pixel ID. You can find this in your Facebook Ads Manager
+                                            under Events Manager.
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-md-3 form-label">Tracked Events</label>
+                                    <div class="col-md-9">
+                                        @php
+                                            $enabledEvents = $settings->facebook_pixel_events
+                                                ? json_decode($settings->facebook_pixel_events, true)
+                                                : [
+                                                    'PageView',
+                                                    'ViewContent',
+                                                    'AddToCart',
+                                                    'InitiateCheckout',
+                                                    'Purchase',
+                                                ];
+                                        @endphp
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="facebook_pixel_events[]" value="PageView"
+                                                        {{ in_array('PageView', $enabledEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">PageView</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="facebook_pixel_events[]" value="ViewContent"
+                                                        {{ in_array('ViewContent', $enabledEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">ViewContent</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="facebook_pixel_events[]" value="AddToCart"
+                                                        {{ in_array('AddToCart', $enabledEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">AddToCart</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="facebook_pixel_events[]" value="InitiateCheckout"
+                                                        {{ in_array('InitiateCheckout', $enabledEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">InitiateCheckout</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="facebook_pixel_events[]" value="Purchase"
+                                                        {{ in_array('Purchase', $enabledEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">Purchase</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="facebook_pixel_events[]" value="Lead"
+                                                        {{ in_array('Lead', $enabledEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">Lead</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="facebook_pixel_events[]" value="Search"
+                                                        {{ in_array('Search', $enabledEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">Search</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="facebook_pixel_events[]" value="Contact"
+                                                        {{ in_array('Contact', $enabledEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">Contact</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <small class="form-text text-muted">
+                                            Select which events you want to track. PageView is automatically enabled.
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- Google Tag Manager Settings -->
+                                <div class="row mb-4">
+                                    <div class="col-12">
+                                        <h5 class="text-primary mb-3">Google Tag Manager Settings</h5>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-md-3 form-label">Enable Google Tag Manager</label>
+                                    <div class="col-md-9">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="gtm_enabled"
+                                                value="1"
+                                                {{ old('gtm_enabled', $settings->gtm_enabled ?? false) ? 'checked' : '' }}>
+                                            <label class="form-check-label">
+                                                Enable Google Tag Manager tracking
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-md-3 form-label">GTM Container ID</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" name="gtm_id"
+                                            placeholder="GTM Container ID (e.g., GTM-XXXXXXX)"
+                                            value="{{ old('gtm_id', $settings->gtm_id ?? '') }}">
+                                        <small class="form-text text-muted">
+                                            Enter your GTM Container ID. You can find this in your Google Tag Manager
+                                            dashboard.
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-md-3 form-label">Tracked Events</label>
+                                    <div class="col-md-9">
+                                        @php
+                                            $enabledGtmEvents = $settings->gtm_events
+                                                ? json_decode($settings->gtm_events, true)
+                                                : [
+                                                    'page_view',
+                                                    'view_item',
+                                                    'add_to_cart',
+                                                    'begin_checkout',
+                                                    'purchase',
+                                                ];
+                                        @endphp
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="gtm_events[]"
+                                                        value="page_view"
+                                                        {{ in_array('page_view', $enabledGtmEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">Page View</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="gtm_events[]"
+                                                        value="view_item"
+                                                        {{ in_array('view_item', $enabledGtmEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">View Item</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="gtm_events[]"
+                                                        value="add_to_cart"
+                                                        {{ in_array('add_to_cart', $enabledGtmEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">Add to Cart</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="gtm_events[]"
+                                                        value="begin_checkout"
+                                                        {{ in_array('begin_checkout', $enabledGtmEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">Begin Checkout</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="gtm_events[]"
+                                                        value="purchase"
+                                                        {{ in_array('purchase', $enabledGtmEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">Purchase</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="gtm_events[]"
+                                                        value="search"
+                                                        {{ in_array('search', $enabledGtmEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">Search</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="gtm_events[]"
+                                                        value="generate_lead"
+                                                        {{ in_array('generate_lead', $enabledGtmEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">Generate Lead</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" name="gtm_events[]"
+                                                        value="contact"
+                                                        {{ in_array('contact', $enabledGtmEvents) ? 'checked' : '' }}>
+                                                    <label class="form-check-label">Contact</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <small class="form-text text-muted">
+                                            Select which events you want to track. Page View is automatically enabled.
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-md-3 form-label">Custom Dimensions</label>
+                                    <div class="col-md-9">
+                                        <textarea class="form-control" name="gtm_custom_dimensions" rows="4"
+                                            placeholder='{"dimension1": "value1", "dimension2": "value2"}'>{{ old('gtm_custom_dimensions', $settings->gtm_custom_dimensions ?? '') }}</textarea>
+                                        <small class="form-text text-muted">
+                                            Enter custom dimensions as JSON. Example: {"user_type": "premium",
+                                            "page_category": "electronics"}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-md-3 form-label">E-commerce Settings</label>
+                                    <div class="col-md-9">
+                                        <textarea class="form-control" name="gtm_ecommerce_settings" rows="4"
+                                            placeholder='{"currency": "BDT", "country": "BD", "language": "en"}'>{{ old('gtm_ecommerce_settings', $settings->gtm_ecommerce_settings ?? '') }}</textarea>
+                                        <small class="form-text text-muted">
+                                            Enter e-commerce settings as JSON. Example: {"currency": "BDT", "country": "BD",
+                                            "language": "en"}
+                                        </small>
+                                    </div>
+                                </div>
+
                                 <div class="row mb-4">
                                     <label class="col-md-3 form-label">Logo
                                         @if (isset($settings->logo) && $settings->logo)
