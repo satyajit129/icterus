@@ -473,7 +473,7 @@
                                     </div>
 
                                     @if ($product->description)
-                                        <p class="product-description">{{ strip_tags($product->description) }}</p>
+                                        <div class="product-description">{!! $product->description !!}</div>
                                     @endif
 
                                     <div class="product-actions">
