@@ -1519,15 +1519,12 @@
                 }, 500);
 
             } catch (error) {
-                console.error('Print error:', error);
                 alert('Error generating print preview. Please try again.');
             }
         }
 
         // Simple print function (fallback)
         function printOrderSimple() {
-            console.log('Simple print function called');
-
             // Hide elements that shouldn't be printed
             const elementsToHide = document.querySelectorAll(
                 '.confetti, .floating-element, .action-buttons, .contact-info');

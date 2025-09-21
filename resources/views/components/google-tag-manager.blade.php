@@ -19,10 +19,9 @@
         // Check if GTM ID is valid
         const gtmId = '{{ $gtmId }}';
         if (!validateGtmId(gtmId)) {
-            console.error('❌ GTM Error: Invalid GTM ID format. Expected GTM-XXXXXXX, got:', gtmId);
-            console.error('Please check your GTM ID in Settings > Google Tag Manager Settings');
+            // Invalid GTM ID format
         } else {
-            console.log('✅ GTM ID validated:', gtmId);
+            // GTM ID validated
         }
 
         // Load GTM script
@@ -68,18 +67,18 @@
                     if (typeof dataLayer !== 'undefined' && Array.isArray(dataLayer)) {
                         this.isConnected = true;
                         this.connectionTested = true;
-                        console.log('✅ GTM connection test passed');
+                        // GTM connection test passed
                         return true;
                     } else {
                         this.isConnected = false;
                         this.connectionTested = true;
-                        console.error('❌ GTM connection test failed - dataLayer not found');
+                        // GTM connection test failed - dataLayer not found
                         return false;
                     }
                 } catch (error) {
                     this.isConnected = false;
                     this.connectionTested = true;
-                    console.error('❌ GTM connection test error:', error);
+                    // GTM connection test error
                     return false;
                 }
             },
@@ -87,12 +86,12 @@
             // Validate event before pushing
             validateEvent: function(eventName, eventData) {
                 if (!this.testConnection()) {
-                    console.error('❌ Cannot push event - GTM not connected');
+                    // Cannot push event - GTM not connected
                     return false;
                 }
 
                 if (!this.enabledEvents.includes(eventName) && !this.enabledEvents.includes('all')) {
-                    console.warn('⚠️ Event not enabled:', eventName);
+                    // Event not enabled
                     return false;
                 }
 
@@ -117,12 +116,10 @@
                         event.custom_dimensions = this.customDimensions;
                     }
 
-                    console.log('🎯 GTM Event:', eventName, event);
                     dataLayer.push(event);
-                    console.log('✅ Event pushed successfully:', eventName);
                     return true;
                 } catch (error) {
-                    console.error('❌ Failed to push event:', eventName, error);
+                    // Failed to push event
                     return false;
                 }
             },
@@ -236,13 +233,13 @@
                     timestamp: new Date().toISOString()
                 };
 
-                console.log('📊 GTM Status:', status);
+                // GTM Status logged
                 return status;
             },
 
             // Debug helper - test all events
             testAllEvents: function() {
-                console.log('🧪 Testing all enabled GTM events...');
+                // Testing all enabled GTM events
                 const testData = {
                     item_id: 'test_123',
                     item_name: 'Test Product',
@@ -255,7 +252,7 @@
 
                 this.enabledEvents.forEach(eventName => {
                     if (eventName !== 'page_view') {
-                        console.log(`Testing GTM event: ${eventName}`);
+                        // Testing GTM event
                         this.pushEvent(eventName, testData);
                     }
                 });
@@ -263,7 +260,7 @@
 
             // Manual connection test
             forceConnectionTest: function() {
-                console.log('🔍 Forcing GTM connection test...');
+                // Forcing GTM connection test
                 this.connectionTested = false;
                 return this.testConnection();
             },
@@ -272,7 +269,7 @@
             clearDataLayer: function() {
                 if (typeof dataLayer !== 'undefined') {
                     dataLayer.length = 0;
-                    console.log('🧹 GTM dataLayer cleared');
+                    // GTM dataLayer cleared
                 }
             }
         };
@@ -302,25 +299,14 @@
                     search: (data) => window.GoogleTagManager.trackSearch(data)
                 };
 
-                console.log('🛠️ GTM Debug helpers available:');
-                console.log('- gtmDebug.status() - Get GTM status');
-                console.log('- gtmDebug.testAll() - Test all events');
-                console.log('- gtmDebug.testConnection() - Test connection');
-                console.log('- gtmDebug.push(event, data) - Push custom event');
-                console.log('- gtmDebug.clear() - Clear dataLayer');
-                console.log('- gtmDebug.viewItem(data) - Track view item');
-                console.log('- gtmDebug.addToCart(data) - Track add to cart');
-                console.log('- gtmDebug.beginCheckout(data) - Track begin checkout');
-                console.log('- gtmDebug.purchase(data) - Track purchase');
-                console.log('- gtmDebug.search(data) - Track search');
+                // GTM Debug helpers available
             }, 2000);
         });
     </script>
 @else
     <!-- GTM Disabled -->
     <script>
-        console.log('⚠️ Google Tag Manager is disabled');
-        console.log('To enable: Go to Settings > Google Tag Manager Settings');
+        // Google Tag Manager is disabled
 
         window.GoogleTagManager = {
             gtmId: null,
@@ -331,31 +317,31 @@
             connectionTested: true,
 
             pushEvent: function() {
-                console.log('⚠️ GTM disabled - event not tracked');
+                // GTM disabled - event not tracked
             },
             trackPageView: function() {
-                console.log('⚠️ GTM disabled - page_view not tracked');
+                // GTM disabled - page_view not tracked
             },
             trackViewItem: function() {
-                console.log('⚠️ GTM disabled - view_item not tracked');
+                // GTM disabled - view_item not tracked
             },
             trackAddToCart: function() {
-                console.log('⚠️ GTM disabled - add_to_cart not tracked');
+                // GTM disabled - add_to_cart not tracked
             },
             trackBeginCheckout: function() {
-                console.log('⚠️ GTM disabled - begin_checkout not tracked');
+                // GTM disabled - begin_checkout not tracked
             },
             trackPurchase: function() {
-                console.log('⚠️ GTM disabled - purchase not tracked');
+                // GTM disabled - purchase not tracked
             },
             trackSearch: function() {
-                console.log('⚠️ GTM disabled - search not tracked');
+                // GTM disabled - search not tracked
             },
             trackLead: function() {
-                console.log('⚠️ GTM disabled - generate_lead not tracked');
+                // GTM disabled - generate_lead not tracked
             },
             trackContact: function() {
-                console.log('⚠️ GTM disabled - contact not tracked');
+                // GTM disabled - contact not tracked
             },
 
             getStatus: function() {
@@ -370,12 +356,12 @@
                     dataLayerLength: 0,
                     timestamp: new Date().toISOString()
                 };
-                console.log('📊 GTM Status:', status);
+                // GTM Status logged
                 return status;
             },
 
             testConnection: function() {
-                console.log('⚠️ GTM disabled - connection test skipped');
+                // GTM disabled - connection test skipped
                 return false;
             }
         };

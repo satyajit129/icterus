@@ -1050,7 +1050,6 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
                     let errorMessage = 'Something went wrong. Please try again.';
 
                     if (error.message.includes('non-JSON response')) {

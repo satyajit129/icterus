@@ -17,10 +17,9 @@
         // Check if pixel ID is valid
         const pixelId = '{{ $pixelId }}';
         if (!validatePixelId(pixelId)) {
-            console.error('❌ Facebook Pixel Error: Invalid Pixel ID format. Expected 15-16 digits, got:', pixelId);
-            console.error('Please check your Pixel ID in Settings > Facebook Pixel Settings');
+            // Invalid Pixel ID format
         } else {
-            console.log('✅ Facebook Pixel ID validated:', pixelId);
+            // Facebook Pixel ID validated
         }
 
         // Load Facebook Pixel script
@@ -46,26 +45,23 @@
         // Initialize pixel with error handling and connection testing
         try {
             fbq('init', pixelId);
-            console.log('✅ Facebook Pixel initialized successfully with ID:', pixelId);
+            // Facebook Pixel initialized successfully
 
             // Test pixel connection
             fbq('track', 'PageView');
-            console.log('✅ Facebook Pixel PageView event sent');
+            // Facebook Pixel PageView event sent
 
             // Additional connection test
             setTimeout(function() {
                 if (typeof fbq !== 'undefined' && fbq.callMethod) {
-                    console.log('✅ Facebook Pixel is active and ready');
-                    console.log('📊 Pixel Status: Connected and tracking');
-                    console.log('🎯 Available events:', @json($enabledEvents));
+                    // Facebook Pixel is active and ready
                 } else {
-                    console.error('❌ Facebook Pixel failed to initialize properly');
+                    // Facebook Pixel failed to initialize properly
                 }
             }, 1000);
 
         } catch (error) {
-            console.error('❌ Facebook Pixel initialization failed:', error);
-            console.error('Please check your internet connection and Pixel ID');
+            // Facebook Pixel initialization failed
         }
     </script>
     <noscript><img height="1" width="1" style="display:none"
@@ -88,18 +84,18 @@
                     if (typeof fbq !== 'undefined' && fbq.callMethod) {
                         this.isConnected = true;
                         this.connectionTested = true;
-                        console.log('✅ Facebook Pixel connection test passed');
+                        // Facebook Pixel connection test passed
                         return true;
                     } else {
                         this.isConnected = false;
                         this.connectionTested = true;
-                        console.error('❌ Facebook Pixel connection test failed');
+                        // Facebook Pixel connection test failed
                         return false;
                     }
                 } catch (error) {
                     this.isConnected = false;
                     this.connectionTested = true;
-                    console.error('❌ Facebook Pixel connection test error:', error);
+                    // Facebook Pixel connection test error
                     return false;
                 }
             },
@@ -107,12 +103,12 @@
             // Validate event before tracking
             validateEvent: function(eventName, parameters) {
                 if (!this.testConnection()) {
-                    console.error('❌ Cannot track event - Pixel not connected');
+                    // Cannot track event - Pixel not connected
                     return false;
                 }
 
                 if (!this.enabledEvents.includes(eventName) && !this.enabledEvents.includes('all')) {
-                    console.warn('⚠️ Event not enabled:', eventName);
+                    // Event not enabled
                     return false;
                 }
 
@@ -126,12 +122,10 @@
                 }
 
                 try {
-                    console.log('🎯 Facebook Pixel Event:', eventName, parameters);
                     fbq('track', eventName, parameters);
-                    console.log('✅ Event sent successfully:', eventName);
                     return true;
                 } catch (error) {
-                    console.error('❌ Failed to send event:', eventName, error);
+                    // Failed to send event
                     return false;
                 }
             },
@@ -192,13 +186,13 @@
                     timestamp: new Date().toISOString()
                 };
 
-                console.log('📊 Facebook Pixel Status:', status);
+                // Facebook Pixel Status logged
                 return status;
             },
 
             // Debug helper - test all events
             testAllEvents: function() {
-                console.log('🧪 Testing all enabled events...');
+                // Testing all enabled events
                 const testData = {
                     content_ids: ['test_123'],
                     content_type: 'product',
@@ -210,7 +204,7 @@
 
                 this.enabledEvents.forEach(eventName => {
                     if (eventName !== 'PageView') {
-                        console.log(`Testing event: ${eventName}`);
+                        // Testing event
                         this.track(eventName, testData);
                     }
                 });
@@ -218,7 +212,7 @@
 
             // Manual connection test
             forceConnectionTest: function() {
-                console.log('🔍 Forcing connection test...');
+                // Forcing connection test
                 this.connectionTested = false;
                 return this.testConnection();
             }
@@ -243,19 +237,14 @@
                     track: (event, data) => window.FacebookPixel.track(event, data)
                 };
 
-                console.log('🛠️ Debug helpers available:');
-                console.log('- pixelDebug.status() - Get pixel status');
-                console.log('- pixelDebug.testAll() - Test all events');
-                console.log('- pixelDebug.testConnection() - Test connection');
-                console.log('- pixelDebug.track(event, data) - Track custom event');
+                // Debug helpers available
             }, 2000);
         });
     </script>
 @else
     <!-- Facebook Pixel Disabled -->
     <script>
-        console.log('⚠️ Facebook Pixel is disabled');
-        console.log('To enable: Go to Settings > Facebook Pixel Settings');
+        // Facebook Pixel is disabled
 
         window.FacebookPixel = {
             pixelId: null,
@@ -264,34 +253,34 @@
             connectionTested: true,
 
             track: function() {
-                console.log('⚠️ Facebook Pixel disabled - event not tracked');
+                // Facebook Pixel disabled - event not tracked
             },
             trackPageView: function() {
-                console.log('⚠️ Facebook Pixel disabled - PageView not tracked');
+                // Facebook Pixel disabled - PageView not tracked
             },
             trackViewContent: function() {
-                console.log('⚠️ Facebook Pixel disabled - ViewContent not tracked');
+                // Facebook Pixel disabled - ViewContent not tracked
             },
             trackAddToCart: function() {
-                console.log('⚠️ Facebook Pixel disabled - AddToCart not tracked');
+                // Facebook Pixel disabled - AddToCart not tracked
             },
             trackInitiateCheckout: function() {
-                console.log('⚠️ Facebook Pixel disabled - InitiateCheckout not tracked');
+                // Facebook Pixel disabled - InitiateCheckout not tracked
             },
             trackPurchase: function() {
-                console.log('⚠️ Facebook Pixel disabled - Purchase not tracked');
+                // Facebook Pixel disabled - Purchase not tracked
             },
             trackLead: function() {
-                console.log('⚠️ Facebook Pixel disabled - Lead not tracked');
+                // Facebook Pixel disabled - Lead not tracked
             },
             trackCompleteRegistration: function() {
-                console.log('⚠️ Facebook Pixel disabled - CompleteRegistration not tracked');
+                // Facebook Pixel disabled - CompleteRegistration not tracked
             },
             trackSearch: function() {
-                console.log('⚠️ Facebook Pixel disabled - Search not tracked');
+                // Facebook Pixel disabled - Search not tracked
             },
             trackContact: function() {
-                console.log('⚠️ Facebook Pixel disabled - Contact not tracked');
+                // Facebook Pixel disabled - Contact not tracked
             },
 
             getStatus: function() {
@@ -303,12 +292,12 @@
                     fbqAvailable: false,
                     timestamp: new Date().toISOString()
                 };
-                console.log('📊 Facebook Pixel Status:', status);
+                // Facebook Pixel Status logged
                 return status;
             },
 
             testConnection: function() {
-                console.log('⚠️ Facebook Pixel disabled - connection test skipped');
+                // Facebook Pixel disabled - connection test skipped
                 return false;
             }
         };
