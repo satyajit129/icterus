@@ -374,7 +374,7 @@
                 @else
                     <i class="fas fa-shopping-bag me-2"></i>
                 @endif
-                {{ $settings->website_name ?? 'ProductHub' }}
+                {{-- {{ $settings->website_name ?? 'ProductHub' }} --}}
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>

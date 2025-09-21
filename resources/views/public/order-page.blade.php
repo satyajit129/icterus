@@ -556,8 +556,7 @@
                                 <p>Payment to:</p>
                                 <div class="merchant-info">
                                     <div class="merchant-number" id="merchantNumber">
-                                        {{ $settings->bkash_merchant_number ?? '01741909808' }}
-                                    </div>
+                                        {{ trim($settings->bkash_merchant_number ?? '01741909808') }}</div>
                                     <button class="copy-btn" onclick="copyMerchantNumber()">
                                         <i class="fas fa-copy me-1"></i>Copy
                                     </button>
@@ -611,8 +610,7 @@
                                 <p>Enter the merchant number:</p>
                                 <div class="merchant-info">
                                     <div class="merchant-number" id="merchantNumberManual">
-                                        {{ $settings->bkash_merchant_number ?? '01741909808' }}
-                                    </div>
+                                        {{ trim($settings->bkash_merchant_number ?? '01741909808') }}</div>
                                     <button class="copy-btn" onclick="copyMerchantNumberManual()">
                                         <i class="fas fa-copy me-1"></i>Copy
                                     </button>
@@ -734,40 +732,117 @@
             };
         });
 
+        // Helper functions for showing messages
+        function showSuccessMessage(message) {
+            if (typeof toastr !== 'undefined' && toastr.success) {
+                toastr.success(message, 'Success');
+            } else {
+                alert(message);
+            }
+        }
+
+        function showErrorMessage(message) {
+            if (typeof toastr !== 'undefined' && toastr.error) {
+                toastr.error(message, 'Error');
+            } else {
+                alert(message);
+            }
+        }
+
         // Copy merchant number
         function copyMerchantNumber() {
-            const merchantNumber = document.getElementById('merchantNumber').textContent;
-            navigator.clipboard.writeText(merchantNumber).then(() => {
-                if (typeof toastr !== 'undefined') {
-                    toastr.success('Merchant number copied to clipboard!', 'Success');
-                } else {
-                    alert('Merchant number copied to clipboard!');
+            const merchantNumberElement = document.getElementById('merchantNumber');
+            const merchantNumber = merchantNumberElement.textContent.trim();
+
+            // Fallback method for older browsers
+            function fallbackCopyTextToClipboard(text) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+
+                try {
+                    const successful = document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    return successful;
+                } catch (err) {
+                    document.body.removeChild(textArea);
+                    return false;
                 }
-            }).catch(() => {
-                if (typeof toastr !== 'undefined') {
-                    toastr.error('Failed to copy merchant number', 'Error');
+            }
+
+            // Try modern clipboard API first, then fallback
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(merchantNumber).then(() => {
+                    showSuccessMessage('Merchant number copied to clipboard!');
+                }).catch(() => {
+                    // Fallback if clipboard API fails
+                    if (fallbackCopyTextToClipboard(merchantNumber)) {
+                        showSuccessMessage('Merchant number copied to clipboard!');
+                    } else {
+                        showErrorMessage('Failed to copy merchant number. Please copy manually: ' + merchantNumber);
+                    }
+                });
+            } else {
+                // Use fallback method
+                if (fallbackCopyTextToClipboard(merchantNumber)) {
+                    showSuccessMessage('Merchant number copied to clipboard!');
                 } else {
-                    alert('Failed to copy merchant number');
+                    showErrorMessage('Failed to copy merchant number. Please copy manually: ' + merchantNumber);
                 }
-            });
+            }
         }
 
         // Copy merchant number for manual method
         function copyMerchantNumberManual() {
-            const merchantNumber = document.getElementById('merchantNumberManual').textContent;
-            navigator.clipboard.writeText(merchantNumber).then(() => {
-                if (typeof toastr !== 'undefined') {
-                    toastr.success('Merchant number copied to clipboard!', 'Success');
-                } else {
-                    alert('Merchant number copied to clipboard!');
+            const merchantNumberElement = document.getElementById('merchantNumberManual');
+            const merchantNumber = merchantNumberElement.textContent.trim();
+
+            // Fallback method for older browsers
+            function fallbackCopyTextToClipboard(text) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+
+                try {
+                    const successful = document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    return successful;
+                } catch (err) {
+                    document.body.removeChild(textArea);
+                    return false;
                 }
-            }).catch(() => {
-                if (typeof toastr !== 'undefined') {
-                    toastr.error('Failed to copy merchant number', 'Error');
+            }
+
+            // Try modern clipboard API first, then fallback
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(merchantNumber).then(() => {
+                    showSuccessMessage('Merchant number copied to clipboard!');
+                }).catch(() => {
+                    // Fallback if clipboard API fails
+                    if (fallbackCopyTextToClipboard(merchantNumber)) {
+                        showSuccessMessage('Merchant number copied to clipboard!');
+                    } else {
+                        showErrorMessage('Failed to copy merchant number. Please copy manually: ' + merchantNumber);
+                    }
+                });
+            } else {
+                // Use fallback method
+                if (fallbackCopyTextToClipboard(merchantNumber)) {
+                    showSuccessMessage('Merchant number copied to clipboard!');
                 } else {
-                    alert('Failed to copy merchant number');
+                    showErrorMessage('Failed to copy merchant number. Please copy manually: ' + merchantNumber);
                 }
-            });
+            }
         }
 
         // Payment method selection
@@ -884,30 +959,19 @@
                             window.location.href = '{{ route('landing') }}';
                         };
 
-                        // Show success message
+                        // Show brief success message before redirect
                         if (typeof toastr !== 'undefined') {
-                            toastr.success(
-                                'Order placed successfully! We will verify your payment and update the status.',
-                                'Order Confirmed');
-                        } else {
-                            alert(
-                                'Order placed successfully! We will verify your payment and update the status.'
-                            );
+                            toastr.success('Order placed successfully! Redirecting...', 'Success', {
+                                timeOut: 1000,
+                                progressBar: true
+                            });
                         }
 
-                        // Show success alert
-                        const alert = document.createElement('div');
-                        alert.className = 'alert alert-success';
-                        alert.innerHTML =
-                            '<i class="fas fa-check-circle me-2"></i>Order placed successfully! We will verify your payment and update the status.';
-                        document.querySelector('.transaction-section').insertBefore(alert, document
-                            .querySelector('.transaction-section h3').nextSibling);
-
-                        // Scroll to top to show the success message
-                        window.scrollTo({
-                            top: 0,
-                            behavior: 'smooth'
-                        });
+                        // Redirect to order success page
+                        setTimeout(() => {
+                            window.location.href = '{{ route('public.order.success', ':orderId') }}'
+                                .replace(':orderId', data.order_id);
+                        }, 1500);
                     } else {
                         const errorMessage = data.message || 'Something went wrong. Please try again.';
                         const errorType = data.error_type || 'general';

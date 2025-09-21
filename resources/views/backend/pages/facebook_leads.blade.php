@@ -491,6 +491,8 @@
 @endsection
 
 @section('custom_js')
+<script src="{{ asset('js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('js/select2.js') }}"></script>
     <script>
         $(document).ready(function() {
             // Hide loader on page load (in case of refresh or navigation)

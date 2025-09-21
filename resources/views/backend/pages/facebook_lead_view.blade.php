@@ -346,6 +346,8 @@
 @endsection
 
 @section('custom_js')
+<script src="{{ asset('js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('js/select2.js') }}"></script>
     <script>
         // Any additional JavaScript can be added here
     </script>

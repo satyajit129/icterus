@@ -85,7 +85,7 @@
                 <div class="card-body">
                     <div class="">
                         <h5 class="fw-bold">
-                            Total Amount: 
+                            Total Amount:
                             <span class="text-success">{{ number_format($totalAmount, 2) }}</span>
                         </h5>
                     </div>
@@ -105,13 +105,13 @@
                                     <i class="fe fe-download me-1"></i> Download Data
                             </a>
                         @endif
-                        
+
                         @if ($canAddOfficeExpense)
                             <a href="{{ route('adminOfficeExpenseCreateOrEdit') }}">
                                 <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Office Expense</button>
                             </a>
                         @endif
-                        
+
                     </div>
                 </div>
                 <div class="card-body">

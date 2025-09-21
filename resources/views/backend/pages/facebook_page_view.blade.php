@@ -219,6 +219,8 @@
 @endsection
 
 @section('custom_js')
+<script src="{{ asset('js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('js/select2.js') }}"></script>
     <script>
         function toggleTokenVisibility() {
             const tokenInput = document.getElementById('accessToken');
