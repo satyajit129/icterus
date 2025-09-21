@@ -111,7 +111,7 @@ class PublicController extends Controller
             'customer_name' => 'required|string|max:255',
             'customer_email' => 'required|email|max:255',
             'customer_mobile' => 'required|string|max:20',
-            'customer_whatsapp' => 'required|string|max:20',
+            'customer_whatsapp' => 'nullable|string|max:20',
             'bkash_transaction_id' => 'required|string|max:50',
             'notes' => 'nullable|string|max:1000',
         ]);

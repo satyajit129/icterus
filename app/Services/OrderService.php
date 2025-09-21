@@ -167,6 +167,65 @@ class OrderService
     }
 
     /**
+     * Delete order and associated earning record
+     */
+    public function deleteOrder($id): RedirectResponse
+    {
+        try {
+            $order = Order::findOrFail($id);
+
+            // Store order details for logging
+            $orderDetails = [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'customer_name' => $order->customer_name,
+                'amount' => $order->amount,
+                'payment_status' => $order->payment_status,
+                'bkash_transaction_id' => $order->bkash_transaction_id
+            ];
+
+            // Find and delete associated earning record
+            $earningDeleted = false;
+            if ($order->bkash_transaction_id) {
+                $earning = Earning::where('trnx_id', $order->bkash_transaction_id)->first();
+                if ($earning) {
+                    $earning->delete();
+                    $earningDeleted = true;
+                    Log::info('Associated earning record deleted', [
+                        'order_id' => $order->id,
+                        'earning_id' => $earning->id,
+                        'transaction_id' => $order->bkash_transaction_id
+                    ]);
+                }
+            }
+
+            // Delete the order
+            $order->delete();
+
+            Log::info('Order deleted successfully', [
+                'order_details' => $orderDetails,
+                'earning_deleted' => $earningDeleted
+            ]);
+
+            $message = "Order deleted successfully.";
+            if ($earningDeleted) {
+                $message .= " Associated earning record has also been deleted.";
+            }
+
+            return redirect()->route('adminOrderList')->with('success', $message);
+
+        } catch (\Exception $e) {
+            Log::error('Failed to delete order', [
+                'order_id' => $id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()->with('error', 'Failed to delete order: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Create earning record from approved order
      */
     private function createEarningFromOrder(Order $order, string $notes = null): void

@@ -2,6 +2,12 @@
 
 @section('title', 'Order Management')
 
+{{-- Permission Check --}}
+@php
+    $user = auth()->user();
+    $canDeleteOrder = $user->hasPermission('order_delete_permission'); // Using manage_product permission for order deletion
+@endphp
+
 @section('content')
     <!-- Copy Function Definition - Must be at the top -->
     <script>
@@ -319,6 +325,15 @@
                                                         <i class="fe fe-x"></i>
                                                     </button>
                                                 @endif
+
+                                                @if ($canDeleteOrder)
+                                                    <button type="button" class="btn btn-sm btn-outline-danger"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal{{ $order->id }}"
+                                                        title="Delete Order">
+                                                        <i class="fe fe-trash-2"></i>
+                                                    </button>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>
@@ -385,6 +400,69 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Delete Modal -->
+                                    @if ($canDeleteOrder)
+                                        <div class="modal fade" id="deleteModal{{ $order->id }}" tabindex="-1">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title text-danger">
+                                                            <i class="fe fe-trash-2 me-2"></i>Delete Order
+                                                        </h5>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="alert alert-warning">
+                                                            <i class="fe fe-alert-triangle me-2"></i>
+                                                            <strong>Warning:</strong> This action cannot be undone!
+                                                        </div>
+                                                        <p>Are you sure you want to delete this order?</p>
+                                                        <div class="card">
+                                                            <div class="card-body">
+                                                                <h6 class="card-title">Order Details:</h6>
+                                                                <ul class="list-unstyled mb-0">
+                                                                    <li><strong>Order #:</strong>
+                                                                        {{ $order->order_number }}</li>
+                                                                    <li><strong>Customer:</strong>
+                                                                        {{ $order->customer_name }}</li>
+                                                                    <li><strong>Amount:</strong>
+                                                                        ৳{{ number_format($order->amount, 2) }}</li>
+                                                                    <li><strong>Status:</strong>
+                                                                        {{ ucfirst($order->payment_status) }}</li>
+                                                                    @if ($order->bkash_transaction_id)
+                                                                        <li><strong>Transaction ID:</strong>
+                                                                            {{ $order->bkash_transaction_id }}</li>
+                                                                    @endif
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-3">
+                                                            <p class="text-muted small">
+                                                                <i class="fe fe-info me-1"></i>
+                                                                This will also delete any associated earning records.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">
+                                                            <i class="fe fe-x me-1"></i>Cancel
+                                                        </button>
+                                                        <form action="{{ route('adminOrderDelete', $order->id) }}"
+                                                            method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger">
+                                                                <i class="fe fe-trash-2 me-1"></i>Delete Order
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
                                 @empty
                                     <tr>
                                         <td colspan="8" class="text-center py-4">

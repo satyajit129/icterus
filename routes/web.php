@@ -198,6 +198,7 @@ Route::prefix('admin')->group(function () {
                 Route::get('/', [App\Http\Controllers\Backend\OrderController::class, 'adminOrderList'])->name('adminOrderList');
                 Route::get('/view/{id}', [App\Http\Controllers\Backend\OrderController::class, 'adminOrderView'])->name('adminOrderView');
                 Route::post('/update-status/{id}', [App\Http\Controllers\Backend\OrderController::class, 'adminOrderUpdateStatus'])->name('adminOrderUpdateStatus');
+                Route::delete('/delete/{id}', [App\Http\Controllers\Backend\OrderController::class, 'adminOrderDelete'])->name('adminOrderDelete');
                 Route::get('/export', [App\Http\Controllers\Backend\OrderController::class, 'adminOrderExport'])->name('adminOrderExport');
             });
 

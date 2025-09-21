@@ -91,7 +91,7 @@
         }
 
         .product-image-main {
-            height: 500px;
+            aspect-ratio: 4 / 3;
             overflow: hidden;
             position: relative;
         }
@@ -99,7 +99,7 @@
         .product-image-main img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            /* object-fit: cover; */
             transition: transform 0.3s ease;
         }
 

@@ -39,4 +39,9 @@ class OrderController extends Controller
     {
         return $this->orderService->exportOrders($request);
     }
+
+    public function adminOrderDelete($id): RedirectResponse
+    {
+        return $this->orderService->deleteOrder($id);
+    }
 }
