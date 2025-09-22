@@ -3,7 +3,6 @@
 @section('title', 'Students')
 
 @section('custom_css')
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <style>
         .table td {
             vertical-align: middle !important;
@@ -35,10 +34,10 @@
                 <div class="card-body text-center">
                     <div class="d-flex align-items-center justify-content-center">
                         <div class="me-3">
-                            <i class="fe fe-dollar-sign text-success" style="font-size: 2rem;"></i>
+                            <i class="fe fe-briefcase text-success" style="font-size: 2rem;"></i>
                         </div>
                         <div>
-                            <h4 class="mb-0 text-success">{{ number_format($summary['total_paid'], 2) }}</h4>
+                            <h4 class="mb-0 text-success">৳{{ number_format($summary['total_paid'], 2) }}</h4>
                             <p class="text-muted mb-0">Total Paid</p>
                         </div>
                     </div>
@@ -53,7 +52,7 @@
                             <i class="fe fe-alert-circle text-warning" style="font-size: 2rem;"></i>
                         </div>
                         <div>
-                            <h4 class="mb-0 text-warning">{{ number_format($summary['total_due'], 2) }}</h4>
+                            <h4 class="mb-0 text-warning">৳{{ number_format($summary['total_due'], 2) }}</h4>
                             <p class="text-muted mb-0">Total Due</p>
                         </div>
                     </div>
@@ -68,7 +67,7 @@
                             <i class="fe fe-trending-up text-primary" style="font-size: 2rem;"></i>
                         </div>
                         <div>
-                            <h4 class="mb-0 text-primary">{{ number_format($summary['total_amount'], 2) }}</h4>
+                            <h4 class="mb-0 text-primary">৳{{ number_format($summary['total_amount'], 2) }}</h4>
                             <p class="text-muted mb-0">Total Amount</p>
                         </div>
                     </div>
@@ -92,9 +91,9 @@
                     </div>
                 </div>
 
-                <!-- Filter Form -->
-                <div class="card-body border-bottom">
-                    <form method="GET" action="{{ route('adminStudentList') }}" id="filterForm">
+                <form method="GET" action="{{ route('adminStudentList') }}" id="filterForm">
+                    <!-- Filter Form -->
+                    <div class="card-body border-bottom">
                         <div class="row g-3">
                             <div class="col-md-3">
                                 <label class="form-label">Date From</label>
@@ -124,113 +123,111 @@
                                 <input type="text" name="phone" class="form-control" value="{{ request('phone') }}"
                                     placeholder="Enter phone">
                             </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <button type="submit" class="btn btn-primary btn-sm">
-                                    <i class="fe fe-search me-1"></i>Filter
-                                </button>
-                                <a href="{{ route('adminStudentList') }}" class="btn btn-secondary btn-sm">
-                                    <i class="fe fe-refresh-cw me-1"></i>Clear
-                                </a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="card-body">
-                    <div class="row row-sm">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered text-nowrap border-bottom">
-                                    <thead>
-                                        <tr>
-                                            <th class="wd-15p border-bottom-0">#</th>
-                                            <th class="wd-15p border-bottom-0">Name</th>
-                                            <th class="wd-15p border-bottom-0">Email</th>
-                                            <th class="wd-15p border-bottom-0">Phone</th>
-                                            <th class="wd-15p border-bottom-0">Courses</th>
-                                            <th class="wd-15p border-bottom-0">Amount</th>
-                                            <th class="wd-15p border-bottom-0">Paid / Due</th>
-                                            <th class="wd-15p border-bottom-0">Payment</th>
-                                            <th class="wd-15p border-bottom-0">Status</th>
-                                            <th class="wd-15p border-bottom-0">E. Date</th>
-                                            <th class="wd-15p border-bottom-0">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($students as $index => $student)
-                                            <tr>
-                                                <td>{{ $students->firstItem() + $loop->index }}</td>
-                                                <td>{{ $student->name }}</td>
-                                                <td>{{ $student->email }}</td>
-                                                <td>{{ $student->phone }}</td>
-                                                <td>{{ $student->courses }}</td>
-                                                <td>{{ $student->amount }}</td>
-                                                @php
-                                                    $paid = $student->payments->sum('amount');
-                                                    $remaining = $student->amount - $paid;
-                                                @endphp
-
-                                                <td>Paid: {{ number_format($paid, 2) }} <br> Due:
-                                                    {{ number_format($remaining, 2) }}</td>
-                                                <td>
-                                                    @if ($canViewStudentPayment)
-                                                        <a href="{{ route('adminStudentPaymentList', $student->id) }}"
-                                                            class="btn btn-sm btn-info" title="Payment List">
-                                                            <i class="fe fe-eye"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-muted fst-italic">No actions</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @if ($student->status == 1)
-                                                        <span class="badge bg-danger badge-sm  me-1 mb-1 mt-1">Due</span>
-                                                    @elseif ($student->status == 2)
-                                                        <span class="badge bg-primary badge-sm  me-1 mb-1 mt-1">Paid</span>
-                                                    @else
-                                                        <span class="badge bg-secondary">Unknown</span>
-                                                    @endif
-                                                </td>
-
-                                                <td>{{ \Carbon\Carbon::parse($student->enroll_date)->format('d/m/Y') }}
-                                                </td>
-                                                <td>
-                                                    @if ($canEditStudent || $canDeleteStudent)
-                                                        <a href="{{ route('adminStudentCreateOrEdit', $student->id) }}"
-                                                            class="btn btn-sm btn-primary" title="Edit">
-                                                            <i class="fe fe-edit"></i>
-                                                        </a>
-
-                                                        <a href="javascript:void(0);"
-                                                            class="btn btn-sm btn-danger delete-btn"
-                                                            data-url="{{ route('adminStudentDelete', ['id' => $student->id]) }}"
-                                                            data-bs-toggle="modal" data-bs-target="#deleteModal"
-                                                            title="Delete">
-                                                            <i class="fe fe-trash-2"></i>
-                                                        </a>
-                                                    @else
-                                                        <span class="text-muted fst-italic">No actions available</span>
-                                                    @endif
-
-                                                </td>
-
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="11" class="text-center text-muted">No Student found</td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                                {{ $students->links() }}
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fe fe-search me-1"></i>Filter
+                                    </button>
+                                    <a href="{{ route('adminStudentList') }}" class="btn btn-secondary btn-sm">
+                                        <i class="fe fe-refresh-cw me-1"></i>Clear
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </form>
+
+
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-nowrap border-bottom" id="responsive-datatable">
+                            <thead>
+                                <tr>
+                                    <th class="wd-15p border-bottom-0">#</th>
+                                    <th class="wd-15p border-bottom-0">Name</th>
+                                    <th class="wd-15p border-bottom-0">Email</th>
+                                    <th class="wd-15p border-bottom-0">Phone</th>
+                                    <th class="wd-15p border-bottom-0">Courses</th>
+                                    <th class="wd-15p border-bottom-0">Amount</th>
+                                    <th class="wd-15p border-bottom-0">Paid / Due</th>
+                                    <th class="wd-15p border-bottom-0">Payment</th>
+                                    <th class="wd-15p border-bottom-0">Status</th>
+                                    <th class="wd-15p border-bottom-0">E. Date</th>
+                                    <th class="wd-15p border-bottom-0">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($students as $index => $student)
+                                    <tr>
+                                        <td>{{ $students->firstItem() + $loop->index }}</td>
+                                        <td>{{ $student->name }}</td>
+                                        <td>{{ $student->email }}</td>
+                                        <td>{{ $student->phone }}</td>
+                                        <td>{{ $student->courses }}</td>
+                                        <td>৳{{ $student->amount }}</td>
+                                        @php
+                                            $paid = $student->payments->sum('amount');
+                                            $remaining = $student->amount - $paid;
+                                        @endphp
+
+                                        <td>Paid: ৳{{ number_format($paid, 2) }} <br> Due:
+                                            ৳{{ number_format($remaining, 2) }}</td>
+                                        <td>
+                                            @if ($canViewStudentPayment)
+                                                <a href="{{ route('adminStudentPaymentList', $student->id) }}"
+                                                    class="btn btn-sm btn-info" title="Payment List">
+                                                    <i class="fe fe-eye"></i>
+                                                </a>
+                                            @else
+                                                <span class="text-muted fst-italic">No actions</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($student->status == 1)
+                                                <span class="badge bg-danger badge-sm  me-1 mb-1 mt-1">Due</span>
+                                            @elseif ($student->status == 2)
+                                                <span class="badge bg-primary badge-sm  me-1 mb-1 mt-1">Paid</span>
+                                            @else
+                                                <span class="badge bg-secondary">Unknown</span>
+                                            @endif
+                                        </td>
+
+                                        <td>{{ \Carbon\Carbon::parse($student->enroll_date)->format('d/m/Y') }}
+                                        </td>
+                                        <td>
+                                            @if ($canEditStudent || $canDeleteStudent)
+                                                <a href="{{ route('adminStudentCreateOrEdit', $student->id) }}"
+                                                    class="btn btn-sm btn-primary" title="Edit">
+                                                    <i class="fe fe-edit"></i>
+                                                </a>
+
+                                                <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                    data-url="{{ route('adminStudentDelete', ['id' => $student->id]) }}"
+                                                    data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                    <i class="fe fe-trash-2"></i>
+                                                </a>
+                                            @else
+                                                <span class="text-muted fst-italic">No actions available</span>
+                                            @endif
+
+                                        </td>
+
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="11" class="text-center text-muted">No Student found</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                        {{ $students->links() }}
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
+
     <div class="modal effect-scale" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered text-center" role="document">
@@ -292,7 +289,6 @@
 
 @endsection
 @section('custom_js')
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.delete-btn').on('click', function() {
@@ -313,13 +309,6 @@
     <script>
         $(function() {
             $(".fc-datepicker").datepicker({
-                dateFormat: "dd-mm-yy",
-                changeMonth: true,
-                changeYear: true
-            });
-
-            // Initialize datepicker for filter form
-            $(".datepicker").datepicker({
                 dateFormat: "dd-mm-yy",
                 changeMonth: true,
                 changeYear: true

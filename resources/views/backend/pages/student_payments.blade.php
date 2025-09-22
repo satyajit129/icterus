@@ -23,10 +23,11 @@
                     <h3 class="card-title">Student Payment Data</h3>
                     <div>
                         <a href="{{ route('adminStudentPaymentCreateOrEdit', ['student_id' => $student_id]) }}">
-                            <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Payment</button>
+                            <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
+                                Payment</button>
                         </a>
                     </div>
-                    
+
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">
@@ -46,12 +47,12 @@
                                     </thead>
                                     <tbody>
                                         @forelse ($payments as $index => $payment)
-                                           <tr>
+                                            <tr>
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $payment->student->name ?? 'N/A' }}</td>
                                                 <td>{{ \App\Enum\TrnxMethod::label($payment->trnx_method) }}</td>
                                                 <td>{{ $payment->trnx_id }}</td>
-                                                <td>{{ number_format($payment->amount, 2) }}</td>
+                                                <td>৳{{ number_format($payment->amount, 2) }}</td>
                                                 <td>{{ \Carbon\Carbon::parse($payment->date)->format('d-m-Y') }}</td>
                                                 <td>
                                                     <a href="{{ route('adminStudentPaymentCreateOrEdit', ['student_id' => $student_id, 'payment_id' => $payment->id]) }}"

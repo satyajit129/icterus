@@ -106,15 +106,15 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <span>Paid Amount: </span>
-                                <span class="text-success fw-bold">{{ number_format($totals['paid_amount'], 2) }}</span>
+                                <span class="text-success fw-bold">৳{{ number_format($totals['paid_amount'], 2) }}</span>
                             </div>
                             <div class="col-md-4">
                                 <span>Deals Amount: </span>
-                                <span class="text-primary fw-bold">{{ number_format($totals['deals_amount'], 2) }}</span>
+                                <span class="text-primary fw-bold">৳{{ number_format($totals['deals_amount'], 2) }}</span>
                             </div>
                             <div class="col-md-4">
                                 <span>Due Amount: </span>
-                                <span class="text-danger fw-bold">{{ number_format($totals['due_amount'], 2) }}</span>
+                                <span class="text-danger fw-bold">৳{{ number_format($totals['due_amount'], 2) }}</span>
                             </div>
                         </div>
                     </div>

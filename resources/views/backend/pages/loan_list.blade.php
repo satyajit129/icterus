@@ -7,11 +7,11 @@
 @endsection
 @php
     $user = auth()->user();
-    $canAddLoan    =  $user->hasPermission('add_loan');
-    $canEditLoan   =  $user->hasPermission('edit_loan');
-    $canDeleteLoan =  $user->hasPermission('delete_loan');
-    $canViewLoanDetails   =  $user->hasPermission('view_loan_details');
-    $canAddLoanPayment =  $user->hasPermission('add_loan_payment');
+    $canAddLoan = $user->hasPermission('add_loan');
+    $canEditLoan = $user->hasPermission('edit_loan');
+    $canDeleteLoan = $user->hasPermission('delete_loan');
+    $canViewLoanDetails = $user->hasPermission('view_loan_details');
+    $canAddLoanPayment = $user->hasPermission('add_loan_payment');
 @endphp
 @section('content')
     <div class="page-header">
@@ -34,7 +34,7 @@
                                 Loan</button>
                         </a>
                     @endif
-                    
+
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">
@@ -61,14 +61,14 @@
                                                 <td>{{ $loans->firstItem() + $loop->index }}</td>
                                                 <td>{{ $loan->employee->id_number }}</td>
                                                 <td>{{ $loan->employee->name }}</td>
-                                                <td>{{ $loan->amount }}</td>
+                                                <td>৳{{ $loan->amount }}</td>
                                                 @php
                                                     $paid = $loan->loanPayment->sum('amount');
                                                     $remaining = $loan->amount - $paid;
                                                 @endphp
 
-                                                <td>Paid: {{ number_format($paid, 2) }} <br> Due:
-                                                    {{ number_format($remaining, 2) }}</td>
+                                                <td>Paid: ৳{{ number_format($paid, 2) }} <br> Due:
+                                                    ৳{{ number_format($remaining, 2) }}</td>
 
                                                 <td>{{ \Carbon\Carbon::parse($loan->date)->format('d/m/Y') }}</td>
                                                 <td>
@@ -81,7 +81,7 @@
                                                     @else
                                                         <span class="text-muted fst-italic">No actions</span>
                                                     @endif
-                                                    
+
                                                 </td>
 
                                                 <td>
@@ -96,7 +96,7 @@
                                                     @else
                                                         <span class="text-muted fst-italic">No actions</span>
                                                     @endif
-                                                    
+
                                                 </td>
 
                                                 <td>
@@ -118,9 +118,11 @@
                                                             </a>
                                                         @endif
                                                         @if ($canDeleteLoan)
-                                                            <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                            <a href="javascript:void(0);"
+                                                                class="btn btn-sm btn-danger delete-btn"
                                                                 data-url="{{ route('adminLoanDelete', ['id' => $loan->id]) }}"
-                                                                data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                                title="Delete">
                                                                 <i class="fe fe-trash-2"></i>
                                                             </a>
                                                         @endif
@@ -235,7 +237,7 @@
                 </div>
 
                 <div class="modal-body" id="payment-details-body-edit">
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
@@ -296,7 +298,7 @@
         });
     </script>
     <script>
-        $(document).on('click', '.edit-payment-btn', function () {
+        $(document).on('click', '.edit-payment-btn', function() {
             const paymentId = $(this).data('id');
             console.log(paymentId);
 
@@ -306,11 +308,11 @@
                 data: {
                     id: paymentId
                 },
-                success: function (response) {
+                success: function(response) {
                     $('#payment-details-body-edit').html(response);
                     $('#loanPaymentDetailsModalEdit').modal('show');
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     console.error("Error fetching payment details:", xhr.responseText);
                 }
             });

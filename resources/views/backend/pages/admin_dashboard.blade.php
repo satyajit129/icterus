@@ -93,7 +93,7 @@
                         <div class="card-body">
                             <div class="d-flex">
                                 <div class="mt-2">
-                                    <i class="fe fe-dollar-sign me-1"></i> Total Earn
+                                    <i class="fe fe-briefcase me-1"></i> Total Earn
                                     <h2 class="mb-0 number-font">৳{{ number_format($total_earning, 2) }}</h2>
                                 </div>
                                 <div class="ms-auto">
@@ -111,7 +111,7 @@
                         <div class="card-body">
                             <div class="d-flex">
                                 <div class="mt-2">
-                                    <i class="fe fe-dollar-sign me-1"></i> Total Cost
+                                    <i class="fe fe-briefcase me-1"></i> Total Cost
                                     <h2 class="mb-0 number-font">৳{{ number_format($total_cost, 2) }}</h2>
                                 </div>
                                 <div class="ms-auto">

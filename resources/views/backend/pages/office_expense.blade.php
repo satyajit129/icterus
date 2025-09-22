@@ -8,11 +8,11 @@
 
 @php
     $user = auth()->user();
-    $canAddOfficeExpense    =  $user->hasPermission('add_office_expense');
-    $canEditOfficeExpense   =  $user->hasPermission('edit_office_expense');
-    $canDeleteOfficeExpense =  $user->hasPermission('delete_office_expense');
-    $canViewOfficeExpense   =  $user->hasPermission('view_office_expense');
-    $canDownloadOfficeExpense =  $user->hasPermission('download_office_expense');
+    $canAddOfficeExpense = $user->hasPermission('add_office_expense');
+    $canEditOfficeExpense = $user->hasPermission('edit_office_expense');
+    $canDeleteOfficeExpense = $user->hasPermission('delete_office_expense');
+    $canViewOfficeExpense = $user->hasPermission('view_office_expense');
+    $canDownloadOfficeExpense = $user->hasPermission('download_office_expense');
 @endphp
 
 
@@ -27,7 +27,7 @@
             </ol>
         </div>
     </div>
-        <div class="row">
+    <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
@@ -63,8 +63,7 @@
                                 <div class="mb-4">
                                     <label class="form-label">Purpose</label>
                                     <input type="text" name="purpose" class="form-control"
-                                        value="{{ request('purpose') }}" autocomplete="off"
-                                        placeholder="Enter purpose">
+                                        value="{{ request('purpose') }}" autocomplete="off" placeholder="Enter purpose">
                                 </div>
                             </div>
                         </div>
@@ -86,7 +85,7 @@
                     <div class="">
                         <h5 class="fw-bold">
                             Total Amount:
-                            <span class="text-success">{{ number_format($totalAmount, 2) }}</span>
+                            <span class="text-success">৳{{ number_format($totalAmount, 2) }}</span>
                         </h5>
                     </div>
 
@@ -101,14 +100,16 @@
                     <h3 class="card-title">Office Expense Data</h3>
                     <div>
                         @if ($canDownloadOfficeExpense)
-                            <a href="{{ route('adminOfficeExpenseExport', request()->query()) }}" class="btn btn-sm btn-primary me-2">
-                                    <i class="fe fe-download me-1"></i> Download Data
+                            <a href="{{ route('adminOfficeExpenseExport', request()->query()) }}"
+                                class="btn btn-sm btn-primary me-2">
+                                <i class="fe fe-download me-1"></i> Download Data
                             </a>
                         @endif
 
                         @if ($canAddOfficeExpense)
                             <a href="{{ route('adminOfficeExpenseCreateOrEdit') }}">
-                                <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Office Expense</button>
+                                <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
+                                    Office Expense</button>
                             </a>
                         @endif
 
@@ -122,7 +123,7 @@
                                     <thead>
                                         <tr>
                                             <th class="wd-15p border-bottom-0">#</th>
-                                             <th class="wd-15p border-bottom-0">Category</th>
+                                            <th class="wd-15p border-bottom-0">Category</th>
                                             <th class="wd-15p border-bottom-0">Date</th>
                                             <th class="wd-15p border-bottom-0">Purpose</th>
                                             <th class="wd-15p border-bottom-0">Quantity</th>
@@ -137,11 +138,13 @@
                                             <tr>
                                                 <td>{{ $office_expenses->firstItem() + $loop->index }}</td>
                                                 <td>{{ $office_expense->category->name ?? 'N/A' }}</td>
-                                                <td>{{ \Carbon\Carbon::parse($office_expense->date)->format('d/m/Y') }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($office_expense->date)->format('d/m/Y') }}
+                                                </td>
                                                 <td>{{ $office_expense->purpose }}</td>
-                                                <td>{{ isset($office_expense->quantity) ? $office_expense->quantity : '----' }}</td>
+                                                <td>{{ isset($office_expense->quantity) ? $office_expense->quantity : '----' }}
+                                                </td>
                                                 <td>{{ $office_expense->details }}</td>
-                                                <td>{{ number_format($office_expense->amount, 2) }}</td>
+                                                <td>৳{{ number_format($office_expense->amount, 2) }}</td>
                                                 <td>
                                                     @if ($canEditOfficeExpense || $canDeleteOfficeExpense || $canViewOfficeExpense)
                                                         @if ($canEditOfficeExpense)
@@ -151,10 +154,11 @@
                                                             </a>
                                                         @endif
                                                         @if ($canDeleteOfficeExpense)
-                                                            <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                            <a href="javascript:void(0);"
+                                                                class="btn btn-sm btn-danger delete-btn"
                                                                 data-url="{{ route('adminOfficeExpenseDelete', ['id' => $office_expense->id, 'page' => request('page')]) }}"
                                                                 data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                                    <i class="fe fe-trash"></i>
+                                                                <i class="fe fe-trash"></i>
                                                             </a>
                                                         @endif
                                                         @if ($canViewOfficeExpense)
@@ -162,7 +166,7 @@
                                                                 class="btn btn-sm btn-info"><i class="fe fe-eye"></i></a>
                                                         @endif
                                                     @else
-                                                            <span class="text-muted fst-italic">No actions available</span>
+                                                        <span class="text-muted fst-italic">No actions available</span>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -207,14 +211,14 @@
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('.delete-btn').on('click', function () {
+        $(document).ready(function() {
+            $('.delete-btn').on('click', function() {
                 var deleteUrl = $(this).data('url');
                 $('#confirmDeleteBtn').attr('href', deleteUrl);
             });
         });
     </script>
-        <script>
+    <script>
         $(function() {
             $('.date-range-picker').daterangepicker({
                 locale: {

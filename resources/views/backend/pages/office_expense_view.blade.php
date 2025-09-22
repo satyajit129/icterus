@@ -8,9 +8,12 @@
             body * {
                 visibility: hidden;
             }
-            #printSection, #printSection * {
+
+            #printSection,
+            #printSection * {
                 visibility: visible;
             }
+
             #printSection {
                 position: absolute;
                 left: 0;
@@ -68,7 +71,7 @@
                                 </tr>
                                 <tr>
                                     <th>Amount</th>
-                                    <td>{{ number_format($office_expense->amount, 2) }}</td>
+                                    <td>৳{{ number_format($office_expense->amount, 2) }}</td>
                                 </tr>
                             </tbody>
                         </table>

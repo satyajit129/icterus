@@ -5,14 +5,14 @@
 @section('custom_css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 @endsection
-    @php
-        $user = auth()->user();
-        $canAddSalary = $user->hasPermission('add_salary');
-        $canEditSalary = $user->hasPermission('edit_salary');
-        $canDeleteSalary = $user->hasPermission('delete_salary');
-        $canViewSalary = $user->hasPermission('view_salary');
-        $canDownloadSalary = $user->hasPermission('download_salary');
-    @endphp
+@php
+    $user = auth()->user();
+    $canAddSalary = $user->hasPermission('add_salary');
+    $canEditSalary = $user->hasPermission('edit_salary');
+    $canDeleteSalary = $user->hasPermission('delete_salary');
+    $canViewSalary = $user->hasPermission('view_salary');
+    $canDownloadSalary = $user->hasPermission('download_salary');
+@endphp
 @section('content')
 
     <div class="page-header">
@@ -41,19 +41,19 @@
                                         class="form-control select2-show-search form-select" required>
                                         <option selected disabled>Select Month</option>
                                         @foreach ([
-                                            'January' => 1,
-                                            'February' => 2,
-                                            'March' => 3,
-                                            'April' => 4,
-                                            'May' => 5,
-                                            'June' => 6,
-                                            'July' => 7,
-                                            'August' => 8,
-                                            'September' => 9,
-                                            'October' => 10,
-                                            'November' => 11,
-                                            'December' => 12,
-                                        ] as $name => $num)
+            'January' => 1,
+            'February' => 2,
+            'March' => 3,
+            'April' => 4,
+            'May' => 5,
+            'June' => 6,
+            'July' => 7,
+            'August' => 8,
+            'September' => 9,
+            'October' => 10,
+            'November' => 11,
+            'December' => 12,
+        ] as $name => $num)
                                             <option value="{{ $num }}"
                                                 {{ request('payable_month') == $num ? 'selected' : '' }}>{{ $name }}
                                             </option>
@@ -114,9 +114,9 @@
                 <div class="card-body">
                     <div class="">
                         <h5 class="m-0">
-                            Total Payable Amount: 
+                            Total Payable Amount:
                             <span class="text-success fw-bold">
-                                {{ number_format($totalPayableAmount, 2) }}
+                                ৳{{ number_format($totalPayableAmount, 2) }}
                             </span>
                         </h5>
                     </div>
@@ -136,7 +136,7 @@
                                 <i class="fe fe-download me-1"></i> Download Data
                             </a>
                         @endif
-                        
+
                         @if ($canAddSalary)
                             <a href="{{ route('adminSalaryExpenseCreateOrEdit') }}">
                                 <button type="button" class="btn btn-primary btn-sm">
@@ -144,7 +144,7 @@
                                 </button>
                             </a>
                         @endif
-                        
+
                     </div>
                 </div>
                 <div class="card-body">
@@ -180,10 +180,10 @@
                                                 </td>
                                                 <td>{{ $salary_expense->payable_year }}</td>
                                                 <td>{{ $salary_expense->total_working_day }}</td>
-                                                <td>{{ $salary_expense->gross_salary }}</td>
-                                                <td>{{ $salary_expense->festival_bonus ?? '-----' }}</td>
-                                                <td>{{ $salary_expense->extra_charge ?? '-----' }}</td>
-                                                <td>{{ $salary_expense->payable_amount }}</td>
+                                                <td>৳{{ $salary_expense->gross_salary }}</td>
+                                                <td>৳{{ $salary_expense->festival_bonus ?? '-----' }}</td>
+                                                <td>৳{{ $salary_expense->extra_charge ?? '-----' }}</td>
+                                                <td>৳{{ $salary_expense->payable_amount }}</td>
                                                 <td>
                                                     @if ($salary_expense->salary_status)
                                                         <button type="button"
@@ -205,20 +205,21 @@
                                                             </a>
                                                         @endif
                                                         @if ($canDeleteSalary)
-                                                        <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                            data-url="{{ route('adminSalaryExpenseDelete', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
-                                                            data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                            <i class="fe fe-trash-2"></i>
-                                                        </a>
+                                                            <a href="javascript:void(0);"
+                                                                class="btn btn-sm btn-danger delete-btn"
+                                                                data-url="{{ route('adminSalaryExpenseDelete', ['id' => $salary_expense->id, 'page' => request('page')]) }}"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                                <i class="fe fe-trash-2"></i>
+                                                            </a>
                                                         @endif
                                                         @if ($canViewSalary)
-                                                        <a href="{{ route('adminSalaryExpenseView', $salary_expense->id) }}"
-                                                            class="btn btn-sm btn-info">
-                                                            <i class="fe fe-eye"></i>
-                                                        </a>
+                                                            <a href="{{ route('adminSalaryExpenseView', $salary_expense->id) }}"
+                                                                class="btn btn-sm btn-info">
+                                                                <i class="fe fe-eye"></i>
+                                                            </a>
                                                         @endif
                                                     @else
-                                                         <span class="text-muted fst-italic">No actions available</span>
+                                                        <span class="text-muted fst-italic">No actions available</span>
                                                     @endif
                                                 </td>
 

@@ -12,12 +12,11 @@
             <tr>
                 <td>{{ $index + 1 }}</td>
                 <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('d/m/Y') }}</td>
-                <td>{{ number_format($payment->amount, 2) }}</td>
+                <td>৳{{ number_format($payment->amount, 2) }}</td>
                 <td>
-                    <a href="javascript:void(0);" 
-                    class="btn btn-sm btn-primary edit-payment-btn" 
-                    data-id="{{ $payment->id }}">
-                    <i class="fe fe-edit"></i>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-primary edit-payment-btn"
+                        data-id="{{ $payment->id }}">
+                        <i class="fe fe-edit"></i>
                     </a>
 
                 </td>

@@ -175,7 +175,7 @@
                             </a>
                         </li>
                     @endif
-                    @if ($canManageDashboard)
+                    {{-- @if ($canManageDashboard)
                         <li class="slide">
                             <a class="side-menu__item has-link {{ Route::is('leadList', 'leadView') ? 'active' : '' }}"
                                 href="{{ route('leadList') }}">
@@ -183,7 +183,7 @@
                                 <span class="side-menu__label">Leads</span>
                             </a>
                         </li>
-                    @endif
+                    @endif --}}
                 @endif
 
                 @if ($canManageCompanies)
