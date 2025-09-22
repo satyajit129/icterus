@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exports\StudentExport;
 use App\Models\Student;
 use App\Models\StudentPayment;
 use Carbon\Carbon;
@@ -10,6 +11,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class StudentService
 {
@@ -226,5 +229,11 @@ class StudentService
                 ->withInput()
                 ->with('error', 'Failed: ' . $e->getMessage());
         }
+    }
+
+    public function renderStudentExport($request): BinaryFileResponse
+    {
+        $data = $request->only(['date_from', 'date_to', 'course', 'status', 'phone']);
+        return Excel::download(new StudentExport($data), 'students.xlsx');
     }
 }

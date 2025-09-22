@@ -162,6 +162,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminStudentCreateOrEdit'])->name('adminStudentCreateOrEdit');
             Route::post('/save/{id?}', [AdminController::class, 'adminStudentSave'])->name('adminStudentSave');
             Route::get('/delete/{id}', [AdminController::class, 'adminStudentDelete'])->name('adminStudentDelete');
+            Route::get('/export', [AdminController::class, 'adminStudentExport'])->name('adminStudentExport');
 
             Route::prefix('payment')->group(function () {
                 Route::get('/list/{id}', [AdminController::class, 'adminStudentPaymentList'])->name('adminStudentPaymentList');

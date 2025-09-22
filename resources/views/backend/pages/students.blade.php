@@ -88,6 +88,9 @@
                                     Student</button>
                             </a>
                         @endif
+                        <a href="{{ route('adminStudentExport', request()->query()) }}" class="btn btn-success btn-sm ms-2">
+                            <i class="fe fe-download me-2"></i>Export Excel
+                        </a>
                     </div>
                 </div>
 
@@ -220,7 +223,7 @@
                                 @endforelse
                             </tbody>
                         </table>
-                        {{ $students->links() }}
+                        {{ $students->appends(request()->query())->links() }}
                     </div>
                 </div>
             </div>

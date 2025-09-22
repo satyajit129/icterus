@@ -484,6 +484,10 @@ class AdminController extends Controller
     {
         return $this->studentService->handleStudentPaymentSave($request, $id);
     }
+    public function adminStudentExport(Request $request): BinaryFileResponse
+    {
+        return $this->studentService->renderStudentExport($request);
+    }
     public function adminAssetCategory(): View
     {
         return $this->assetService->renderAssetCategory();
