@@ -13,10 +13,80 @@ use Illuminate\View\View;
 
 class StudentService
 {
-    public function renderStudentList(): View
+    public function renderStudentList($request = null): View
     {
-        $students = Student::latest()->paginate(20);
-        return view('backend.pages.students', compact('students'));
+        $query = Student::with('payments');
+
+        // Apply filters if request is provided
+        if ($request) {
+            // Date range filter (enroll_date)
+            if ($request->filled('date_from')) {
+                $dateFrom = Carbon::createFromFormat('d-m-Y', $request->date_from)->format('Y-m-d');
+                $query->whereDate('enroll_date', '>=', $dateFrom);
+            }
+            if ($request->filled('date_to')) {
+                $dateTo = Carbon::createFromFormat('d-m-Y', $request->date_to)->format('Y-m-d');
+                $query->whereDate('enroll_date', '<=', $dateTo);
+            }
+
+            // Course filter
+            if ($request->filled('course')) {
+                $query->where('courses', 'like', '%' . $request->course . '%');
+            }
+
+            // Status filter
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            // Phone filter
+            if ($request->filled('phone')) {
+                $query->where('phone', 'like', '%' . $request->phone . '%');
+            }
+        }
+
+        $students = $query->latest()->paginate(20);
+
+        // Calculate summary data
+        $summaryQuery = Student::with('payments');
+
+        // Apply same filters to summary query
+        if ($request) {
+            if ($request->filled('date_from')) {
+                $dateFrom = Carbon::createFromFormat('d-m-Y', $request->date_from)->format('Y-m-d');
+                $summaryQuery->whereDate('enroll_date', '>=', $dateFrom);
+            }
+            if ($request->filled('date_to')) {
+                $dateTo = Carbon::createFromFormat('d-m-Y', $request->date_to)->format('Y-m-d');
+                $summaryQuery->whereDate('enroll_date', '<=', $dateTo);
+            }
+            if ($request->filled('course')) {
+                $summaryQuery->where('courses', 'like', '%' . $request->course . '%');
+            }
+            if ($request->filled('status')) {
+                $summaryQuery->where('status', $request->status);
+            }
+            if ($request->filled('phone')) {
+                $summaryQuery->where('phone', 'like', '%' . $request->phone . '%');
+            }
+        }
+
+        $filteredStudents = $summaryQuery->get();
+
+        // Calculate totals
+        $totalAmount = $filteredStudents->sum('amount');
+        $totalPaid = $filteredStudents->sum(function($student) {
+            return $student->payments->sum('amount');
+        });
+        $totalDue = $totalAmount - $totalPaid;
+
+        $summary = [
+            'total_amount' => $totalAmount,
+            'total_paid' => $totalPaid,
+            'total_due' => $totalDue
+        ];
+
+        return view('backend.pages.students', compact('students', 'summary'));
     }
     public function renderStudentCreateOrEdit($id = null): View
     {

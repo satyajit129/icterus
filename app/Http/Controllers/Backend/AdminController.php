@@ -456,9 +456,9 @@ class AdminController extends Controller
     {
         return $this->loanService->handleLoanPaymentUpdate($request);
     }
-    public function AdminStudentList(): View
+    public function AdminStudentList(Request $request): View
     {
-        return $this->studentService->renderStudentList();
+        return $this->studentService->renderStudentList($request);
     }
     public function adminStudentCreateOrEdit($id = null): View
     {

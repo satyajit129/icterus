@@ -3,7 +3,7 @@
 @section('title', 'Students')
 
 @section('custom_css')
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <style>
         .table td {
             vertical-align: middle !important;
@@ -12,10 +12,10 @@
 @endsection
 @php
     $user = auth()->user();
-    $canAddStudent    =  $user->hasPermission('add_student');
-    $canEditStudent   =  $user->hasPermission('edit_student');
-    $canDeleteStudent =  $user->hasPermission('delete_student');
-    $canViewStudentPayment   =  $user->hasPermission('view_student_payment');
+    $canAddStudent = $user->hasPermission('add_student');
+    $canEditStudent = $user->hasPermission('edit_student');
+    $canDeleteStudent = $user->hasPermission('delete_student');
+    $canViewStudentPayment = $user->hasPermission('view_student_payment');
 @endphp
 @section('content')
 
@@ -28,6 +28,55 @@
             </ol>
         </div>
     </div>
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="me-3">
+                            <i class="fe fe-dollar-sign text-success" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0 text-success">{{ number_format($summary['total_paid'], 2) }}</h4>
+                            <p class="text-muted mb-0">Total Paid</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="me-3">
+                            <i class="fe fe-alert-circle text-warning" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0 text-warning">{{ number_format($summary['total_due'], 2) }}</h4>
+                            <p class="text-muted mb-0">Total Due</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="me-3">
+                            <i class="fe fe-trending-up text-primary" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0 text-primary">{{ number_format($summary['total_amount'], 2) }}</h4>
+                            <p class="text-muted mb-0">Total Amount</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
@@ -36,11 +85,57 @@
                     <div>
                         @if ($canAddStudent)
                             <a href="{{ route('adminStudentCreateOrEdit') }}">
-                                <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add Student</button>
+                                <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add
+                                    Student</button>
                             </a>
                         @endif
                     </div>
-                    
+                </div>
+
+                <!-- Filter Form -->
+                <div class="card-body border-bottom">
+                    <form method="GET" action="{{ route('adminStudentList') }}" id="filterForm">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Date From</label>
+                                <input type="text" name="date_from" class="form-control fc-datepicker"
+                                    value="{{ request('date_from') }}" placeholder="DD-MM-YYYY">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Date To</label>
+                                <input type="text" name="date_to" class="form-control fc-datepicker"
+                                    value="{{ request('date_to') }}" placeholder="DD-MM-YYYY">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Course</label>
+                                <input type="text" name="course" class="form-control" value="{{ request('course') }}"
+                                    placeholder="Enter course">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Status</label>
+                                <select name="status" class="form-control">
+                                    <option value="">All Status</option>
+                                    <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Due</option>
+                                    <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>Paid</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Phone</label>
+                                <input type="text" name="phone" class="form-control" value="{{ request('phone') }}"
+                                    placeholder="Enter phone">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fe fe-search me-1"></i>Filter
+                                </button>
+                                <a href="{{ route('adminStudentList') }}" class="btn btn-secondary btn-sm">
+                                    <i class="fe fe-refresh-cw me-1"></i>Clear
+                                </a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <div class="card-body">
                     <div class="row row-sm">
@@ -97,24 +192,27 @@
                                                         <span class="badge bg-secondary">Unknown</span>
                                                     @endif
                                                 </td>
-                                                
-                                                <td>{{ \Carbon\Carbon::parse($student->enroll_date)->format('d/m/Y') }}</td>
+
+                                                <td>{{ \Carbon\Carbon::parse($student->enroll_date)->format('d/m/Y') }}
+                                                </td>
                                                 <td>
                                                     @if ($canEditStudent || $canDeleteStudent)
                                                         <a href="{{ route('adminStudentCreateOrEdit', $student->id) }}"
-                                                        class="btn btn-sm btn-primary" title="Edit">
-                                                        <i class="fe fe-edit"></i>
-                                                    </a>
+                                                            class="btn btn-sm btn-primary" title="Edit">
+                                                            <i class="fe fe-edit"></i>
+                                                        </a>
 
-                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
-                                                        data-url="{{ route('adminStudentDelete', ['id' => $student->id]) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
-                                                        <i class="fe fe-trash-2"></i>
-                                                    </a>
+                                                        <a href="javascript:void(0);"
+                                                            class="btn btn-sm btn-danger delete-btn"
+                                                            data-url="{{ route('adminStudentDelete', ['id' => $student->id]) }}"
+                                                            data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                            title="Delete">
+                                                            <i class="fe fe-trash-2"></i>
+                                                        </a>
                                                     @else
                                                         <span class="text-muted fst-italic">No actions available</span>
                                                     @endif
-                                                    
+
                                                 </td>
 
                                             </tr>
@@ -153,7 +251,8 @@
     </div>
 
     <!-- Payment Modal -->
-    <div class="modal effect-scale" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal effect-scale" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <form action="{{ route('adminLoanMakePayment') }}" method="POST">
                 @csrf
@@ -193,7 +292,7 @@
 
 @endsection
 @section('custom_js')
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script>
         $(document).ready(function() {
             $('.delete-btn').on('click', function() {
@@ -202,7 +301,7 @@
             });
         });
     </script>
-        <script>
+    <script>
         $(document).on('click', '.add-payment-btn', function() {
             let studentId = $(this).data('student-id');
             let studentName = $(this).data('student-name');
@@ -211,9 +310,16 @@
             $('#modal_student_name').val(studentName);
         });
     </script>
-        <script>
+    <script>
         $(function() {
             $(".fc-datepicker").datepicker({
+                dateFormat: "dd-mm-yy",
+                changeMonth: true,
+                changeYear: true
+            });
+
+            // Initialize datepicker for filter form
+            $(".datepicker").datepicker({
                 dateFormat: "dd-mm-yy",
                 changeMonth: true,
                 changeYear: true
