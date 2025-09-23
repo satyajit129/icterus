@@ -437,7 +437,7 @@
             @if ($featuredProducts->count() > 0)
                 <div class="row">
                     @foreach ($featuredProducts as $product)
-                        <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="col-lg-3 col-md-6 col-sm-12 mb-4">
                             <div class="product-card">
                                 <div class="product-image">
                                     @if ($product->banner_image)
