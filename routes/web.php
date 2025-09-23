@@ -94,6 +94,7 @@ Route::prefix('admin')->group(function () {
                 Route::get('/create-or-edit/{id?}', [AdminController::class, 'adminLoanCreateOrEdit'])->name('adminLoanCreateOrEdit');
                 Route::post('/save/{id?}', [AdminController::class, 'adminLoanSave'])->name('adminLoanSave');
                 Route::get('/delete/{id}', [AdminController::class, 'adminLoanDelete'])->name('adminLoanDelete');
+                Route::get('/export', [AdminController::class, 'adminLoanExport'])->name('adminLoanExport');
 
                 Route::post('/make-payment/{id?}', [AdminController::class, 'adminLoanMakePayment'])->name('adminLoanMakePayment');
                 Route::get('/payment-details', [AdminController::class, 'adminLoanPaymentDetails'])->name('adminLoanPaymentDetails');

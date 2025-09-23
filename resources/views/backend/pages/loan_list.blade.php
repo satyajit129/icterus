@@ -23,19 +23,121 @@
             </ol>
         </div>
     </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="me-3">
+                            <i class="fe fe-briefcase text-success" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0 text-success">৳{{ number_format($summary['total_paid'], 2) }}</h4>
+                            <p class="text-muted mb-0">Total Paid</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="me-3">
+                            <i class="fe fe-alert-circle text-warning" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0 text-warning">৳{{ number_format($summary['total_due'], 2) }}</h4>
+                            <p class="text-muted mb-0">Total Due</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <div class="me-3">
+                            <i class="fe fe-trending-up text-primary" style="font-size: 2rem;"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0 text-primary">৳{{ number_format($summary['total_amount'], 2) }}</h4>
+                            <p class="text-muted mb-0">Total Amount</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-md-12 col-xl-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h3 class="card-title">Loan List</h3>
-                    @if ($canAddLoan)
-                        <a href="{{ route('adminLoanCreateOrEdit') }}">
-                            <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add New
-                                Loan</button>
+                    <div>
+                        @if ($canAddLoan)
+                            <a href="{{ route('adminLoanCreateOrEdit') }}">
+                                <button type="button" class="btn btn-primary btn-sm"><i class="fe fe-plus me-2"></i>Add New
+                                    Loan</button>
+                            </a>
+                        @endif
+                        <a href="{{ route('adminLoanExport', request()->query()) }}" class="btn btn-success btn-sm ms-2">
+                            <i class="fe fe-download me-2"></i>Export Excel
                         </a>
-                    @endif
-
+                    </div>
                 </div>
+
+                <form method="GET" action="{{ route('adminLoanList') }}" id="filterForm">
+                    <!-- Filter Form -->
+                    <div class="card-body border-bottom">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Employee</label>
+                                <select name="employee_id" class="form-control">
+                                    <option value="">All Employees</option>
+                                    @foreach ($employees as $employee)
+                                        <option value="{{ $employee->id }}"
+                                            {{ request('employee_id') == $employee->id ? 'selected' : '' }}>
+                                            {{ $employee->name }} ({{ $employee->id_number }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Date From</label>
+                                <input type="text" name="date_from" class="form-control fc-datepicker"
+                                    value="{{ request('date_from') }}" placeholder="DD-MM-YYYY">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Date To</label>
+                                <input type="text" name="date_to" class="form-control fc-datepicker"
+                                    value="{{ request('date_to') }}" placeholder="DD-MM-YYYY">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Status</label>
+                                <select name="status" class="form-control">
+                                    <option value="">All Status</option>
+                                    <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Due</option>
+                                    <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>Paid</option>
+                                </select>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fe fe-search me-1"></i>Filter
+                                    </button>
+                                    <a href="{{ route('adminLoanList') }}" class="btn btn-secondary btn-sm">
+                                        <i class="fe fe-refresh-cw me-1"></i>Clear
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
                 <div class="card-body">
                     <div class="row row-sm">
                         <div class="card-body">
@@ -87,8 +189,9 @@
                                                 <td>
                                                     @if ($canViewLoanDetails)
                                                         <a href="javascript:void(0);"
-                                                            class="btn btn-sm btn-info add-payment-btn" title="Add payment"
-                                                            data-bs-toggle="modal" data-bs-target="#paymentModal"
+                                                            class="btn btn-sm btn-info add-payment-btn"
+                                                            title="Add payment" data-bs-toggle="modal"
+                                                            data-bs-target="#paymentModal"
                                                             data-loan-id="{{ $loan->id }}"
                                                             data-employee-name="{{ $loan->employee->name }}">
                                                             <i class="fe fe-plus"></i>
@@ -138,7 +241,7 @@
                                         @endforelse
                                     </tbody>
                                 </table>
-                                {{ $loans->links() }}
+                                {{ $loans->appends(request()->query())->links() }}
                             </div>
                         </div>
                     </div>
@@ -166,7 +269,8 @@
     </div>
 
     <!-- Payment Modal -->
-    <div class="modal effect-scale" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal effect-scale" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <form action="{{ route('adminLoanMakePayment') }}" method="POST">
                 @csrf
@@ -254,7 +358,7 @@
     <script>
         $(function() {
             $(".fc-datepicker").datepicker({
-                dateFormat: "dd/mm/yy",
+                dateFormat: "dd-mm-yy",
                 changeMonth: true,
                 changeYear: true
             });

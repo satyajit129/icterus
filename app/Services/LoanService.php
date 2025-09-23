@@ -2,22 +2,91 @@
 
 namespace App\Services;
 
+use App\Exports\LoanExport;
 use App\Models\Employee;
 use App\Models\Loan;
 use App\Models\LoanPayment;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class LoanService
 
 {
-    public function renderLoanList(): View
+    public function renderLoanList($request = null): View
     {
-        $loans = Loan::with('employee', 'loanPayment')->latest()->paginate(10);
-        return view('backend.pages.loan_list', compact('loans'));
+        $query = Loan::with('employee', 'loanPayment');
+
+        // Apply filters if request is provided
+        if ($request) {
+            // Employee filter
+            if ($request->filled('employee_id')) {
+                $query->where('employee_id', $request->employee_id);
+            }
+
+            // Date range filter (loan date)
+            if ($request->filled('date_from')) {
+                $dateFrom = Carbon::createFromFormat('d-m-Y', $request->date_from)->format('Y-m-d');
+                $query->whereDate('date', '>=', $dateFrom);
+            }
+            if ($request->filled('date_to')) {
+                $dateTo = Carbon::createFromFormat('d-m-Y', $request->date_to)->format('Y-m-d');
+                $query->whereDate('date', '<=', $dateTo);
+            }
+
+            // Status filter
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+        }
+
+        $loans = $query->latest()->paginate(20);
+
+        // Calculate summary data
+        $summaryQuery = Loan::with('employee', 'loanPayment');
+
+        // Apply same filters to summary query
+        if ($request) {
+            if ($request->filled('employee_id')) {
+                $summaryQuery->where('employee_id', $request->employee_id);
+            }
+            if ($request->filled('date_from')) {
+                $dateFrom = Carbon::createFromFormat('d-m-Y', $request->date_from)->format('Y-m-d');
+                $summaryQuery->whereDate('date', '>=', $dateFrom);
+            }
+            if ($request->filled('date_to')) {
+                $dateTo = Carbon::createFromFormat('d-m-Y', $request->date_to)->format('Y-m-d');
+                $summaryQuery->whereDate('date', '<=', $dateTo);
+            }
+            if ($request->filled('status')) {
+                $summaryQuery->where('status', $request->status);
+            }
+        }
+
+        $filteredLoans = $summaryQuery->get();
+
+        // Calculate totals
+        $totalAmount = $filteredLoans->sum('amount');
+        $totalPaid = $filteredLoans->sum(function($loan) {
+            return $loan->loanPayment->sum('amount');
+        });
+        $totalDue = $totalAmount - $totalPaid;
+
+        $summary = [
+            'total_amount' => $totalAmount,
+            'total_paid' => $totalPaid,
+            'total_due' => $totalDue
+        ];
+
+        // Get employees for dropdown
+        $employees = Employee::where('status', 1)->orderBy('name')->get();
+
+        return view('backend.pages.loan_list', compact('loans', 'summary', 'employees'));
     }
     public function renderLoanCreateOrEdit($id = null): View
     {
@@ -96,7 +165,7 @@ class LoanService
             $payment->amount = $request->amount;
             $payment->payment_date = $formattedDate;
             $payment->save();
-            
+
             if ($total_paid_with_new == $loan->amount) {
                 $loan->status = 2;
                 $loan->save();
@@ -145,7 +214,7 @@ class LoanService
             $other_payments_total = LoanPayment::where('loan_id', $loan->id)
                 ->where('id', '!=', $payment->id)
                 ->sum('amount');
-            
+
             $max_allowable_amount = $loan->amount - $other_payments_total;
 
             if ($request->amount > $max_allowable_amount) {
@@ -157,7 +226,7 @@ class LoanService
             $payment->amount = $request->amount;
             $payment->payment_date = Carbon::createFromFormat('d/m/Y', $request->payment_date)->format('Y-m-d');
             $payment->save();
-            
+
             $total_paid = $other_payments_total + $request->amount;
             if ($total_paid == $loan->amount) {
                 $loan->status = 2;
@@ -179,5 +248,11 @@ class LoanService
                 ->withInput()
                 ->with('error', 'Something went wrong: ' . $e->getMessage());
         }
+    }
+
+    public function renderLoanExport($request): BinaryFileResponse
+    {
+        $data = $request->only(['employee_id', 'date_from', 'date_to', 'status']);
+        return Excel::download(new LoanExport($data), 'loans.xlsx');
     }
 }

@@ -59,6 +59,11 @@
                                                         class="btn btn-sm btn-primary" title="Edit">
                                                         <i class="fe fe-edit"></i>
                                                     </a>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn"
+                                                        data-url="{{ route('adminStudentPaymentDelete', ['id' => $payment->id]) }}"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete">
+                                                        <i class="fe fe-trash-2"></i>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         @empty
@@ -84,7 +89,7 @@
                     <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to delete this Data?</p>
+                    <p>Are you sure you want to delete this payment record? This action cannot be undone.</p>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>

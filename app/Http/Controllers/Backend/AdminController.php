@@ -424,9 +424,9 @@ class AdminController extends Controller
     {
         return $this->officeExpenseService->handleExpenseCategoryDelete($id);
     }
-    public function adminLoanList(): View
+    public function adminLoanList(Request $request): View
     {
-        return $this->loanService->renderLoanList();
+        return $this->loanService->renderLoanList($request);
     }
     public function adminLoanCreateOrEdit($id = null): View
     {
@@ -455,6 +455,10 @@ class AdminController extends Controller
     public function adminLoanPaymentUpdate(Request $request): RedirectResponse
     {
         return $this->loanService->handleLoanPaymentUpdate($request);
+    }
+    public function adminLoanExport(Request $request): BinaryFileResponse
+    {
+        return $this->loanService->renderLoanExport($request);
     }
     public function AdminStudentList(Request $request): View
     {
@@ -487,6 +491,10 @@ class AdminController extends Controller
     public function adminStudentExport(Request $request): BinaryFileResponse
     {
         return $this->studentService->renderStudentExport($request);
+    }
+    public function adminStudentPaymentDelete($id): RedirectResponse
+    {
+        return $this->studentService->handleStudentPaymentDelete($id);
     }
     public function adminAssetCategory(): View
     {

@@ -236,4 +236,25 @@ class StudentService
         $data = $request->only(['date_from', 'date_to', 'course', 'status', 'phone']);
         return Excel::download(new StudentExport($data), 'students.xlsx');
     }
+
+    public function handleStudentPaymentDelete($payment_id): RedirectResponse
+    {
+        try {
+            $payment = StudentPayment::findOrFail($payment_id);
+            $student = $payment->student;
+
+            // Delete the payment
+            $payment->delete();
+
+            // Recalculate student status after payment deletion
+            $totalPaid = StudentPayment::where('student_id', $student->id)->sum('amount');
+            $student->status = ($totalPaid >= $student->amount) ? 2 : 1;
+            $student->save();
+
+            return redirect()->back()->with('success', 'Payment deleted successfully!');
+        } catch (Exception $e) {
+            Log::error('Error deleting student payment: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete payment: ' . $e->getMessage());
+        }
+    }
 }
