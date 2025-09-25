@@ -39,7 +39,7 @@ class AuthService
                 Auth::logout();
                 return redirect()->route('adminLogin')->with('error', 'You must be an admin to access this page.');
             }
-            return redirect()->route('adminDashboard')->with('success', 'Login successful!');
+            return redirect()->route('adminProfile')->with('success', 'Login successful!');
         } catch (ValidationException $e) {
             Log::error('Validation error ! ' . $e->getMessage());
             return redirect()->back()->withErrors($e->validator)->withInput();
