@@ -85,19 +85,17 @@
                 $canAssignLeads = $user->hasPermission('assign_leads');
                 $canSeeLeadList = $user->hasPermission('can_manage_assigned_leads');
                 $canManageProductOrder = $user->hasPermission('manage_order');
+                $canViewOrder = $user->hasPermission('view_order');
+                $canApproveOrder = $user->hasPermission('approve_order');
+                $canRejectOrder = $user->hasPermission('reject_order');
+                $canDeleteOrder = $user->hasPermission('delete_order');
+                $canExportOrder = $user->hasPermission('export_order');
+                $canManageLeadExpressions = $user->hasPermission('manage_lead_expressions');
             @endphp
             <ul class="side-menu">
 
                 {{-- DASHBOARD & SETTINGS --}}
-                @if (
-                    $canManageDashboard ||
-                        $canManageSettings ||
-                        $canManageFacebookCredentials ||
-                        $canManageFacebookPages ||
-                        $canManageFacebookLeadgenForms ||
-                        $canManageFacebookLeads ||
-                        $canManageFacebookAdAccounts ||
-                        $canAssignLeads)
+                @if ($canManageDashboard || $canManageSettings)
                     <li class="sub-category">
                         <h3>Dashboard & Settings</h3>
                     </li>
@@ -119,12 +117,24 @@
                             </a>
                         </li>
                     @endif
+                @endif
+
+                {{-- FACEBOOK --}}
+                @if (
+                    $canManageFacebookCredentials ||
+                        $canManageFacebookPages ||
+                        $canManageFacebookLeadgenForms ||
+                        $canManageFacebookLeads ||
+                        $canManageFacebookAdAccounts)
+                    <li class="sub-category">
+                        <h3>Facebook</h3>
+                    </li>
                     @if ($canManageFacebookCredentials)
                         <li class="slide">
                             <a class="side-menu__item has-link {{ Route::is('adminFacebookCredentials') ? 'active' : '' }}"
                                 href="{{ route('adminFacebookCredentials') }}">
-                                <i class="side-menu__icon fe fe-facebook"></i>
-                                <span class="side-menu__label">Facebook Credentials</span>
+                                <i class="side-menu__icon fe fe-settings"></i>
+                                <span class="side-menu__label">Credentials</span>
                             </a>
                         </li>
                     @endif
@@ -133,7 +143,7 @@
                             <a class="side-menu__item has-link {{ Route::is('adminFacebookPages', 'adminFacebookPageView') ? 'active' : '' }}"
                                 href="{{ route('adminFacebookPages') }}">
                                 <i class="side-menu__icon fe fe-users"></i>
-                                <span class="side-menu__label">Facebook Pages</span>
+                                <span class="side-menu__label">Pages</span>
                             </a>
                         </li>
                     @endif
@@ -151,42 +161,50 @@
                             <a class="side-menu__item has-link {{ Route::is('adminFacebookLeads', 'adminFacebookLeadView') ? 'active' : '' }}"
                                 href="{{ route('adminFacebookLeads') }}">
                                 <i class="side-menu__icon fe fe-user-plus"></i>
-                                <span class="side-menu__label">Facebook Leads</span>
+                                <span class="side-menu__label">Leads</span>
                             </a>
-
                         </li>
                     @endif
-                    {{-- @if ($canManageFacebookAdAccounts)
+                    @if ($canManageFacebookAdAccounts)
                         <li class="slide">
                             <a class="side-menu__item has-link {{ Route::is('adminFacebookAdAccounts') ? 'active' : '' }}"
                                 href="{{ route('adminFacebookAdAccounts') }}">
                                 <i class="side-menu__icon fe fe-briefcase"></i>
-                                <span class="side-menu__label">Facebook Ad Accounts</span>
-                            </a>
-                        </li>
-                    @endif --}}
-                    @if ($canAssignLeads)
-                        <li class="slide">
-                            <a class="side-menu__item has-link {{ Route::is('adminAssignLeads') ? 'active' : '' }}"
-                                href="{{ route('adminAssignLeads') }}">
-                                <i class="side-menu__icon fe fe-user-check"></i>
-                                <span class="side-menu__label">Assign Leads</span>
+                                <span class="side-menu__label">Ad Accounts</span>
                             </a>
                         </li>
                     @endif
                 @endif
 
                 {{-- Lead Management --}}
-                @if ($canSeeLeadList)
+                @if ($canSeeLeadList || $canManageLeadExpressions || $canAssignLeads)
                     <li class="sub-category">
                         <h3>Lead Management</h3>
                     </li>
+                    @if ($canAssignLeads)
+                        <li class="slide">
+                            <a class="side-menu__item has-link {{ Route::is('adminAssignLeads') ? 'active' : '' }}"
+                                href="{{ route('adminAssignLeads') }}">
+                                <i class="side-menu__icon fe fe-user-plus"></i>
+                                <span class="side-menu__label">Assign Leads</span>
+                            </a>
+                        </li>
+                    @endif
                     @if ($canSeeLeadList)
                         <li class="slide">
                             <a class="side-menu__item has-link {{ Route::is('leadList', 'leadView') ? 'active' : '' }}"
                                 href="{{ route('leadList') }}">
                                 <i class="side-menu__icon fe fe-user-check"></i>
                                 <span class="side-menu__label">Manage Assigned Leads</span>
+                            </a>
+                        </li>
+                    @endif
+                    @if ($canManageLeadExpressions)
+                        <li class="slide">
+                            <a class="side-menu__item has-link {{ Route::is('adminLeadExpressionList', 'adminLeadExpressionCreateOrEdit', 'adminLeadExpressionView') ? 'active' : '' }}"
+                                href="{{ route('adminLeadExpressionList') }}">
+                                <i class="side-menu__icon fe fe-tag"></i>
+                                <span class="side-menu__label">Lead Expressions</span>
                             </a>
                         </li>
                     @endif
@@ -372,7 +390,14 @@
                     @endif
                 @endif
 
-                @if ($canManageProduct || $canManageProductOrder)
+                @if (
+                    $canManageProduct ||
+                        $canManageProductOrder ||
+                        $canViewOrder ||
+                        $canApproveOrder ||
+                        $canRejectOrder ||
+                        $canDeleteOrder ||
+                        $canExportOrder)
                     {{-- PRODUCT MANAGEMENT --}}
                     <li class="sub-category">
                         <h3>Product Management</h3>
@@ -386,7 +411,13 @@
                             </a>
                         </li>
                     @endif
-                    @if ($canManageProductOrder)
+                    @if (
+                        $canManageProductOrder ||
+                            $canViewOrder ||
+                            $canApproveOrder ||
+                            $canRejectOrder ||
+                            $canDeleteOrder ||
+                            $canExportOrder)
                         <li class="slide">
                             <a class="side-menu__item has-link {{ Route::is('adminOrderList', 'adminOrderView') ? 'active' : '' }}"
                                 href="{{ route('adminOrderList') }}">

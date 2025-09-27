@@ -261,5 +261,15 @@ Route::prefix('admin')->group(function () {
             Route::get('/edit/{id?}',[AssignLeadsController::class,'leadEdit'])->name('leadEdit');
             Route::post('/save/{id?}',[AssignLeadsController::class,'leadSave'])->name('leadSave');
         });
+
+        // Lead Expressions Routes
+        Route::prefix('lead-expressions')->group(function () {
+            Route::get('/', [App\Http\Controllers\Backend\LeadExpressionController::class, 'adminLeadExpressionList'])->name('adminLeadExpressionList');
+            Route::get('/create-or-edit/{id?}', [App\Http\Controllers\Backend\LeadExpressionController::class, 'adminLeadExpressionCreateOrEdit'])->name('adminLeadExpressionCreateOrEdit');
+            Route::post('/save/{id?}', [App\Http\Controllers\Backend\LeadExpressionController::class, 'adminLeadExpressionSave'])->name('adminLeadExpressionSave');
+            Route::get('/view/{id}', [App\Http\Controllers\Backend\LeadExpressionController::class, 'adminLeadExpressionView'])->name('adminLeadExpressionView');
+            Route::delete('/delete/{id}', [App\Http\Controllers\Backend\LeadExpressionController::class, 'adminLeadExpressionDelete'])->name('adminLeadExpressionDelete');
+            Route::get('/toggle-status/{id}', [App\Http\Controllers\Backend\LeadExpressionController::class, 'adminLeadExpressionToggleStatus'])->name('adminLeadExpressionToggleStatus');
+        });
     });
 });

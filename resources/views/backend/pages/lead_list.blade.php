@@ -124,11 +124,13 @@
         }
     </style>
     <style>
-    .highlight-expression {
-        background-color: #aecf9e !important; /* light yellow, change as needed */
-        color: #333; /* optional text color */
-    }
-</style>
+        .highlight-expression {
+            background-color: #aecf9e !important;
+            /* light yellow, change as needed */
+            color: #333;
+            /* optional text color */
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -174,13 +176,12 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($leads as $lead)
-                                        <tr @if($lead->expression !== null) class="highlight-expression" @endif>
+                                        <tr @if ($lead->expression !== null) class="highlight-expression" @endif>
                                             <td>
                                                 <span class="lead-name">{{ $lead->getFieldValue('name') ?? 'N/A' }}</span>
                                             </td>
                                             <td>
-                                                <span
-                                                    class="lead-info">{{ $lead->getFieldValue('phone') ?? 'N/A' }}</span>
+                                                <span class="lead-info">{{ $lead->getFieldValue('phone') ?? 'N/A' }}</span>
                                             </td>
                                             <td>
                                                 <span
@@ -192,23 +193,21 @@
                                                 <small class="text-muted">{{ $lead->lead_age }}</small>
                                             </td>
                                             <td>
-                                            @php
-                                                $expressions = [
-                                                    1 => ['text' => 'Interested', 'class' => 'bg-success'],
-                                                    2 => ['text' => 'Not Interested', 'class' => 'bg-danger'],
-                                                    3 => ['text' => 'Converted', 'class' => 'bg-primary'],
-                                                ];
-                                                $expression = $lead->expression;
-                                            @endphp
+                                                @php
+                                                    // Get dynamic expressions from database
+                                                    $expressions = \App\Models\LeadExpression::getExpressionsForDisplay();
+                                                    $expression = $lead->expression;
+                                                @endphp
 
-                                            @if($expression && isset($expressions[$expression]))
-                                                <span class="badge {{ $expressions[$expression]['class'] }}">
-                                                    {{ $expressions[$expression]['text'] }}
-                                                </span>
-                                            @else
-                                                <span class="badge bg-secondary">N/A</span>
-                                            @endif
-                                        </td>
+                                                @if ($expression && isset($expressions[$expression]))
+                                                    <span
+                                                        class="badge {{ $expressions[$expression]['class'] }} {{ $expressions[$expression]['text_color'] ?? 'text-white' }}">
+                                                        {{ $expressions[$expression]['text'] }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge bg-secondary">N/A</span>
+                                                @endif
+                                            </td>
 
 
                                             <td>
@@ -217,7 +216,8 @@
                                                         class="btn btn-sm btn-info" title="View Details">
                                                         <i class="fe fe-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('leadEdit', $lead->id) }}" class="btn btn-sm btn-info" title="Edit">
+                                                    <a href="{{ route('leadEdit', $lead->id) }}"
+                                                        class="btn btn-sm btn-info" title="Edit">
                                                         <i class="fe fe-edit"></i>
                                                     </a>
                                                 </div>

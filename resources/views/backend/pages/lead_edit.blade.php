@@ -33,12 +33,15 @@
                             <label for="expression" class="form-label">Expression</label>
                             <select id="expression" name="expression" class="form-select" required>
                                 <option value="">-- Select Expression --</option>
-                                <option value="1" {{ old('expression', $lead->expression) == 1 ? 'selected' : '' }}>
-                                    Interested</option>
-                                <option value="2" {{ old('expression', $lead->expression) == 2 ? 'selected' : '' }}>Not
-                                    Interested</option>
-                                <option value="3" {{ old('expression', $lead->expression) == 3 ? 'selected' : '' }}>
-                                    Converted</option>
+                                @php
+                                    $expressions = \App\Models\LeadExpression::getExpressionsArray();
+                                @endphp
+                                @foreach ($expressions as $id => $name)
+                                    <option value="{{ $id }}"
+                                        {{ old('expression', $lead->expression) == $id ? 'selected' : '' }}>
+                                        {{ $name }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
 

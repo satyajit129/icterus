@@ -5,7 +5,11 @@
 {{-- Permission Check --}}
 @php
     $user = auth()->user();
-    $canDeleteOrder = $user->hasPermission('order_delete_permission'); // Using manage_product permission for order deletion
+    $canViewOrder = $user->hasPermission('view_order');
+    $canApproveOrder = $user->hasPermission('approve_order');
+    $canRejectOrder = $user->hasPermission('reject_order');
+    $canDeleteOrder = $user->hasPermission('delete_order');
+    $canExportOrder = $user->hasPermission('export_order');
 @endphp
 
 @section('content')
@@ -179,9 +183,11 @@
                 <div class="card-header">
                     <h3 class="card-title">Order List</h3>
                     <div class="card-options">
-                        <a href="{{ route('adminOrderExport', request()->query()) }}" class="btn btn-primary btn-sm">
-                            <i class="fe fe-download me-1"></i>Export
-                        </a>
+                        @if ($canExportOrder)
+                            <a href="{{ route('adminOrderExport', request()->query()) }}" class="btn btn-primary btn-sm">
+                                <i class="fe fe-download me-1"></i>Export
+                            </a>
+                        @endif
                     </div>
                 </div>
 
@@ -305,19 +311,23 @@
                                         </td>
                                         <td>
                                             <div class="btn-group" role="group">
-                                                <a href="{{ route('adminOrderView', $order->id) }}"
-                                                    class="btn btn-sm btn-outline-primary" title="View Details">
-                                                    <i class="fe fe-eye"></i>
-                                                </a>
+                                                @if ($canViewOrder)
+                                                    <a href="{{ route('adminOrderView', $order->id) }}"
+                                                        class="btn btn-sm btn-outline-primary" title="View Details">
+                                                        <i class="fe fe-eye"></i>
+                                                    </a>
+                                                @endif
 
-                                                @if ($order->payment_status == 'pending')
+                                                @if ($order->payment_status == 'pending' && $canApproveOrder)
                                                     <button type="button" class="btn btn-sm btn-outline-success"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#statusModal{{ $order->id }}"
                                                         title="Approve Order">
                                                         <i class="fe fe-check"></i>
                                                     </button>
+                                                @endif
 
+                                                @if ($order->payment_status == 'pending' && $canRejectOrder)
                                                     <button type="button" class="btn btn-sm btn-outline-danger"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#rejectModal{{ $order->id }}"
