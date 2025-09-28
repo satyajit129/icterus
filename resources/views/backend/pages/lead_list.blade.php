@@ -1,5 +1,5 @@
 @extends('backend.layouts.master')
-@section('title', 'Facebook Leads')
+@section('title', 'Manage Assigned Leads')
 @section('custom_css')
     <style>
         .collect-btn {
@@ -144,12 +144,60 @@
     </div>
 
     <div class="page-header">
-        <h1 class="page-title">Facebook Leads</h1>
+        <h1 class="page-title">Manage Assigned Leads</h1>
         <div>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('adminDashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">Facebook Leads</li>
+                <li class="breadcrumb-item active">Manage Assigned Leads</li>
             </ol>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Filters</h3>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{{ route('leadList') }}">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Expression</label>
+                                    <select name="expression" class="form-control select2-show-search form-select">
+                                        <option value="">All Expressions</option>
+                                        @foreach ($expressions as $expression)
+                                            <option value="{{ $expression->id }}"
+                                                {{ request('expression') == $expression->id ? 'selected' : '' }}>
+                                                {{ $expression->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Search</label>
+                                    <input type="text" name="search" class="form-control"
+                                        value="{{ request('search') }}" placeholder="Search leads...">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">&nbsp;</label>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary" style="width: 100%;">Filter</button>
+                                        <a href="{{ route('leadList') }}" class="btn btn-secondary"
+                                            style="width: 100%;">Reset</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -247,9 +295,18 @@
 @endsection
 
 @section('custom_js')
+    <script src="{{ asset('js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('js/select2.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#pageLoader').removeClass('show');
+
+            // Initialize Select2 for expression selection
+            $('.select2-show-search').select2({
+                placeholder: 'Choose an option...',
+                allowClear: true,
+                width: '100%'
+            });
 
             // Initialize Select2 for form selection
             $('#formSelect').select2({

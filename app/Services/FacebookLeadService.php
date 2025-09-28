@@ -6,6 +6,7 @@ use App\Models\FacebookCredential;
 use App\Models\FacebookLead;
 use App\Models\FacebookLeadgenForm;
 use App\Models\FacebookPage;
+use App\Models\LeadExpression;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class FacebookLeadService
 {
     public function renderLeadsPage(Request $request): View
     {
-        $query = FacebookLead::with(['facebookLeadgenForm', 'facebookPage']);
+        $query = FacebookLead::with(['facebookLeadgenForm', 'facebookPage', 'expression']);
 
         // Apply filters
         if ($request->filled('form_id')) {
@@ -47,10 +48,15 @@ class FacebookLeadService
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('lead_id', 'like', '%' . $searchTerm . '%')
-                    ->orWhereJsonContains('extracted_fields->name', $searchTerm)
-                    ->orWhereJsonContains('extracted_fields->phone', $searchTerm)
-                    ->orWhereJsonContains('extracted_fields->email', $searchTerm);
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(extracted_fields, '$.name')) LIKE ?", ['%' . $searchTerm . '%'])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(extracted_fields, '$.phone')) LIKE ?", ['%' . $searchTerm . '%'])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(extracted_fields, '$.email')) LIKE ?", ['%' . $searchTerm . '%'])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(extracted_fields, '$.location')) LIKE ?", ['%' . $searchTerm . '%']);
             });
+        }
+
+        if ($request->filled('expression')) {
+            $query->where('expression', $request->expression_id);
         }
 
         $leads = $query->orderBy('created_time', 'desc')->paginate(20)->appends($request->all());
@@ -82,7 +88,10 @@ class FacebookLeadService
         $assignedLeads = FacebookLead::whereHas('leadAssignment')->count();
         $unassignedLeads = $totalLeads - $assignedLeads;
 
-        return view('backend.pages.facebook_leads', compact('leads', 'forms', 'pages', 'fieldNames', 'totalLeads', 'assignedLeads', 'unassignedLeads'));
+        // Get expressions for filtering
+        $expressions = LeadExpression::active()->ordered()->get();
+
+        return view('backend.pages.facebook_leads', compact('leads', 'forms', 'pages', 'fieldNames', 'expressions', 'totalLeads', 'assignedLeads', 'unassignedLeads'));
     }
 
     public function handleCollectLeads(Request $request): RedirectResponse

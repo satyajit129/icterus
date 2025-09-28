@@ -34,6 +34,11 @@ class FacebookLead extends Model
         return $this->hasOne(LeadAssignment::class, 'lead_id', 'id');
     }
 
+    public function expression(): BelongsTo
+    {
+        return $this->belongsTo(LeadExpression::class, 'expression', 'id');
+    }
+
     public function scopeByForm($query, $formId)
     {
         return $query->where('form_id', $formId);

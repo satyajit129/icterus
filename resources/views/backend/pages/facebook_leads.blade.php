@@ -351,26 +351,26 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Date Range</label>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <input type="date" name="start_date"
-                                                    class="form-control "
-                                                    value="{{ request('start_date') }}" placeholder="Start Date">
-                                            </div>
-                                            <div class="col-6">
-                                                <input type="date" name="end_date"
-                                                    class="form-control "
-                                                    value="{{ request('end_date') }}" placeholder="End Date">
-                                            </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <input type="date" name="start_date" class="form-control "
+                                                value="{{ request('start_date') }}" placeholder="Start Date">
                                         </div>
+                                        <div class="col-6">
+                                            <input type="date" name="end_date" class="form-control "
+                                                value="{{ request('end_date') }}" placeholder="End Date">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">&nbsp;</label>
                                     <div class="d-flex gap-2">
-                                        <button type="submit" class="btn btn-primary" style="width: 100%;">Filter</button>
-                                        <a href="{{ route('adminFacebookLeads') }}" class="btn btn-secondary" style="width: 100%;">Reset</a>
+                                        <button type="submit" class="btn btn-primary"
+                                            style="width: 100%;">Filter</button>
+                                        <a href="{{ route('adminFacebookLeads') }}" class="btn btn-secondary"
+                                            style="width: 100%;">Reset</a>
                                         <a href="{{ route('adminFacebookLeadsExport', request()->query()) }}"
                                             class="btn btn-success" style="width: 100%;">
                                             <i class="fe fe-download me-1"></i>Export CSV
@@ -491,7 +491,7 @@
 @endsection
 
 @section('custom_js')
-<script src="{{ asset('js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('js/select2.full.min.js') }}"></script>
     <script src="{{ asset('js/select2.js') }}"></script>
     <script>
         $(document).ready(function() {

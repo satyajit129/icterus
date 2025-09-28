@@ -207,20 +207,33 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="mb-3">
+                                    <label class="form-label">Expression</label>
+                                    <select name="expression_id" class="form-control select2-show-search form-select">
+                                        <option value="">All Expressions</option>
+                                        @foreach ($expressions as $expression)
+                                            <option value="{{ $expression->id }}"
+                                                {{ request('expression_id') == $expression->id ? 'selected' : '' }}>
+                                                {{ $expression->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
                                     <label class="form-label">Date Range</label>
-                                   
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <input type="date" name="start_date" class="form-control"
-                                                    value="{{ request('start_date') }}" placeholder="Start Date">
-                                            </div>
-                                            <div class="col-6">
-                                                <input type="date" name="end_date"
-                                                    class="form-control"
-                                                    value="{{ request('end_date') }}" placeholder="End Date">
-                                            </div>
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <input type="date" name="start_date" class="form-control"
+                                                value="{{ request('start_date') }}" placeholder="Start Date">
                                         </div>
-                                  
+                                        <div class="col-6">
+                                            <input type="date" name="end_date" class="form-control"
+                                                value="{{ request('end_date') }}" placeholder="End Date">
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -246,8 +259,10 @@
                                 <div class="mb-3">
                                     <label class="form-label">&nbsp;</label>
                                     <div class="d-flex gap-2">
-                                        <button type="submit" class="btn btn-primary" style="width: 100%;">Filter</button>
-                                        <a href="{{ route('adminAssignLeads') }}" class="btn btn-secondary" style="width: 100%;">Reset</a>
+                                        <button type="submit" class="btn btn-primary"
+                                            style="width: 100%;">Filter</button>
+                                        <a href="{{ route('adminAssignLeads') }}" class="btn btn-secondary"
+                                            style="width: 100%;">Reset</a>
                                     </div>
                                 </div>
                             </div>
@@ -289,10 +304,12 @@
                         <div class="mb-3">
                             <label class="form-label">&nbsp;</label>
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-success" id="bulkAssignBtn" disabled style="width: 100%;">
+                                <button type="button" class="btn btn-success" id="bulkAssignBtn" disabled
+                                    style="width: 100%;">
                                     <i class="fe fe-user-plus me-2"></i>Assign Selected Leads
                                 </button>
-                                <button type="button" class="btn btn-warning" id="unassignBtn" disabled style="width: 100%;">
+                                <button type="button" class="btn btn-warning" id="unassignBtn" disabled
+                                    style="width: 100%;">
                                     <i class="fe fe-user-minus me-2"></i>Unassign Selected
                                 </button>
                             </div>

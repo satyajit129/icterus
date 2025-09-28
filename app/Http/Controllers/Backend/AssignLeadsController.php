@@ -7,6 +7,7 @@ use App\Models\FacebookLead;
 use App\Models\FacebookLeadgenForm;
 use App\Models\FacebookPage;
 use App\Models\LeadAssignment;
+use App\Models\LeadExpression;
 use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
@@ -55,9 +56,10 @@ class AssignLeadsController extends Controller
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('lead_id', 'like', '%' . $searchTerm . '%')
-                    ->orWhereJsonContains('extracted_fields->name', $searchTerm)
-                    ->orWhereJsonContains('extracted_fields->phone', $searchTerm)
-                    ->orWhereJsonContains('extracted_fields->email', $searchTerm);
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(extracted_fields, '$.name')) LIKE ?", ['%' . $searchTerm . '%'])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(extracted_fields, '$.phone')) LIKE ?", ['%' . $searchTerm . '%'])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(extracted_fields, '$.email')) LIKE ?", ['%' . $searchTerm . '%'])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(extracted_fields, '$.location')) LIKE ?", ['%' . $searchTerm . '%']);
             });
         }
 
@@ -68,6 +70,11 @@ class AssignLeadsController extends Controller
             } elseif ($request->assignment_status === 'unassigned') {
                 $query->whereDoesntHave('leadAssignment');
             }
+        }
+
+        // Filter by expression
+        if ($request->filled('expression_id')) {
+            $query->where('expression', $request->expression_id);
         }
 
         $leads = $query->orderBy('created_time', 'desc')->paginate(100)->appends($request->all());
@@ -108,6 +115,9 @@ class AssignLeadsController extends Controller
             $query->where('name', 'Student Advisor');
         })->select('id', 'name', 'email')->orderBy('name')->get();
 
+        // Get expressions for filtering
+        $expressions = LeadExpression::active()->ordered()->get();
+
         // Calculate summary statistics
         $totalLeads = FacebookLead::count();
         $assignedLeads = FacebookLead::whereHas('leadAssignment')->count();
@@ -119,6 +129,7 @@ class AssignLeadsController extends Controller
             'pages',
             'fieldNames',
             'locations',
+            'expressions',
             'studentAdvisors',
             'totalLeads',
             'assignedLeads',
@@ -353,16 +364,36 @@ class AssignLeadsController extends Controller
 
     public function leadList(Request $request)
     {
-        $query = FacebookLead::with(['facebookLeadgenForm', 'facebookPage', 'leadAssignment.assignedTo'])
+        $query = FacebookLead::with(['facebookLeadgenForm', 'facebookPage', 'leadAssignment.assignedTo', 'expression'])
             ->whereHas('leadAssignment', function ($q) {
                 $q->where('assigned_to', Auth::id());
             });
+
+        // Apply search filter
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('lead_id', 'like', '%' . $searchTerm . '%')
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(extracted_fields, '$.name')) LIKE ?", ['%' . $searchTerm . '%'])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(extracted_fields, '$.phone')) LIKE ?", ['%' . $searchTerm . '%'])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(extracted_fields, '$.email')) LIKE ?", ['%' . $searchTerm . '%'])
+                    ->orWhereRaw("JSON_UNQUOTE(JSON_EXTRACT(extracted_fields, '$.location')) LIKE ?", ['%' . $searchTerm . '%']);
+            });
+        }
+
+        // Apply expression filter
+        if ($request->filled('expression')) {
+            $query->where('expression', $request->expression);
+        }
 
         $leads = $query->orderBy('created_time', 'desc')
             ->paginate(20)
             ->appends($request->all());
 
-        return view('backend.pages.lead_list', compact('leads'));
+        // Get expressions for filtering
+        $expressions = LeadExpression::active()->ordered()->get();
+
+        return view('backend.pages.lead_list', compact('leads', 'expressions'));
     }
     public function leadView($id)
     {
